@@ -14,7 +14,8 @@ body .container {
 p {
   height: auto;
   width: auto;
-  padding: 25px;
+  margin: 0.5em 0;
+  padding: 0;
 }
 #top {
   width:100%;
@@ -44,6 +45,7 @@ p {
   display: inline-block;
   color: #EEEEEE;
   font-size: 30px;
+  padding: 25px;
 }
 #top a:hover p {
   color: #EC8825;
@@ -93,8 +95,8 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 750px;
-  /*overflow: hidden;  will reenable this once i figure out what broke the display*/
+  height: auto;
+  overflow-y: auto;
 }
 .item p {
   margin-top: 10px;
@@ -110,11 +112,11 @@ p {
   justify-content: space-between;
   margin-top: auto;
 }
-.item h3 .price {
+.item h3.price {
   text-align: left;
   display: inline-block;
 }
-.item h3 .quant {
+.item h3.quant {
   text-align: right;
   display: inline-block;
 }
