@@ -1,3 +1,5 @@
+console.log("script.js loaded"); /* temporary for debugging display  */
+
 const main = document.getElementById('main');
 const searchInput = document.getElementById('search');
 
