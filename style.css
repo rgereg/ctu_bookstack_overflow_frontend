@@ -14,7 +14,7 @@ body .container {
 p {
   height: auto;
   width: auto;
-  padding: 0;
+  padding: 25px;
 }
 #top {
   width:100%;
