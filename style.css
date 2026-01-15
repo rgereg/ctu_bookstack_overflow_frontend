@@ -14,7 +14,7 @@ body .container {
 p {
   height: auto;
   width: auto;
-  padding: 25px;
+  padding: 0;
 }
 #top {
   width:100%;
@@ -109,11 +109,11 @@ p {
   justify-content: space-between;
   margin-top: auto;
 }
-.item h3.price {
+.item h3 .price {
   text-align: left;
   display: inline-block;
 }
-.item h3.quant {
+.item h3 .quant {
   text-align: right;
   display: inline-block;
 }
