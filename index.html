@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Bookstack Overflow</title>
-<link rel="icon" type="image/png" href="image/icon.png">
-<link rel="stylesheet" href="style.css">
-<script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <title>Bookstack Overflow</title>
+  <link rel="icon" type="image/png" href="image/icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
+
 <body>
   <div id="container">
+
     <div id="top">
-      <a href="index.html"><img src="image/bow.png" /></a>
+      <a href="index.html">
+        <img src="image/bow.png" alt="Bookstack Overflow logo" />
+      </a>
+
       <a href="link1"><p>Link 1</p></a>
       <a href="link2"><p>Link 2</p></a>
       <a href="link3"><p>Link 3</p></a>
+
+      <input
+        type="text"
+        id="search"
+        placeholder="Search by title, author, or ISBN..."
+        autocomplete="off"
+      />
     </div>
-    <input
-      type="text"
-      id="search"
-      placeholder="Search by title or author..."
-      autocomplete="off"
-    />
+
     <div id="main">
     </div>
+
   </div>
 </body>
 </html>
