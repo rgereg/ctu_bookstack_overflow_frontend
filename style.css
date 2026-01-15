@@ -25,6 +25,11 @@ p {
   height: 130px;
   position: absolute;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 #top::before {
@@ -43,20 +48,37 @@ p {
 #top img {
   height: 120px;
   padding: 5px;
-  float: left;
+  flex-shrink: 0;
 }
 
 #top p {
   display: inline-block;
   color: #EEEEEE;
   font-size: 30px;
-  padding: 25px;
+  padding: 0;
+  margin: 0;
 }
 
 #top a:hover p {
   color: #EC8825;
   transition: transform 0.3s ease-in-out;
   transform: translateY(-5px);
+}
+
+#search {
+  height: 40px;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-family: FSIndustrie, Arial, sans-serif;
+  z-index: 20;
+  flex-grow: 1;
+}
+
+#search::placeholder {
+  color: #777;
 }
 
 #main {
