@@ -1,26 +1,25 @@
-console.log("script.js loaded"); /* temporary for debugging display  */
+console.log("script.js loaded"); /* THIS version is temporary so we can test on github pages, it uses inventory.json file instead of backend */
 
 const main = document.getElementById('main');
 const searchInput = document.getElementById('search');
 
-// Fetch inventory from backend (with optional search)
-function fetchInventory(query = '') {
-  const url = query
-    ? `/api/inventory?search=${encodeURIComponent(query)}`
-    : '/api/inventory';
+let inventory = [];
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      renderInventory(data);
-    });
-}
+fetch('./inventory.json')
+  .then(res => {
+    if (!res.ok) throw new Error('Failed to load inventory.json');
+    return res.json();
+  })
+  .then(data => {
+    inventory = data;
+    renderInventory(inventory);
+  })
+  .catch(err => console.error(err));
 
-// Render inventory items
 function renderInventory(data) {
   main.innerHTML = '';
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     main.innerHTML = '<p>No matching books found.</p>';
     return;
   }
@@ -43,24 +42,14 @@ function renderInventory(data) {
   });
 }
 
-// Debounce helper
-function debounce(fn, delay = 300) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), delay);
-  };
+if (searchInput) {
+  searchInput.addEventListener('input', e => {
+    const query = e.target.value.toLowerCase();
+    const filtered = inventory.filter(item =>
+      item.title.toLowerCase().includes(query) ||
+      item.author.toLowerCase().includes(query) ||
+      item.isbn.includes(query)
+    );
+    renderInventory(filtered);
+  });
 }
-
-// Debounced search handler
-const debouncedSearch = debounce(value => {
-  fetchInventory(value);
-});
-
-// Search input listener
-searchInput.addEventListener('input', e => {
-  debouncedSearch(e.target.value);
-});
-
-// Initial load (show all books)
-fetchInventory();
