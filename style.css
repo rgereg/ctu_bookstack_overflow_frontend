@@ -94,7 +94,7 @@ p {
   flex-direction: column;
   justify-content: flex-start;
   height: 750px;
-  overflow: hidden;
+  /*overflow: hidden;  will reenable this once i figure out what broke the display*/
 }
 .item p {
   margin-top: 10px;
@@ -110,11 +110,11 @@ p {
   justify-content: space-between;
   margin-top: auto;
 }
-.item h3.price {
+.item h3 .price {
   text-align: left;
   display: inline-block;
 }
-.item h3.quant {
+.item h3 .quant {
   text-align: right;
   display: inline-block;
 }
