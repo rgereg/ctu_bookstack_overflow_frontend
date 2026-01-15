@@ -38,9 +38,7 @@ p {
   background-image: url("image/paper.jpg");
   background-size: cover;
   background-position: -10px -10px;
-  filter: sepia(100%) hue-rotate(180deg) saturate(220%)
-          brightness(60%) contrast(150%)
-          drop-shadow(0px 5px 5px black);
+  filter: sepia(100%) hue-rotate(180deg) saturate(220%) brightness(60%) contrast(150%) sepia(100%) hue-rotate(180deg) saturate(220%) brightness(60%) contrast(150%) drop-shadow(0px 5px 5px black);
   z-index: -1;
 }
 
