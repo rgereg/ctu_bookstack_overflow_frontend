@@ -84,7 +84,7 @@ p {
 #main {
   width: 100%;
   min-height: 100vh;
-  margin-top: 0;             /* this will cause a white strip at the top */
+  margin-top: 0;
   padding: 20px 0;
   position: relative;
   z-index: 0;
@@ -145,4 +145,83 @@ p {
 .item h3.quant {
   text-align: right;
   display: inline-block;
+}
+
+/* Below section for current add inventory form */
+#add-form {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto 40px;
+  padding: 20px 30px;
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.45);
+  filter: drop-shadow(0px 5px 5px black);
+}
+
+#add-form h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 28px;
+  color: #222;
+  text-align: center;
+}
+
+#bookForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 20px;
+}
+
+#bookForm textarea,
+#bookForm button {
+  grid-column: 1 / -1;
+}
+
+#bookForm input,
+#bookForm textarea {
+  font-family: FSIndustrie, Arial, sans-serif;
+  font-size: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15);
+}
+
+#bookForm textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+#bookForm input:focus,
+#bookForm textarea:focus {
+  box-shadow: inset 0 0 0 2px #EC8825;
+}
+
+#bookForm button {
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 18px;
+  font-family: FSIndustrie, Arial, sans-serif;
+  background: #EC8825;
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+#bookForm button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+@media (max-width: 700px) {
+  #bookForm {
+    grid-template-columns: 1fr;
+  }
 }
