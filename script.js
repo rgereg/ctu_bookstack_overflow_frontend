@@ -53,3 +53,25 @@ if (searchInput) {
     renderInventory(filtered);
   });
 }
+
+const bookForm = document.getElementById('bookForm');
+
+if (bookForm) {
+  bookForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const newBook = {
+      title: document.getElementById('title').value,
+      author: document.getElementById('author').value,
+      isbn: document.getElementById('isbn').value,
+      description: document.getElementById('description').value,
+      price: parseFloat(document.getElementById('price').value),
+      quantity: parseInt(document.getElementById('quantity').value)
+    };
+
+    inventory.push(newBook);
+    renderInventory(inventory);
+
+    bookForm.reset();
+  });
+}
