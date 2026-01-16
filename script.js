@@ -53,7 +53,7 @@ if (searchInput) {
     renderInventory(filtered);
   });
 }
-
+// THIS SECTION IS FOR CURRENT JSON PAGES TESTING UNTIL SWITCH TO DJANGO
 const bookForm = document.getElementById('bookForm');
 
 if (bookForm) {
@@ -75,3 +75,18 @@ if (bookForm) {
     bookForm.reset();
   });
 }
+/*   THIS SECTION IS FOR WHEN WE SWITCH TO DJANGO
+fetch('/api/books/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrftoken
+  },
+  body: JSON.stringify(newBook)
+})
+.then(res => res.json())
+.then(data => {
+  inventory.push(data);
+  renderInventory(inventory);
+});
+*/
