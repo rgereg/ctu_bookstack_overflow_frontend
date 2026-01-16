@@ -3,6 +3,10 @@ console.log("script.js loaded"); /* THIS version is temporary so we can test on 
 const main = document.getElementById('main');
 const searchInput = document.getElementById('search');
 
+// TEMPORARY ROLE FLAG NOT REAL ADMIN
+const userRole = "admin"; // change to "user" to hide form
+
+
 let inventory = [];
 
 fetch('./inventory.json')
@@ -53,6 +57,19 @@ if (searchInput) {
     renderInventory(filtered);
   });
 }
+
+const adminToggle = document.getElementById('adminToggle');
+const addForm = document.getElementById('add-form');
+
+if (adminToggle && addForm && userRole === "admin") {
+  adminToggle.addEventListener('click', () => {
+    addForm.classList.toggle('hidden');
+  });
+} else if (adminToggle) {
+  // hide button entirely for non-admins
+  adminToggle.style.display = "none";
+}
+
 // THIS SECTION IS FOR CURRENT JSON PAGES TESTING UNTIL SWITCH TO DJANGO
 const bookForm = document.getElementById('bookForm');
 
