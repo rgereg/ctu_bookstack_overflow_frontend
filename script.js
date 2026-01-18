@@ -32,14 +32,16 @@ function renderInventory(data) {
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
+      <img src="image/book/${item.isbn}.jpg" onerror="this.onerror=null; this.src='image/book/cover.jpg';" />
+      <div class="itemnonimage">
       <h1>${item.title}</h1>
       <h2>by ${item.author}</h2>
-      <img src="image/book/${item.isbn}.jpg" />
       <p>ISBN: ${item.isbn}</p>
       <p>${item.description}</p>
       <div class="shareline">
         <h3 class="price">$${item.price.toFixed(2)}</h3>
         <h3 class="quant">Qt. ${item.quantity}</h3>
+      </div>
       </div>
     `;
     main.appendChild(div);
@@ -59,7 +61,7 @@ if (searchInput) {
 }
 
 const adminToggle = document.getElementById('adminToggle');
-const addForm = document.getElementById('add-form');
+const addForm = document.getElementById('add-form-container');
 
 if (adminToggle && addForm && userRole === "admin") {
   adminToggle.addEventListener('click', () => {
