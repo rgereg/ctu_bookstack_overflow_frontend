@@ -9,6 +9,43 @@ const userRole = "admin"; // change to "user" to hide form
 
 let inventory = [];
 
+// remove after testing ---v
+const testInventory = [
+  {
+    "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
+    "author": "Robert C. Martin",
+    "isbn": "978-0132350884",
+    "description": "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees. Every year, countless hours and significant resources are lost because of poorly written code. But it doesn't have to be that way.",
+    "price": 59.99,
+    "quantity": 12
+  },
+  {
+    "title": "The Pragmatic Programmer: From Journeyman to Master",
+    "author": "Andrew Hunt and David Thomas",
+    "isbn": "978-0201616224",
+    "description": "Straight from the programming trenches, The Pragmatic Programmer cuts through the increasing specialization and technicalities of modern software development to examine the core process--taking a requirement and producing working, maintainable code that delights its users. It covers topics ranging from personal responsibility and career development to architectural techniques for keeping your code flexible and easy to adapt and reuse. ",
+    "price": 64.98,
+    "quantity": 8
+  },
+  {
+    "title": "Python Crash Course: A Hands-on, Project-based Introduction to Programming",
+    "author": "Eric Matthes",
+    "isbn": "978-1718502703",
+    "description": "Python Crash Course is the world’s best-selling guide to the Python programming language. This fast-paced, thorough introduction will have you writing programs, solving problems, and developing functioning applications in no time.",
+    "price": 49.99,
+    "quantity": 2
+  },
+  {
+    "title": "You Don't Know JS: this & Object Prototypes",
+    "author": "Kyle Simpson",
+    "isbn": "978-1491904152",
+    "description": "(From Test Inventory) No matter how much experience you have with JavaScript, odds are you don’t fully understand the language. This concise, in-depth guide takes you inside JavaScript’s this structure and object prototypes.",
+    "price": 21.99,
+    "quantity": 15
+  }
+]
+// remove after testing ---^
+
 fetch('./inventory.json')
   .then(res => {
     if (!res.ok) throw new Error('Failed to load inventory.json');
@@ -18,7 +55,12 @@ fetch('./inventory.json')
     inventory = data;
     renderInventory(inventory);
   })
-  .catch(err => console.error(err));
+  //.catch(err => console.error(err));
+  .catch(err => {
+    console.warn("Fetch failed, using local test data:", err);
+    inventory = testInventory;
+    renderInventory(inventory);
+  });
 
 function renderInventory(data) {
   main.innerHTML = '';
