@@ -105,6 +105,9 @@ p {
   z-index: 0;
   display: flex;
   flex-wrap: wrap;
+  /* Trying to fix the weird spacing when using the search v */
+  flex-direction: column;
+  /* ^ */
   justify-content: center;
   align-items: flex-start;
   gap: 20px;
