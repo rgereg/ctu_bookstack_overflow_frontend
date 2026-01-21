@@ -16,6 +16,21 @@ const logoutBtn = document.getElementById("logoutBtn");
 
 const loginFormContainer = document.getElementById("login-form-container");
 const signupFormContainer = document.getElementById("signup-form-container");
+
+// Test click listener for login button
+loginBtn.addEventListener("click", () => {
+  console.log("Login button clicked"); // <-- for testing in console
+  loginFormContainer.classList.toggle("hidden");
+  signupFormContainer.classList.add("hidden");
+});
+
+// Similarly for signup button
+signupBtn.addEventListener("click", () => {
+  console.log("Signup button clicked"); // <-- for testing if its just hidden behind css or not working at all
+  signupFormContainer.classList.toggle("hidden");
+  loginFormContainer.classList.add("hidden");
+});
+
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
