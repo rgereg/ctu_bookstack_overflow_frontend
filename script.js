@@ -2,12 +2,12 @@ const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co/";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com/";
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const main = document.getElementById("main");
 const searchInput = document.getElementById("search");
 const adminToggle = document.getElementById("adminToggle");
-const addForm = document.getElementById("add-form-container");
+const addFormContainer = document.getElementById("add-form-container");
 const bookForm = document.getElementById("bookForm");
 
 const loginBtn = document.getElementById("loginBtn");
@@ -19,20 +19,14 @@ const signupFormContainer = document.getElementById("signup-form-container");
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-const loginEmail = document.getElementById("loginEmail");
-const loginPassword = document.getElementById("loginPassword");
-const signupEmail = document.getElementById("signupEmail");
-const signupPassword = document.getElementById("signupPassword");
-const signupRole = document.getElementById("signupRole");
-
 const ordersTableBody = document.querySelector("#ordersTable tbody");
 
 let inventory = [];
 let session = null;
-let userRole = "user";
+let userRole = "customer";
 
 async function initAuth() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   session = data.session;
 
   if (session) {
@@ -45,9 +39,8 @@ async function initAuth() {
 }
 
 async function login(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) throw error;
-
   session = data.session;
   userRole = session.user.user_metadata?.role || "customer";
 
@@ -55,26 +48,23 @@ async function login(email, password) {
   signupBtn.classList.add("hidden");
   logoutBtn.classList.remove("hidden");
   loginFormContainer.classList.add("hidden");
-  loginForm.reset();
 
   if (userRole === "employee") adminToggle.classList.remove("hidden");
 }
 
 async function signup(email, password, role) {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
     options: { data: { role } }
   });
   if (error) throw error;
-
   alert("Sign up successful! Check email for confirmation.");
   signupFormContainer.classList.add("hidden");
-  signupForm.reset();
 }
 
 async function logout() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   session = null;
   userRole = "customer";
 
@@ -170,7 +160,6 @@ function renderOrders(orders) {
 async function placeOrder(isbn) {
   const quantity = prompt("Enter quantity:");
   if (!quantity) return;
-
   try {
     await apiFetch("/orders", {
       method: "POST",
@@ -205,7 +194,7 @@ searchInput?.addEventListener("input", e => {
   renderInventory(filtered);
 });
 
-adminToggle?.addEventListener("click", () => addForm.classList.toggle("hidden"));
+adminToggle?.addEventListener("click", () => addFormContainer.classList.toggle("hidden"));
 
 bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
