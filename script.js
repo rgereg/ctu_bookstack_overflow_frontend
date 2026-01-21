@@ -1,13 +1,8 @@
-console.log("script.js loaded");
-
 const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co/";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com/"; // FastAPI backend
 
-const supabase = supabaseJs.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const main = document.getElementById("main");
 const searchInput = document.getElementById("search");
@@ -15,24 +10,68 @@ const adminToggle = document.getElementById("adminToggle");
 const addForm = document.getElementById("add-form-container");
 const bookForm = document.getElementById("bookForm");
 
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+
 let inventory = [];
 let session = null;
-let userRole = "user";
+let userRole = "customer";
 
 async function initAuth() {
   const { data } = await supabase.auth.getSession();
   session = data.session;
 
   if (!session) {
-    console.warn("Not logged in");
+    showLogin(true);
     return;
   }
 
-  userRole = session.user.user_metadata?.role || "user";
+  userRole = session.user.user_metadata?.role || "customer";
 
-  if (userRole === "admin") {
+  if (userRole === "employee" || userRole === "admin") {
     adminToggle.classList.remove("hidden");
   }
+
+  showLogin(false);
+}
+
+loginBtn?.addEventListener("click", async () => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: loginEmail.value,
+    password: loginPassword.value
+  });
+
+  if (error) {
+    alert("Login failed: " + error.message);
+    return;
+  }
+
+  session = data.session;
+  userRole = session.user.user_metadata?.role || "customer";
+
+  if (userRole === "employee" || userRole === "admin") {
+    adminToggle.classList.remove("hidden");
+  }
+
+  showLogin(false);
+  loadInventory();
+});
+
+logoutBtn?.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  session = null;
+  userRole = "customer";
+  adminToggle.classList.add("hidden");
+  showLogin(true);
+});
+
+function showLogin(show) {
+  loginBtn.style.display = show ? "inline-block" : "none";
+  loginEmail.style.display = show ? "inline-block" : "none";
+  loginPassword.style.display = show ? "inline-block" : "none";
+  logoutBtn.style.display = show ? "none" : "inline-block";
 }
 
 async function apiFetch(path, options = {}) {
@@ -60,7 +99,6 @@ async function loadInventory() {
 
 function renderInventory(data) {
   main.innerHTML = "";
-
   if (!data.length) {
     main.innerHTML = "<p>No matching books found.</p>";
     return;
@@ -103,6 +141,10 @@ adminToggle?.addEventListener("click", () => {
 
 bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
+  if (!(userRole === "employee" || userRole === "admin")) {
+    alert("Only employees/admins can add books.");
+    return;
+  }
 
   const newBook = {
     title: title.value,
@@ -118,17 +160,16 @@ bookForm?.addEventListener("submit", async e => {
       method: "POST",
       body: JSON.stringify(newBook)
     });
-
     const saved = await res.json();
     inventory.push(saved);
     renderInventory(inventory);
     bookForm.reset();
   } catch (err) {
-    alert("Only admins can add books");
+    alert("Failed to add book: " + err.message);
   }
 });
 
 (async () => {
   await initAuth();
-  await loadInventory();
+  if (session) await loadInventory();
 })();
