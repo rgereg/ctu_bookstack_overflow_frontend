@@ -2,7 +2,7 @@ const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co/";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com/";
 
-const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const main = document.getElementById("main");
 const searchInput = document.getElementById("search");
@@ -18,6 +18,12 @@ const loginFormContainer = document.getElementById("login-form-container");
 const signupFormContainer = document.getElementById("signup-form-container");
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
+
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+const signupEmail = document.getElementById("signupEmail");
+const signupPassword = document.getElementById("signupPassword");
+const signupRole = document.getElementById("signupRole");
 
 const ordersTableBody = document.querySelector("#ordersTable tbody");
 
@@ -41,12 +47,16 @@ async function initAuth() {
 async function login(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
+
   session = data.session;
   userRole = session.user.user_metadata?.role || "customer";
+
   loginBtn.classList.add("hidden");
   signupBtn.classList.add("hidden");
   logoutBtn.classList.remove("hidden");
   loginFormContainer.classList.add("hidden");
+  loginForm.reset();
+
   if (userRole === "employee") adminToggle.classList.remove("hidden");
 }
 
@@ -57,14 +67,17 @@ async function signup(email, password, role) {
     options: { data: { role } }
   });
   if (error) throw error;
+
   alert("Sign up successful! Check email for confirmation.");
   signupFormContainer.classList.add("hidden");
+  signupForm.reset();
 }
 
 async function logout() {
   await supabase.auth.signOut();
   session = null;
   userRole = "customer";
+
   loginBtn.classList.remove("hidden");
   signupBtn.classList.remove("hidden");
   logoutBtn.classList.add("hidden");
@@ -96,6 +109,7 @@ async function loadInventory() {
 function renderInventory(data) {
   main.innerHTML = "";
   if (!data.length) main.innerHTML = "<p>No books found.</p>";
+
   data.forEach(item => {
     const div = document.createElement("div");
     div.className = "item";
@@ -156,6 +170,7 @@ function renderOrders(orders) {
 async function placeOrder(isbn) {
   const quantity = prompt("Enter quantity:");
   if (!quantity) return;
+
   try {
     await apiFetch("/orders", {
       method: "POST",
