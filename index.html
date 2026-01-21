@@ -5,9 +5,7 @@
   <title>Bookstack Overflow</title>
   <link rel="icon" type="image/png" href="image/icon.png">
   <link rel="stylesheet" href="style.css">
-
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
   <script src="script.js" defer></script>
 </head>
 
@@ -18,19 +16,20 @@
       <a href="index.html">
         <img src="image/bow.png" alt="Bookstack Overflow logo" />
       </a>
-
       <a href="link1"><p>Link 1</p></a>
       <a href="link2"><p>Link 2</p></a>
       <a href="link3"><p>Link 3</p></a>
 
+      <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+
       <button id="adminToggle" class="hidden">Admin</button>
 
-      <input
-        type="text"
-        id="search"
-        placeholder="Search by title, author, or ISBN..."
-        autocomplete="off"
-      />
+      <div id="authContainer">
+        <input type="email" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <button id="loginBtn">Login</button>
+        <button id="logoutBtn" class="hidden">Logout</button>
+      </div>
     </div>
 
     <div id="add-form-container" class="hidden">
