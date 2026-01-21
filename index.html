@@ -5,6 +5,9 @@
   <title>Bookstack Overflow</title>
   <link rel="icon" type="image/png" href="image/icon.png">
   <link rel="stylesheet" href="style.css">
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
   <script src="script.js" defer></script>
 </head>
 
@@ -20,8 +23,7 @@
       <a href="link2"><p>Link 2</p></a>
       <a href="link3"><p>Link 3</p></a>
 
-        <!-- TEMPORARY ADMIN ENABLE BUTTON -->
-      <button id="adminToggle">Admin</button>
+      <button id="adminToggle" class="hidden">Admin</button>
 
       <input
         type="text"
@@ -30,6 +32,7 @@
         autocomplete="off"
       />
     </div>
+
     <div id="add-form-container" class="hidden">
       <div id="add-form">
         <h2>Add a Book</h2>
@@ -46,7 +49,6 @@
     </div>
 
     <div id="main"></div>
-
   </div>
 </body>
 </html>
