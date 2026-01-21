@@ -281,3 +281,18 @@ p {
     padding-left: 0;
   }
 }
+
+#login-form-container,
+#signup-form-container {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 20;
+}
+
