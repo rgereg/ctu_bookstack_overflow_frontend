@@ -1,6 +1,6 @@
 const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co/";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
-const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com/"; // FastAPI backend
+const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com/";
 
 const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -19,6 +19,8 @@ const signupFormContainer = document.getElementById("signup-form-container");
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
+const ordersTableBody = document.querySelector("#ordersTable tbody");
+
 let inventory = [];
 let session = null;
 let userRole = "user";
@@ -28,7 +30,7 @@ async function initAuth() {
   session = data.session;
 
   if (session) {
-    userRole = session.user.user_metadata?.role || "user";
+    userRole = session.user.user_metadata?.role || "customer";
     loginBtn.classList.add("hidden");
     signupBtn.classList.add("hidden");
     logoutBtn.classList.remove("hidden");
@@ -40,7 +42,7 @@ async function login(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   session = data.session;
-  userRole = session.user.user_metadata?.role || "user";
+  userRole = session.user.user_metadata?.role || "customer";
   loginBtn.classList.add("hidden");
   signupBtn.classList.add("hidden");
   logoutBtn.classList.remove("hidden");
@@ -62,7 +64,7 @@ async function signup(email, password, role) {
 async function logout() {
   await supabase.auth.signOut();
   session = null;
-  userRole = "user";
+  userRole = "customer";
   loginBtn.classList.remove("hidden");
   signupBtn.classList.remove("hidden");
   logoutBtn.classList.add("hidden");
@@ -93,17 +95,12 @@ async function loadInventory() {
 
 function renderInventory(data) {
   main.innerHTML = "";
-  if (!data.length) {
-    main.innerHTML = "<p>No matching books found.</p>";
-    return;
-  }
-
+  if (!data.length) main.innerHTML = "<p>No books found.</p>";
   data.forEach(item => {
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
-      <img src="image/book/${item.isbn}.jpg"
-           onerror="this.src='image/book/cover.jpg';" />
+      <img src="image/book/${item.isbn}.jpg" onerror="this.src='image/book/cover.jpg';" />
       <div class="itemnonimage">
         <h1>${item.title}</h1>
         <h2>by ${item.author}</h2>
@@ -113,10 +110,74 @@ function renderInventory(data) {
           <h3 class="price">$${item.price.toFixed(2)}</h3>
           <h3 class="quant">Qt. ${item.quantity}</h3>
         </div>
+        ${userRole === "customer" ? `<button onclick="placeOrder('${item.isbn}')">Order</button>` : ""}
       </div>
     `;
     main.appendChild(div);
   });
+}
+
+async function loadOrders() {
+  try {
+    const res = await apiFetch("/orders");
+    const orders = await res.json();
+    renderOrders(orders);
+  } catch (err) {
+    console.error("Failed to load orders", err);
+  }
+}
+
+function renderOrders(orders) {
+  ordersTableBody.innerHTML = "";
+
+  orders.forEach(order => {
+    if (userRole === "customer" && order.customer_email !== session.user.email) return;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${order.book_title}</td>
+      <td>${order.quantity}</td>
+      <td>${order.status}</td>
+      <td>${order.customer_email || "-"}</td>
+      <td>
+        ${userRole === "employee" ? `
+          <select onchange="updateOrderStatus('${order.id}', this.value)">
+            <option value="pending" ${order.status==="pending"?"selected":""}>Pending</option>
+            <option value="shipped" ${order.status==="shipped"?"selected":""}>Shipped</option>
+            <option value="delivered" ${order.status==="delivered"?"selected":""}>Delivered</option>
+          </select>
+        ` : ""}
+      </td>
+    `;
+    ordersTableBody.appendChild(tr);
+  });
+}
+
+async function placeOrder(isbn) {
+  const quantity = prompt("Enter quantity:");
+  if (!quantity) return;
+  try {
+    await apiFetch("/orders", {
+      method: "POST",
+      body: JSON.stringify({ isbn, quantity: parseInt(quantity) })
+    });
+    alert("Order placed!");
+    await loadOrders();
+  } catch (err) {
+    alert("Failed to place order: " + err.message);
+  }
+}
+
+async function updateOrderStatus(orderId, status) {
+  try {
+    await apiFetch(`/orders/${orderId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status })
+    });
+    await loadOrders();
+  } catch (err) {
+    alert("Failed to update order: " + err.message);
+  }
 }
 
 searchInput?.addEventListener("input", e => {
@@ -129,9 +190,7 @@ searchInput?.addEventListener("input", e => {
   renderInventory(filtered);
 });
 
-adminToggle?.addEventListener("click", () => {
-  addForm.classList.toggle("hidden");
-});
+adminToggle?.addEventListener("click", () => addForm.classList.toggle("hidden"));
 
 bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
@@ -143,12 +202,8 @@ bookForm?.addEventListener("submit", async e => {
     price: parseFloat(price.value),
     quantity: parseInt(quantity.value)
   };
-
   try {
-    const res = await apiFetch("/books", {
-      method: "POST",
-      body: JSON.stringify(newBook)
-    });
+    const res = await apiFetch("/books", { method: "POST", body: JSON.stringify(newBook) });
     const saved = await res.json();
     inventory.push(saved);
     renderInventory(inventory);
@@ -175,6 +230,7 @@ loginForm.addEventListener("submit", async e => {
   try {
     await login(loginEmail.value, loginPassword.value);
     await loadInventory();
+    await loadOrders();
   } catch (err) {
     alert(err.message);
   }
@@ -191,5 +247,8 @@ signupForm.addEventListener("submit", async e => {
 
 (async () => {
   await initAuth();
-  if (session) await loadInventory();
+  if (session) {
+    await loadInventory();
+    await loadOrders();
+  }
 })();
