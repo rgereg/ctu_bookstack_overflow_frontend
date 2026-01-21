@@ -11,72 +11,66 @@ const addForm = document.getElementById("add-form-container");
 const bookForm = document.getElementById("bookForm");
 
 const loginBtn = document.getElementById("loginBtn");
+const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const loginEmail = document.getElementById("loginEmail");
-const loginPassword = document.getElementById("loginPassword");
+
+const loginFormContainer = document.getElementById("login-form-container");
+const signupFormContainer = document.getElementById("signup-form-container");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
 
 let inventory = [];
 let session = null;
-let userRole = "customer";
+let userRole = "user";
 
 async function initAuth() {
   const { data } = await supabase.auth.getSession();
   session = data.session;
 
-  if (!session) {
-    showLogin(true);
-    return;
+  if (session) {
+    userRole = session.user.user_metadata?.role || "user";
+    loginBtn.classList.add("hidden");
+    signupBtn.classList.add("hidden");
+    logoutBtn.classList.remove("hidden");
+    if (userRole === "employee") adminToggle.classList.remove("hidden");
   }
-
-  userRole = session.user.user_metadata?.role || "customer";
-
-  if (userRole === "employee" || userRole === "admin") {
-    adminToggle.classList.remove("hidden");
-  }
-
-  showLogin(false);
 }
 
-loginBtn?.addEventListener("click", async () => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: loginEmail.value,
-    password: loginPassword.value
-  });
-
-  if (error) {
-    alert("Login failed: " + error.message);
-    return;
-  }
-
+async function login(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
   session = data.session;
-  userRole = session.user.user_metadata?.role || "customer";
+  userRole = session.user.user_metadata?.role || "user";
+  loginBtn.classList.add("hidden");
+  signupBtn.classList.add("hidden");
+  logoutBtn.classList.remove("hidden");
+  loginFormContainer.classList.add("hidden");
+  if (userRole === "employee") adminToggle.classList.remove("hidden");
+}
 
-  if (userRole === "employee" || userRole === "admin") {
-    adminToggle.classList.remove("hidden");
-  }
+async function signup(email, password, role) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { role } }
+  });
+  if (error) throw error;
+  alert("Sign up successful! Check email for confirmation.");
+  signupFormContainer.classList.add("hidden");
+}
 
-  showLogin(false);
-  loadInventory();
-});
-
-logoutBtn?.addEventListener("click", async () => {
+async function logout() {
   await supabase.auth.signOut();
   session = null;
-  userRole = "customer";
+  userRole = "user";
+  loginBtn.classList.remove("hidden");
+  signupBtn.classList.remove("hidden");
+  logoutBtn.classList.add("hidden");
   adminToggle.classList.add("hidden");
-  showLogin(true);
-});
-
-function showLogin(show) {
-  loginBtn.style.display = show ? "inline-block" : "none";
-  loginEmail.style.display = show ? "inline-block" : "none";
-  loginPassword.style.display = show ? "inline-block" : "none";
-  logoutBtn.style.display = show ? "none" : "inline-block";
 }
 
 async function apiFetch(path, options = {}) {
   if (!session) throw new Error("Not authenticated");
-
   return fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -141,11 +135,6 @@ adminToggle?.addEventListener("click", () => {
 
 bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
-  if (!(userRole === "employee" || userRole === "admin")) {
-    alert("Only employees/admins can add books.");
-    return;
-  }
-
   const newBook = {
     title: title.value,
     author: author.value,
@@ -165,7 +154,38 @@ bookForm?.addEventListener("submit", async e => {
     renderInventory(inventory);
     bookForm.reset();
   } catch (err) {
-    alert("Failed to add book: " + err.message);
+    alert("Only employees can add books");
+  }
+});
+
+loginBtn.addEventListener("click", () => {
+  loginFormContainer.classList.toggle("hidden");
+  signupFormContainer.classList.add("hidden");
+});
+
+signupBtn.addEventListener("click", () => {
+  signupFormContainer.classList.toggle("hidden");
+  loginFormContainer.classList.add("hidden");
+});
+
+logoutBtn.addEventListener("click", logout);
+
+loginForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  try {
+    await login(loginEmail.value, loginPassword.value);
+    await loadInventory();
+  } catch (err) {
+    alert(err.message);
+  }
+});
+
+signupForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  try {
+    await signup(signupEmail.value, signupPassword.value, signupRole.value);
+  } catch (err) {
+    alert(err.message);
   }
 });
 
