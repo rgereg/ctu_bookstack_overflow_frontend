@@ -26,7 +26,6 @@ p {
   align-items: center;
   gap: 20px;
   padding: 10px 20px;
-  height: auto;
   z-index: 10;
   box-sizing: border-box;
 }
@@ -38,32 +37,41 @@ p {
   background-image: url("image/paper.jpg");
   background-size: cover;
   background-position: center;
-  filter: sepia(100%) hue-rotate(180deg) saturate(220%) brightness(60%) contrast(150%)
-    sepia(100%) hue-rotate(180deg) saturate(220%) brightness(60%) contrast(150%) drop-shadow(0px 5px 5px black);
+  filter: sepia(100%) hue-rotate(180deg) saturate(220%)
+          brightness(60%) contrast(150%)
+          drop-shadow(0px 5px 5px black);
   z-index: -1;
 }
 
 #top img {
   height: 80px;
-  margin: 0;
   flex-shrink: 0;
 }
 
 #top p {
-  display: inline-block;
-  color: #EEEEEE;
+  color: #eee;
   font-size: 30px;
   margin: 0;
-  padding: 0;
 }
 
 #top a:hover p {
   color: #EC8825;
-  transition: transform 0.3s ease-in-out;
   transform: translateY(-5px);
+  transition: transform 0.3s ease-in-out;
 }
 
-#adminToggle {
+#search {
+  flex-grow: 1;
+  height: 36px;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-family: FSIndustrie, Arial, sans-serif;
+}
+
+button {
   font-family: FSIndustrie, Arial, sans-serif;
   font-size: 16px;
   padding: 8px 14px;
@@ -74,38 +82,22 @@ p {
   color: #111;
 }
 
-#adminToggle:hover {
+button:hover {
   filter: brightness(1.1);
 }
 
-#search {
-  height: 36px;
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  font-family: FSIndustrie, Arial, sans-serif;
-  z-index: 20;
-  flex-grow: 1;
-  margin: 0;
-}
-
-#search::placeholder {
-  color: #777;
+#adminToggle {
+  background: #EC8825;
 }
 
 #main {
   width: 100%;
   min-height: 100vh;
-  margin-top: 0;
-  padding: 20px 20px;
-  position: relative;
-  z-index: 0;
+  padding: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: flex-start;
+  position: relative;
 }
 
 #main::before {
@@ -114,8 +106,8 @@ p {
   inset: 0;
   background-image: url("image/paper.jpg");
   background-size: cover;
-  background-position: center;
-  filter: sepia(100%) hue-rotate(180deg) saturate(180%) brightness(70%) contrast(130%);
+  filter: sepia(100%) hue-rotate(180deg)
+          saturate(180%) brightness(70%) contrast(130%);
   z-index: 0;
 }
 
@@ -128,37 +120,19 @@ p {
   filter: drop-shadow(0px 5px 5px black);
   display: flex;
   gap: 20px;
-  align-items: flex-start;
   flex: 1 1 300px;
   max-width: 600px;
-}
-
-.itemnonimage {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding-left: 10px;
-}
-
-.item h1 {
-  font-size: 24px;
-  margin: 0 0 5px 0;
-}
-
-.item h2 {
-  font-size: 16px;
-  margin: 0 0 10px 0;
-}
-
-.item p {
-  margin: 5px 0;
-  padding: 0;
 }
 
 .item img {
   max-width: 150px;
   border-radius: 5px;
-  flex-shrink: 0;
+}
+
+.itemnonimage {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .shareline {
@@ -167,35 +141,24 @@ p {
   margin-top: auto;
 }
 
-.item h3.price {
-  text-align: left;
-  display: inline-block;
-}
-
-.item h3.quant {
-  text-align: right;
-  display: inline-block;
-}
-
 #add-form-container {
-  position: relative;
   width: 100%;
-  z-index: 2;
   margin-top: 20px;
+  position: relative;
 }
 
 #add-form-container::before {
   content: "";
-  inset: 0;
   position: absolute;
+  inset: 0;
   background-image: url("image/paper.jpg");
   background-size: cover;
-  filter: sepia(100%) hue-rotate(180deg) saturate(140%) brightness(60%) contrast(130%);
+  filter: sepia(100%) hue-rotate(180deg)
+          saturate(140%) brightness(60%) contrast(130%);
   z-index: -1;
 }
 
 #add-form {
-  width: 100%;
   max-width: 800px;
   margin: 0 auto 40px;
   padding: 20px 30px;
@@ -204,17 +167,20 @@ p {
   filter: drop-shadow(0px 5px 5px black);
 }
 
-#add-form h2 {
-  margin: 0 0 15px 0;
-  font-size: 28px;
-  color: #222;
-  text-align: center;
-}
-
 #bookForm {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px 20px;
+}
+
+#bookForm input,
+#bookForm textarea {
+  font-size: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
 }
 
 #bookForm textarea,
@@ -222,44 +188,47 @@ p {
   grid-column: 1 / -1;
 }
 
-#bookForm input,
-#bookForm textarea {
-  font-family: FSIndustrie, Arial, sans-serif;
-  font-size: 16px;
-  padding: 10px 12px;
-  border-radius: 8px;
+#bookForm button {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+#login-form-container,
+#signup-form-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+#login-form-container h2,
+#signup-form-container h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#login-form-container input,
+#signup-form-container input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
   border: none;
   outline: none;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15);
+  background: #f7f7f7;
 }
 
-#bookForm textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-#bookForm input:focus,
-#bookForm textarea:focus {
-  box-shadow: inset 0 0 0 2px #EC8825;
-}
-
-#bookForm button {
-  margin-top: 10px;
-  padding: 12px;
-  font-size: 18px;
-  font-family: FSIndustrie, Arial, sans-serif;
-  background: #EC8825;
-  color: #111;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-#bookForm button:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
+#login-form-container button,
+#signup-form-container button {
+  width: 100%;
+  font-size: 16px;
 }
 
 .hidden {
@@ -270,31 +239,13 @@ p {
   #bookForm {
     grid-template-columns: 1fr;
   }
+
   .item {
     flex-direction: column;
     max-width: 100%;
   }
+
   .item img {
     max-width: 100%;
-    margin: 0 auto;
-  }
-  .itemnonimage {
-    padding-left: 0;
   }
 }
-
-#login-form-container,
-#signup-form-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-  background: rgba(255,255,255,0.95);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
-
-
