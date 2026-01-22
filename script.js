@@ -26,8 +26,8 @@ let session = null;
 let userRole = "customer";
 
 async function initAuth() {
-  const { data } = await supabaseClient.auth.getSession();
-  session = data.session;
+  const { data: { session: currentSession } } = await supabaseClient.auth.getSession();
+  session = currentSession;
 
   if (session) {
     userRole = session.user.user_metadata?.role || "customer";
@@ -56,11 +56,11 @@ async function login(email, password) {
 async function signup(email, password) {
   const { data, error } = await supabaseClient.auth.signUp({
     email,
-    password
+    password,
+    options: { data: { role: "customer" } }
   });
   if (error) throw error;
-
-  alert("Sign up successful! Check email for confirmation.");
+  alert("Sign up successful! Check your email for confirmation.");
   signupFormContainer.classList.add("hidden");
 }
 
@@ -91,12 +91,13 @@ async function apiFetch(path, options = {}) {
 async function loadInventory() {
   try {
     const res = await apiFetch("/books");
-    const json = await res.json();
-    inventory = Array.isArray(json) ? json : (json.data || []);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error("Invalid data format from /books");
+    inventory = data;
     renderInventory(inventory);
   } catch (err) {
     console.error("Failed to load inventory", err);
-    alert("Failed to load inventory: " + err.message);
+    main.innerHTML = "<p>Failed to load inventory.</p>";
   }
 }
 
@@ -128,18 +129,17 @@ function renderInventory(data) {
 async function loadOrders() {
   try {
     const res = await apiFetch("/orders");
-    const json = await res.json();
-    const orders = Array.isArray(json) ? json : (json.data || []);
+    const orders = await res.json();
+    if (!Array.isArray(orders)) throw new Error("Invalid data format from /orders");
     renderOrders(orders);
   } catch (err) {
     console.error("Failed to load orders", err);
-    alert("Failed to load orders: " + err.message);
+    ordersTableBody.innerHTML = "<tr><td colspan='5'>Failed to load orders</td></tr>";
   }
 }
 
 function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
-
   orders.forEach(order => {
     if (userRole === "customer" && order.customer_email !== session.user.email) return;
 
