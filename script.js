@@ -137,14 +137,14 @@ async function loadOrders() {
 function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
   orders.forEach(order => {
-    if (userRole === "customer" && order.customer_email !== session.user.email) return;
+    if (userRole === "customer" && order.customer_id !== session.user.id) return;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${order.book_title}</td>
       <td>${order.quantity}</td>
       <td>${order.status}</td>
-      <td>${order.customer_email || "-"}</td>
+      <td>${userRole === "employee" ? order.customer_id : "-"}</td>
       <td>
         ${userRole === "employee" ? `
           <select onchange="updateOrderStatus('${order.id}', this.value)">
