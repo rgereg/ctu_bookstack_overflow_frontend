@@ -36,17 +36,15 @@ async function initAuth() {
     logoutBtn.classList.remove("hidden");
 
     if (userRole === "employee") adminToggle.classList.remove("hidden");
-
-    await loadInventory();
-    await loadOrders();
   }
+
+  // Inventory should load regardless of orders
+  await loadInventory();
+  if (session) await loadOrders();
 }
 
 async function login(email, password) {
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) throw error;
 
   session = data.session;
@@ -64,10 +62,7 @@ async function login(email, password) {
 }
 
 async function signup(email, password) {
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password
-  });
+  const { error } = await supabaseClient.auth.signUp({ email, password });
   if (error) throw error;
 
   alert("Sign up successful! Please confirm your email.");
@@ -83,13 +78,16 @@ async function logout() {
   signupBtn.classList.remove("hidden");
   logoutBtn.classList.add("hidden");
   adminToggle.classList.add("hidden");
+
+  inventory = [];
   main.innerHTML = "";
+  ordersTableBody.innerHTML = "";
 }
 
 async function apiFetch(path, options = {}) {
   if (!session) throw new Error("Not authenticated");
 
-  return fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -97,17 +95,40 @@ async function apiFetch(path, options = {}) {
       ...(options.headers || {})
     }
   });
+
+  if (!res.ok) {
+    let err;
+    try {
+      err = await res.json();
+    } catch {
+      throw new Error("API error");
+    }
+    throw new Error(err.detail || "API request failed");
+  }
+
+  return res;
 }
 
 async function loadInventory() {
-  const res = await apiFetch("/books");
-  inventory = await res.json();
-  renderInventory(inventory);
+  try {
+    const res = session
+      ? await apiFetch("/books")
+      : await fetch(`${API_BASE}/books`);
+
+    const data = await res.json();
+    inventory = Array.isArray(data) ? data : [];
+    renderInventory(inventory);
+  } catch (err) {
+    console.error("Failed to load inventory:", err.message);
+    inventory = [];
+    renderInventory([]);
+  }
 }
 
 function renderInventory(data) {
   main.innerHTML = "";
-  if (!data.length) {
+
+  if (!Array.isArray(data) || !data.length) {
     main.innerHTML = "<p>No books found.</p>";
     return;
   }
@@ -134,13 +155,26 @@ function renderInventory(data) {
 }
 
 async function loadOrders() {
-  const res = await apiFetch("/orders");
-  const orders = await res.json();
-  renderOrders(orders);
+  try {
+    const res = await apiFetch("/orders");
+    const orders = await res.json();
+
+    if (!Array.isArray(orders)) {
+      console.error("Orders response not array:", orders);
+      renderOrders([]);
+      return;
+    }
+
+    renderOrders(orders);
+  } catch (err) {
+    console.error("Failed to load orders:", err.message);
+    renderOrders([]);
+  }
 }
 
 function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
+  if (!Array.isArray(orders)) return;
 
   orders.forEach(order => {
     const tr = document.createElement("tr");
@@ -167,23 +201,40 @@ async function placeOrder(isbn) {
   const quantity = prompt("Enter quantity:");
   if (!quantity) return;
 
-  await apiFetch("/orders", {
-    method: "POST",
-    body: JSON.stringify({ isbn, quantity: parseInt(quantity) })
-  });
-
-  alert("Order placed!");
-  await loadOrders();
+  try {
+    await apiFetch("/orders", {
+      method: "POST",
+      body: JSON.stringify({ isbn, quantity: parseInt(quantity) })
+    });
+    alert("Order placed!");
+    await loadOrders();
+    await loadInventory();
+  } catch (err) {
+    alert(err.message);
+  }
 }
 
 async function updateOrderStatus(orderId, status) {
-  await apiFetch(`/orders/${orderId}`, {
-    method: "PATCH",
-    body: JSON.stringify({ status })
-  });
-
-  await loadOrders();
+  try {
+    await apiFetch(`/orders/${orderId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status })
+    });
+    await loadOrders();
+  } catch (err) {
+    alert(err.message);
+  }
 }
+
+searchInput.addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  const filtered = inventory.filter(item =>
+    item.title.toLowerCase().includes(q) ||
+    item.author.toLowerCase().includes(q) ||
+    item.isbn.includes(q)
+  );
+  renderInventory(filtered);
+});
 
 loginBtn.onclick = () => {
   loginFormContainer.classList.toggle("hidden");
@@ -196,6 +247,7 @@ signupBtn.onclick = () => {
 };
 
 logoutBtn.onclick = logout;
+adminToggle.onclick = () => addFormContainer.classList.toggle("hidden");
 
 loginForm.onsubmit = async e => {
   e.preventDefault();
@@ -206,7 +258,5 @@ signupForm.onsubmit = async e => {
   e.preventDefault();
   await signup(signupEmail.value, signupPassword.value);
 };
-
-adminToggle.onclick = () => addFormContainer.classList.toggle("hidden");
 
 document.addEventListener("DOMContentLoaded", initAuth);
