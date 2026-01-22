@@ -34,13 +34,21 @@ async function initAuth() {
     loginBtn.classList.add("hidden");
     signupBtn.classList.add("hidden");
     logoutBtn.classList.remove("hidden");
+
     if (userRole === "employee") adminToggle.classList.remove("hidden");
+
+    await loadInventory();
+    await loadOrders();
   }
 }
 
 async function login(email, password) {
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
   if (error) throw error;
+
   session = data.session;
   userRole = session.user.user_metadata?.role || "customer";
 
@@ -50,16 +58,19 @@ async function login(email, password) {
   loginFormContainer.classList.add("hidden");
 
   if (userRole === "employee") adminToggle.classList.remove("hidden");
+
+  await loadInventory();
+  await loadOrders();
 }
 
-async function signup(email, password, role) {
-  const { data, error } = await supabaseClient.auth.signUp({
+async function signup(email, password) {
+  const { error } = await supabaseClient.auth.signUp({
     email,
-    password,
-    options: { data: { role } }
+    password
   });
   if (error) throw error;
-  alert("Sign up successful! Check email for confirmation.");
+
+  alert("Sign up successful! Please confirm your email.");
   signupFormContainer.classList.add("hidden");
 }
 
@@ -72,10 +83,12 @@ async function logout() {
   signupBtn.classList.remove("hidden");
   logoutBtn.classList.add("hidden");
   adminToggle.classList.add("hidden");
+  main.innerHTML = "";
 }
 
 async function apiFetch(path, options = {}) {
   if (!session) throw new Error("Not authenticated");
+
   return fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -87,18 +100,17 @@ async function apiFetch(path, options = {}) {
 }
 
 async function loadInventory() {
-  try {
-    const res = await apiFetch("/books");
-    inventory = await res.json();
-    renderInventory(inventory);
-  } catch (err) {
-    console.error("Failed to load inventory", err);
-  }
+  const res = await apiFetch("/books");
+  inventory = await res.json();
+  renderInventory(inventory);
 }
 
 function renderInventory(data) {
   main.innerHTML = "";
-  if (!data.length) main.innerHTML = "<p>No books found.</p>";
+  if (!data.length) {
+    main.innerHTML = "<p>No books found.</p>";
+    return;
+  }
 
   data.forEach(item => {
     const div = document.createElement("div");
@@ -122,21 +134,15 @@ function renderInventory(data) {
 }
 
 async function loadOrders() {
-  try {
-    const res = await apiFetch("/orders");
-    const orders = await res.json();
-    renderOrders(orders);
-  } catch (err) {
-    console.error("Failed to load orders", err);
-  }
+  const res = await apiFetch("/orders");
+  const orders = await res.json();
+  renderOrders(orders);
 }
 
 function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
 
   orders.forEach(order => {
-    if (userRole === "customer" && order.customer_email !== session.user.email) return;
-
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${order.book_title}</td>
@@ -146,9 +152,9 @@ function renderOrders(orders) {
       <td>
         ${userRole === "employee" ? `
           <select onchange="updateOrderStatus('${order.id}', this.value)">
-            <option value="pending" ${order.status==="pending"?"selected":""}>Pending</option>
-            <option value="shipped" ${order.status==="shipped"?"selected":""}>Shipped</option>
-            <option value="delivered" ${order.status==="delivered"?"selected":""}>Delivered</option>
+            <option value="pending" ${order.status === "pending" ? "selected" : ""}>Pending</option>
+            <option value="shipped" ${order.status === "shipped" ? "selected" : ""}>Shipped</option>
+            <option value="delivered" ${order.status === "delivered" ? "selected" : ""}>Delivered</option>
           </select>
         ` : ""}
       </td>
@@ -160,99 +166,47 @@ function renderOrders(orders) {
 async function placeOrder(isbn) {
   const quantity = prompt("Enter quantity:");
   if (!quantity) return;
-  try {
-    await apiFetch("/orders", {
-      method: "POST",
-      body: JSON.stringify({ isbn, quantity: parseInt(quantity) })
-    });
-    alert("Order placed!");
-    await loadOrders();
-  } catch (err) {
-    alert("Failed to place order: " + err.message);
-  }
+
+  await apiFetch("/orders", {
+    method: "POST",
+    body: JSON.stringify({ isbn, quantity: parseInt(quantity) })
+  });
+
+  alert("Order placed!");
+  await loadOrders();
 }
 
 async function updateOrderStatus(orderId, status) {
-  try {
-    await apiFetch(`/orders/${orderId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ status })
-    });
-    await loadOrders();
-  } catch (err) {
-    alert("Failed to update order: " + err.message);
-  }
+  await apiFetch(`/orders/${orderId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status })
+  });
+
+  await loadOrders();
 }
 
-searchInput?.addEventListener("input", e => {
-  const q = e.target.value.toLowerCase();
-  const filtered = inventory.filter(item =>
-    item.title.toLowerCase().includes(q) ||
-    item.author.toLowerCase().includes(q) ||
-    item.isbn.includes(q)
-  );
-  renderInventory(filtered);
-});
-
-adminToggle?.addEventListener("click", () => addFormContainer.classList.toggle("hidden"));
-
-bookForm?.addEventListener("submit", async e => {
-  e.preventDefault();
-  const newBook = {
-    title: title.value,
-    author: author.value,
-    isbn: isbn.value,
-    description: description.value,
-    price: parseFloat(price.value),
-    quantity: parseInt(quantity.value)
-  };
-  try {
-    const res = await apiFetch("/books", { method: "POST", body: JSON.stringify(newBook) });
-    const saved = await res.json();
-    inventory.push(saved);
-    renderInventory(inventory);
-    bookForm.reset();
-  } catch (err) {
-    alert("Only employees can add books");
-  }
-});
-
-loginBtn.addEventListener("click", () => {
+loginBtn.onclick = () => {
   loginFormContainer.classList.toggle("hidden");
   signupFormContainer.classList.add("hidden");
-});
+};
 
-signupBtn.addEventListener("click", () => {
+signupBtn.onclick = () => {
   signupFormContainer.classList.toggle("hidden");
   loginFormContainer.classList.add("hidden");
-});
+};
 
-logoutBtn.addEventListener("click", logout);
+logoutBtn.onclick = logout;
 
-loginForm.addEventListener("submit", async e => {
+loginForm.onsubmit = async e => {
   e.preventDefault();
-  try {
-    await login(loginEmail.value, loginPassword.value);
-    await loadInventory();
-    await loadOrders();
-  } catch (err) {
-    alert(err.message);
-  }
-});
+  await login(loginEmail.value, loginPassword.value);
+};
 
-signupForm.addEventListener("submit", async e => {
+signupForm.onsubmit = async e => {
   e.preventDefault();
-  try {
-    await signup(signupEmail.value, signupPassword.value, signupRole.value);
-  } catch (err) {
-    alert(err.message);
-  }
-});
+  await signup(signupEmail.value, signupPassword.value);
+};
 
-(async () => {
-  await initAuth();
-  if (session) {
-    await loadInventory();
-    await loadOrders();
-  }
-})();
+adminToggle.onclick = () => addFormContainer.classList.toggle("hidden");
+
+document.addEventListener("DOMContentLoaded", initAuth);
