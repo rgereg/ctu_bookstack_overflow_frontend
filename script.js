@@ -24,7 +24,6 @@ const ordersTableBody = document.querySelector("#ordersTable tbody");
 let inventory = [];
 let session = null;
 let userRole = "customer";
-let userId = null;
 
 async function initAuth() {
   const { data } = await supabaseClient.auth.getSession();
@@ -32,7 +31,6 @@ async function initAuth() {
 
   if (session) {
     userRole = session.user.user_metadata?.role || "customer";
-    userId = session.user.id;
     loginBtn.classList.add("hidden");
     signupBtn.classList.add("hidden");
     logoutBtn.classList.remove("hidden");
@@ -43,9 +41,9 @@ async function initAuth() {
 async function login(email, password) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) throw error;
+
   session = data.session;
   userRole = session.user.user_metadata?.role || "customer";
-  userId = session.user.id;
 
   loginBtn.classList.add("hidden");
   signupBtn.classList.add("hidden");
@@ -61,6 +59,7 @@ async function signup(email, password) {
     password
   });
   if (error) throw error;
+
   alert("Sign up successful! Check email for confirmation.");
   signupFormContainer.classList.add("hidden");
 }
@@ -69,7 +68,6 @@ async function logout() {
   await supabaseClient.auth.signOut();
   session = null;
   userRole = "customer";
-  userId = null;
 
   loginBtn.classList.remove("hidden");
   signupBtn.classList.remove("hidden");
@@ -79,6 +77,7 @@ async function logout() {
 
 async function apiFetch(path, options = {}) {
   if (!session) throw new Error("Not authenticated");
+
   return fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -92,10 +91,12 @@ async function apiFetch(path, options = {}) {
 async function loadInventory() {
   try {
     const res = await apiFetch("/books");
-    inventory = await res.json();
+    const json = await res.json();
+    inventory = Array.isArray(json) ? json : (json.data || []);
     renderInventory(inventory);
   } catch (err) {
     console.error("Failed to load inventory", err);
+    alert("Failed to load inventory: " + err.message);
   }
 }
 
@@ -127,10 +128,12 @@ function renderInventory(data) {
 async function loadOrders() {
   try {
     const res = await apiFetch("/orders");
-    const orders = await res.json();
+    const json = await res.json();
+    const orders = Array.isArray(json) ? json : (json.data || []);
     renderOrders(orders);
   } catch (err) {
     console.error("Failed to load orders", err);
+    alert("Failed to load orders: " + err.message);
   }
 }
 
@@ -138,14 +141,14 @@ function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
 
   orders.forEach(order => {
-    if (userRole === "customer" && order.customer_id !== userId) return;
+    if (userRole === "customer" && order.customer_email !== session.user.email) return;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${order.book_title}</td>
       <td>${order.quantity}</td>
       <td>${order.status}</td>
-      <td>${order.customer_id || "-"}</td>
+      <td>${order.customer_email || "-"}</td>
       <td>
         ${userRole === "employee" ? `
           <select onchange="updateOrderStatus('${order.id}', this.value)">
