@@ -92,12 +92,10 @@ async function loadInventory() {
   try {
     const res = await apiFetch("/books");
     const data = await res.json();
-    if (!Array.isArray(data)) throw new Error("Invalid data format from /books");
-    inventory = data;
+    inventory = Array.isArray(data) ? data : [];
     renderInventory(inventory);
   } catch (err) {
     console.error("Failed to load inventory", err);
-    main.innerHTML = "<p>Failed to load inventory.</p>";
   }
 }
 
@@ -130,11 +128,9 @@ async function loadOrders() {
   try {
     const res = await apiFetch("/orders");
     const orders = await res.json();
-    if (!Array.isArray(orders)) throw new Error("Invalid data format from /orders");
-    renderOrders(orders);
+    renderOrders(Array.isArray(orders) ? orders : []);
   } catch (err) {
     console.error("Failed to load orders", err);
-    ordersTableBody.innerHTML = "<tr><td colspan='5'>Failed to load orders</td></tr>";
   }
 }
 
