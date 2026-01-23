@@ -17,69 +17,29 @@
       <a href="index.html">
         <img src="image/bow.png" alt="Bookstack Overflow logo" />
       </a>
-
-      <a href="link1"><p>Link 1</p></a>
-      <a href="link2"><p>Link 2</p></a>
-      <a href="link3"><p>Link 3</p></a>
-
+      <div id="notlogo">
+      <div id="notlogoupper">
       <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-
+      <a href="p/cart.html">
+        <img src="image/cart.png" alt="Shopping Cart" />
+      </a>
       <button id="loginBtn">Login</button>
-      <button id="signupBtn">Sign Up</button>
       <button id="logoutBtn" class="hidden">Logout</button>
-      <button id="adminToggle" class="hidden">Admin</button>
-    </div>
-
-    <div id="login-form-container" class="hidden">
-      <form id="loginForm">
-        <h2>Login</h2>
-        <input type="email" id="loginEmail" placeholder="Email" required />
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <button type="submit">Login</button>
-      </form>
-    </div>
-
-    <div id="signup-form-container" class="hidden">
-      <form id="signupForm">
-        <h2>Sign Up</h2>
-        <input type="email" id="signupEmail" placeholder="Email" required />
-        <input type="password" id="signupPassword" placeholder="Password" required />
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
-
-    <div id="add-form-container" class="hidden">
-      <div id="add-form">
-        <h2>Add a Book</h2>
-        <form id="bookForm">
-          <input type="text" id="title" placeholder="Title" required />
-          <input type="text" id="author" placeholder="Author" required />
-          <input type="text" id="isbn" placeholder="ISBN" required />
-          <textarea id="description" placeholder="Description" required></textarea>
-          <input type="number" id="price" step="0.01" placeholder="Price" required />
-          <input type="number" id="quantity" placeholder="Quantity" required />
-          <button type="submit">Add Book</button>
-        </form>
+      </div>
+      <div id="notlogolower">
+        <a href="index.html"><p>Home</p></a>
+        <p class="linkspacers">|</p>
+        <a href="p/orders.html"><p>Orders</p></a>
+        <p class="linkspacers">|</p>
+        <a href="p/inventory.html"><p>Inventory</p></a>
+        <p class="linkspacers">|</p>
+        <a href="p/sales.html"><p>Sales</p></a>
+      </div>
       </div>
     </div>
 
+    <div id="featured"></div>
     <div id="main"></div>
-
-    <div id="orders-container">
-      <h2>Your Orders</h2>
-      <table id="ordersTable">
-        <thead>
-          <tr>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Customer</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
 
   </div>
 </body>
