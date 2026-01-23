@@ -146,4 +146,3 @@ searchInput.addEventListener("input", e => {
 });
 
 initAuth();
-})();
