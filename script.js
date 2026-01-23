@@ -56,6 +56,9 @@ async function apiFetch(path, options = {}) {
 
 async function loadInventory() {
   const res = await fetch(`${API_BASE}/books`);
+  const text = await res.text();
+  console.log("STATUS:", res.status);
+  console.log("BODY:", text);
   inventory = await res.json();
   renderInventory(inventory);
 }
