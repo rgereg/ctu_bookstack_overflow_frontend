@@ -43,20 +43,48 @@ p {
 }
 
 #top img {
-  height: 80px;
+  height: 100px;
   flex-shrink: 0;
+}
+#notlogoupper img {
+  height: 45px;
 }
 
 #top p {
   color: #eee;
   font-size: 30px;
   margin: 0;
+  margin-top: 10px;
+  display: inline-block;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#top a {
+  text-decoration: none;
 }
 
 #top a:hover p {
   color: #EC8825;
-  transform: translateY(-5px);
-  transition: transform 0.3s ease-in-out;
+  transform: translateY(-2px);
+  transition: transform 0.1s ease-in-out;
+}
+
+#notlogo {
+  width: 100%;
+}
+#notlogoupper {
+  display: flex;
+  align-items: center;
+}
+
+#notlogolower {
+  margin-top: 8px;
+}
+
+.linkspacers {
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 #search {
@@ -68,6 +96,7 @@ p {
   border: none;
   outline: none;
   font-family: FSIndustrie, Arial, sans-serif;
+  margin-right: 2vw;
 }
 
 button {
@@ -79,6 +108,8 @@ button {
   border-radius: 8px;
   cursor: pointer;
   color: #111;
+  margin-left: 2vw;
+  height:32px;
 }
 
 button:hover {
@@ -92,7 +123,7 @@ button:hover {
 #main {
   width: 100%;
   min-height: 100vh;
-  padding: 20px;
+  padding: 20px 0px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -113,31 +144,59 @@ button:hover {
 .item {
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.4);
   padding: 20px;
+  margin: 0px 20px;
   border-radius: 10px;
+  width: 100%;
   filter: drop-shadow(0px 5px 5px black);
   display: flex;
-  gap: 20px;
-  flex: 1 1 300px;
-  max-width: 600px;
-}
-
-.item img {
-  max-width: 150px;
-  border-radius: 5px;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: auto;
 }
 
 .itemnonimage {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  width: calc(100% - 200px);
+  flex:1;
+  padding-left: 20px
+}
+
+.item h1 {
+  font-size: 24px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.item h2 {
+  font-size: 16px;
+}
+
+.item p {
+  margin: 5px 0;
+  padding: 2px;
+}
+
+.item img {
+  flex:1;
+  max-width: 150px;
+  margin-left: 10px;
 }
 
 .shareline {
   display: flex;
   justify-content: space-between;
   margin-top: auto;
+}
+
+.item h3.price {
+  text-align: left;
+  display: inline-block;
+}
+
+.item h3.quant {
+  text-align: right;
+  display: inline-block;
 }
 
 #add-form-container {
