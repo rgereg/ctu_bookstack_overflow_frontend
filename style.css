@@ -133,6 +133,7 @@ button:hover {
 
 #results {
   width: 100%;
+  z-index: 1;
   min-height: 100vh;
   padding: 20px 0px;
   display: flex;
