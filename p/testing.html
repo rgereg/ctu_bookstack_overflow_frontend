@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../style.css">
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../script.js" defer></script>
+  <script src="../testingpage.js" defer></script>
 </head>
 
 <body>
@@ -55,64 +55,9 @@
             <button type="submit">Sign Up</button>
           </form>
           <p>Already have an account? <a href="#" id="lilink">Login</a></p>
-        </div>w
-    <div id="results"></div>
+        </div>
     <div id="main"></div>
-    <script>
-    async function searchBooks() {
-      const query = document.getElementById("searchInput").value;
-      const res = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`
-      );
-      const data = await res.json();
     
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "";
-    
-      data.items?.forEach(item => {
-        const info = item.volumeInfo;
-    
-        const isbn =
-          info.industryIdentifiers?.find(i => i.type.includes("ISBN"))?.identifier || "";
-    
-        const book = {
-          title: info.title || "",
-          author: info.authors?.join(", ") || "",
-          isbn: isbn,
-          image_path: info.imageLinks?.thumbnail
-            ?.replace("http://", "https://") || ""
-        };
-    
-        resultsDiv.innerHTML += `
-          <div>
-            <img src="${book.image_path}" />
-            <p>${book.title} – ${book.author}</p>
-            <input type="number" placeholder="Quantity" id="qty-${isbn}">
-            <input type="number" placeholder="Price" id="price-${isbn}">
-            <button onclick='addBook(${JSON.stringify(book)})'>Add</button>
-          </div>
-        `;
-      });
-    }
-    
-    async function addBook(book) {
-      const quantity = document.getElementById(`qty-${book.isbn}`).value;
-      const price = document.getElementById(`price-${book.isbn}`).value;
-    
-      const res = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/add-book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...book,
-          quantity: Number(quantity),
-          price: Number(price)
-        })
-      });
-    
-      if (res.ok) alert("Book added!");
-      else alert("Error adding book");
-    }
-    </script>
   </div>
 </body>
 </html>
