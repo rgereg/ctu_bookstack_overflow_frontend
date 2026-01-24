@@ -158,8 +158,7 @@ button:hover {
 
 .itemnonimage {
   width: calc(100% - 200px);
-  /* flex:1; */
-  flex: 1 1 auto;
+  flex:1;
   padding-left: 20px
 }
 
