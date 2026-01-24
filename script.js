@@ -71,7 +71,7 @@ function renderInventory(data) {
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
-      <img src="image/book/${item.isbn}.jpg" onerror="this.src='image/book/cover.jpg';" />
+      <img src="https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/${item.isbn}.jpg" onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';" />
       <div class="itemnonimage">
         <h1>${item.title}</h1>
         <h2>by ${item.author}</h2>
