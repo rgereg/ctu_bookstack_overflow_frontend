@@ -79,7 +79,7 @@ function renderInventory(data) {
         <p>${item.description}</p>
         <div class="shareline">
           <h3 class="price">$${item.price.toFixed(2)}</h3>
-          <h3 class="quant">Qt. ${item.quantity}</h3>
+          <h3 class="quant">Qty. ${item.quantity}</h3>
         </div>
         ${session && userRole === "customer" ? `<button onclick="placeOrder('${item.isbn}')">Order</button>` : ""}
       </div>
