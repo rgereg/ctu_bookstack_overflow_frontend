@@ -127,7 +127,7 @@ button:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  position: relative;
+  /* position: relative; */
   align-content: flex-start;
 }
 
