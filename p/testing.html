@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Inventory - Bookstack Overflow</title>
-  <link rel="icon" type="image/png" href="../image/icon.png">
-  <link rel="stylesheet" href="../style.css">
+<meta charset="UTF-8">
+<title>Inventory - Bookstack Overflow</title>
+<link rel="icon" type="image/png" href="../image/icon.png">
+<link rel="stylesheet" href="../style.css">
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../testingpage.js" defer></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="../script.js" defer></script>
 </head>
 
 <body>
-  <div id="container">
+<div id="container">
 
-    <div id="top">
-      <a href="../index.html">
-        <img src="../image/bow.png" alt="Bookstack Overflow logo" />
-      </a>
-      <div id="notlogo">
-      <div id="notlogoupper">
-      <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-      <a href="cart.html">
-        <img src="../image/cart.png" alt="Shopping Cart" />
-      </a>
-      <button id="loginBtn">Login</button>
-      <button id="logoutBtn" class="hidden">Logout</button>
-      </div>
-      <div id="notlogolower">
-        <a href="../index.html"><p>Home</p></a>
-        <p class="linkspacers">|</p>
+<div id="top">
+<a href="../index.html">
+<img src="../image/bow.png" alt="Bookstack Overflow logo" />
+</a>
+<div id="notlogo">
+<div id="notlogoupper">
+<input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+<a href="cart.html">
+<img src="../image/cart.png" alt="Shopping Cart" />
+</a>
+<button id="loginBtn">Login</button>
+<button id="logoutBtn" class="hidden">Logout</button>
+</div>
+<div id="notlogolower">
+<a href="../index.html"><p>Home</p></a>
+<p class="linkspacers">|</p>
+        <a href="testing.html"><p>testing1</p></a>
         <a href="testing.html"><p>testing2</p></a>
-        <p class="linkspacers">|</p>
-        <input id="searchInput" placeholder="Search by title or ISBN" />
-        <button onclick="searchBooks()">Search</button>
-        
-      </div>
-      </div>
-    </div>
+<p class="linkspacers">|</p>
+<input id="searchInput" placeholder="Search by title or ISBN" />
+<button onclick="searchBooks()">Search</button>
+
+</div>
+</div>
+</div>
         <div id="login-form-container">
           <form id="loginForm">
             <h2>Login</h2>
@@ -55,9 +56,64 @@
             <button type="submit">Sign Up</button>
           </form>
           <p>Already have an account? <a href="#" id="lilink">Login</a></p>
-        </div>
-    <div id="main"></div>
-    
-  </div>
+        </div>w
+<div id="results"></div>
+<div id="main"></div>
+<script>
+async function searchBooks() {
+const query = document.getElementById("searchInput").value;
+const res = await fetch(
+`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`
+);
+const data = await res.json();
+
+const resultsDiv = document.getElementById("results");
+resultsDiv.innerHTML = "";
+
+data.items?.forEach(item => {
+const info = item.volumeInfo;
+
+const isbn =
+info.industryIdentifiers?.find(i => i.type.includes("ISBN"))?.identifier || "";
+
+const book = {
+title: info.title || "",
+author: info.authors?.join(", ") || "",
+isbn: isbn,
+image_path: info.imageLinks?.thumbnail
+?.replace("http://", "https://") || ""
+};
+
+resultsDiv.innerHTML += `
+         <div>
+           <img src="${book.image_path}" />
+           <p>${book.title} – ${book.author}</p>
+           <input type="number" placeholder="Quantity" id="qty-${isbn}">
+           <input type="number" placeholder="Price" id="price-${isbn}">
+           <button onclick='addBook(${JSON.stringify(book)})'>Add</button>
+         </div>
+       `;
+});
+}
+
+async function addBook(book) {
+const quantity = document.getElementById(`qty-${book.isbn}`).value;
+const price = document.getElementById(`price-${book.isbn}`).value;
+
+const res = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/add-book", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+...book,
+quantity: Number(quantity),
+price: Number(price)
+})
+});
+
+if (res.ok) alert("Book added!");
+else alert("Error adding book");
+}
+</script>
+</div>
 </body>
 </html>
