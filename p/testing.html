@@ -60,8 +60,7 @@
           title: info.title || "",
           author: info.authors?.join(", ") || "",
           isbn: isbn,
-          image_path: info.imageLinks?.thumbnail
-            ?.replace("http://", "https://") || ""
+          image_path: info.imageLinks?.thumbnail?.replace("http://", "https://") || ""
         };
     
         resultsDiv.innerHTML += `
