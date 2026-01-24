@@ -128,6 +128,7 @@ button:hover {
   flex-wrap: wrap;
   gap: 20px;
   position: relative;
+  align-content: flex-start;
 }
 
 #main::before {
