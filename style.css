@@ -131,6 +131,17 @@ button:hover {
   align-content: flex-start;
 }
 
+#results {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px 0px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  /* position: relative; */
+  align-content: flex-start;
+}
+
 #main::before {
   content: "";
   position: absolute;
