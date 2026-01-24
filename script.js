@@ -71,7 +71,7 @@ function renderInventory(data) {
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
-      <img src="https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.image_path}" onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';" />
+      <img src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.image_path}" onerror="this.src='http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';" />
       <div class="itemnonimage">
         <h1>${item.title}</h1>
         <h2>by ${item.author}</h2>
