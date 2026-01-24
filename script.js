@@ -11,7 +11,7 @@ const addFormContainer = document.getElementById("add-form-container");
 const bookForm = document.getElementById("bookForm");
 
 const loginBtn = document.getElementById("loginBtn");
-// const signupBtn = document.getElementById("signupBtn");
+const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
 const loginFormContainer = document.getElementById("login-form-container");
@@ -32,7 +32,7 @@ async function initAuth() {
   if (session) {
     userRole = session.user.user_metadata?.role || "customer";
     loginBtn.classList.add("hidden");
-    // signupBtn.classList.add("hidden");
+    signupBtn.classList.add("hidden");
     logoutBtn.classList.remove("hidden");
     if (userRole === "employee") adminToggle.classList.remove("hidden");
     await loadOrders();
