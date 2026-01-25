@@ -12,8 +12,8 @@
   <div id="container">
 
     <div id="top">
-      <a href="index.html">
-        <img src="image/bow.png" alt="Logo" />
+      <a href="../index.html">
+        <img src="../image/bow.png" alt="Logo" />
       </a>
 
       <div id="notlogo">
@@ -54,7 +54,7 @@
   </div>
 
   <script type="module">
-    import { userRole, apiFetch } from "./loginpage.js";
+    import { userRole, apiFetch } from "../loginpage.js";
 
     async function loadInventory() {
       if (userRole !== "employee") {
