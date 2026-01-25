@@ -1,5 +1,11 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+//so if your thinking of reinstating this file stop and read this
+//this file was everything.js pretty much, everything we used here has been moved to other pages now that we have many
+//the reason i am essentially turning it off is because if it touches any number of things it will break everything.
+//the things it cannot touch without breaking everything i will put on the next line
+//auth, session, API calls, or Supabase
+//the only reason i leave this file in existance is purely for reference.
 
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
