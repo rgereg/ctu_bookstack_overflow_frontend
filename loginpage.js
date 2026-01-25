@@ -38,6 +38,7 @@ export async function initAuth() {
 
   if (session) {
     userRole = session.user?.user_metadata?.role || "customer";
+    console.log(userRole);
 
     loginBtn?.classList.add("hidden");
     logoutBtn?.classList.remove("hidden");

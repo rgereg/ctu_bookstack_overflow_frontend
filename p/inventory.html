@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
 
-  <script type="module" src="../loginpage.js"></script>
+  <script type="module" src="../inventorypage.js"></script>
 </head>
 <body>
   <div id="container">
@@ -42,73 +42,9 @@
       </div>
     </div>
 
-    <div id="you-are-logged-in" class="hidden">
-      <p>You are logged in!</p>
-    </div>
-
-    <div id="main">
-      <h1>Inventory</h1>
-      <div id="inventoryList">Loading inventory...</div>
-    </div>
+    <div id="main"></div>
 
   </div>
-
-  <script type="module">
-    import { userRole, apiFetch } from "../loginpage.js";
-
-    async function loadInventory() {
-      if (userRole !== "employee") {
-        document.getElementById("inventoryList").innerHTML = "<p>Access denied. Employees only.</p>";
-        return;
-      }
-
-      try {
-        const res = await apiFetch("/books");
-        const books = await res.json();
-
-        if (books.length === 0) {
-          document.getElementById("inventoryList").innerHTML = "<p>No books in inventory.</p>";
-          return;
-        }
-
-        let tableHtml = `
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>ISBN</th>
-                <th>Price</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        books.forEach(book => {
-          tableHtml += `
-            <tr>
-              <td>${book.title}</td>
-              <td>${book.author}</td>
-              <td>${book.isbn}</td>
-              <td>$${book.price.toFixed(2)}</td>
-              <td>${book.quantity}</td>
-            </tr>
-          `;
-        });
-
-        tableHtml += "</tbody></table>";
-        document.getElementById("inventoryList").innerHTML = tableHtml;
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById("inventoryList").innerHTML = "<p>Error loading inventory.</p>";
-      }
-    }
-
-    loadInventory();
-  </script>
-
 </body>
 </html>
 

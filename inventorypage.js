@@ -8,16 +8,16 @@ const searchInput = document.getElementById("search");
 let inventory = [];
 
 async function loadInventory() {
-    try {
-        const res = await apifetch(`${API_BASE}/books`);
-        if (!res.ok) throw new Error("Failed to fetch books");
+  try {
+    const res = await apifetch(`${API_BASE}/books`);
+    if (!res.ok) throw new Error("Failed to fetch books");
 
-        invenotry = await res.json();
-        renderInventory(inventory);
-    } catch (err) {
-        console.error(err);
-        main.innerHTML = "<p>Error loading books.</p>";
-    }
+    inventory = await res.json();
+    renderInventory(inventory);
+  } catch (err) {
+    console.error(err);
+    main.innerHTML = "<p>Error loading books.</p>";
+  }
 }
 
 function renderInventory(data) {
