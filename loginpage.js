@@ -4,10 +4,9 @@ const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODc2NDQ4OSwiZXhwIjoyMDg0MzQwNDg5fQ.uDvtOGNokH33H8Dly0E-MF3scULNwjsDFFkTlc58jFs";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
-const supabaseClient = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+window.supabaseClient = supabaseClient;
 
 const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
@@ -36,6 +35,8 @@ function updateUI() {
     signupBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
 
+    loginFormContainer?.classList.remove("hidden");
+    signupFormContainer?.classList.add("hidden");
     youareloggedin?.classList.add("hidden");
   }
 }
@@ -53,45 +54,7 @@ supabaseClient.auth.onAuthStateChange((_event, newSession) => {
 
 initAuth();
 
-loginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = loginForm.email.value;
-  const password = loginForm.password.value;
-
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    alert(error.message);
-  }
-});
-
-signupForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = signupForm.email.value;
-  const password = signupForm.password.value;
-
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-  });
-
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("Check your email to confirm signup");
-  }
-});
-
-logoutBtn?.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
-});
-
-async function apiFetch(path, options = {}) {
+function apiFetch(path, options = {}) {
   if (!session) throw new Error("Not authenticated");
 
   return fetch(`${API_BASE}${path}`, {
@@ -103,6 +66,38 @@ async function apiFetch(path, options = {}) {
     },
   });
 }
+
+window.apiFetch = apiFetch;
+
+loginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = loginForm.email.value;
+  const password = loginForm.password.value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    alert(error.message);
+  }
+});
+
+signupForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = signupForm.email.value;
+  const password = signupForm.password.value;
+
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Check your email to confirm signup");
+  }
+});
+
+logoutBtn?.addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+});
 
 document.getElementById("sulink")?.addEventListener("click", (e) => {
   e.preventDefault();
@@ -117,6 +112,11 @@ document.getElementById("lilink")?.addEventListener("click", (e) => {
 });
 
 window.loadOrders = async () => {
-  const res = await apiFetch("/orders");
-  console.log(await res.json());
+  try {
+    const res = await apiFetch("/orders");
+    const data = await res.json();
+    console.log("Orders:", data);
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+  }
 };
