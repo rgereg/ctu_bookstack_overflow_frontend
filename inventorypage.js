@@ -9,7 +9,7 @@ let inventory = [];
 
 async function loadInventory() {
   try {
-    const res = await apifetch(`${API_BASE}/books`);
+    const res = await apiFetch(`${API_BASE}/books`);
     if (!res.ok) throw new Error("Failed to fetch books");
 
     inventory = await res.json();
@@ -69,4 +69,5 @@ searchInput?.addEventListener("input", e => {
 (async function initPage() {
     await initAuth();
     await loadInventory();
+
 });
