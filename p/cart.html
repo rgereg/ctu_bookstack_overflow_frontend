@@ -2,44 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Shopping Cart - Bookstack Overflow</title>
-  <link rel="icon" type="image/png" href="../image/icon.png">
-  <link rel="stylesheet" href="../style.css">
+  <title>Bookstack Overflow - Cart</title>
+  <link rel="icon" type="image/png" href="image/icon.png">
+  <link rel="stylesheet" href="style.css">
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../script.js" defer></script>
+  <script type="module" src="loginpage.js"></script>
 </head>
-
 <body>
   <div id="container">
 
     <div id="top">
-      <a href="../index.html">
-        <img src="../image/bow.png" alt="Bookstack Overflow logo" />
+      <a href="index.html">
+        <img src="image/bow.png" alt="Logo" />
       </a>
+
       <div id="notlogo">
-      <div id="notlogoupper">
-      <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-      <a href="cart.html">
-        <img src="../image/cart.png" alt="Shopping Cart" />
-      </a>
-      <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-      <button id="logoutBtn" class="hidden">Logout</button>
-      </div>
-      <div id="notlogolower">
-        <a href="../index.html"><p>Home</p></a>
-        <p class="linkspacers">|</p>
-        <a href="orders.html"><p>Orders</p></a>
-        <p class="linkspacers">|</p>
-        <a href="inventory.html"><p>Inventory</p></a>
-        <p class="linkspacers">|</p>
-        <a href="sales.html"><p>Sales</p></a>
-      </div>
+        <div id="notlogoupper">
+          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+          <a href="cart.html">
+            <img src="image/cart.png" alt="Shopping Cart" />
+          </a>
+
+          <button id="loginBtn">Login</button>
+          <button id="logoutBtn" class="hidden">Logout</button>
+        </div>
+
+        <div id="notlogolower">
+          <a href="index.html"><p>Home</p></a>
+          <p class="linkspacers">|</p>
+          <a href="orders.html"><p>Orders</p></a>
+          <p class="linkspacers">|</p>
+          <a href="inventory.html"><p>Inventory</p></a>
+          <p class="linkspacers">|</p>
+          <a href="sales.html"><p>Sales</p></a>
+          <p class="linkspacers">|</p>
+          <a href="cart.html"><p>Cart</p></a>
+        </div>
       </div>
     </div>
 
-    <div id="main"></div>
+    <div id="you-are-logged-in" class="hidden">
+      <p>You are logged in!</p>
+    </div>
+
+    <div id="main">
+      <h1>Your Cart</h1>
+      <div id="cartList">Loading your cart...</div>
+    </div>
 
   </div>
+
+  <script type="module">
+    import { session, userRole, apiFetch } from "./loginpage.js";
+
+    async function loadCart() {
+      if (!session || userRole !== "customer") {
+        document.getElementById("cartList").innerHTML = "<p>Please log in as a customer to view your cart.</p>";
+        return;
+      }
+
+      try {
+        const res = await apiFetch("/orders");
+        const orders = await res.json();
+
+        const cartOrders = orders.filter(o => o.customer_id === session.user.id && o.status === "pending");
+
+        if (cartOrders.length === 0) {
+          document.getElementById("cartList").innerHTML = "<p>Your cart is empty.</p>";
+          return;
+        }
+
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>Book</th>
+                <th>Quantity</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        cartOrders.forEach(order => {
+          html += `
+            <tr>
+              <td>${order.book_title}</td>
+              <td>${order.quantity}</td>
+              <td>${order.status}</td>
+            </tr>
+          `;
+        });
+
+        html += "</tbody></table>";
+        document.getElementById("cartList").innerHTML = html;
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("cartList").innerHTML = "<p>Error loading cart.</p>";
+      }
+    }
+
+    loadCart();
+  </script>
+
 </body>
 </html>
