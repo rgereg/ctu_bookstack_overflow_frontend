@@ -53,7 +53,7 @@ export async function initAuth() {
 const logoutBtn = document.getElementById("logoutBtn");
 logoutBtn?.addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "p/login.html";
 });
 
 const loginForm = document.getElementById("loginForm");
@@ -68,7 +68,7 @@ loginForm?.addEventListener("submit", async (e) => {
 
   session = data.session;
   userRole = session.user?.user_metadata?.role || "customer";
-  window.location.href = "index.html";
+  window.location.href = "../index.html";
 });
 
 const signupForm = document.getElementById("signupForm");
@@ -87,7 +87,7 @@ signupForm?.addEventListener("submit", async (e) => {
 
   session = data.session;
   userRole = session.user?.user_metadata?.role || "customer";
-  window.location.href = "index.html";
+  window.location.href = "../index.html";
 });
 
 initAuth();
