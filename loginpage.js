@@ -59,7 +59,7 @@ export async function initAuth() {
 
 document.getElementById("logoutBtn")?.addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
-  window.location.href = "p/login.html";
+  window.location.href = "https://rgereg.github.io/ctu_bookstack_overflow_frontend/p/login.html";
 });
 
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
