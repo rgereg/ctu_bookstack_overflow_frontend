@@ -42,11 +42,8 @@ function renderInventory(data) {
         <div class="itemnonimage">
           <h1>${book.title}</h1>
           <p>ISBN: ${book.isbn}</p>
-
-          <div class="shareline">
-            <h3 class="price">$${Number(book.price).toFixed(2)}</h3>
-            <h3 class="quant">Qty. ${book.quantity}</h3>
-          </div>
+          <h3 class="price">$${Number(book.price).toFixed(2)}</h3>
+          <h3 class="price">Qty. ${book.quantity}</h3>
         </div>
       `;
 
