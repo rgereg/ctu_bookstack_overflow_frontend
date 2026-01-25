@@ -7,6 +7,7 @@ const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 export const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 export let session = null;
 export let userRole = "customer";
 
@@ -18,8 +19,8 @@ export async function apiFetch(path, options = {}) {
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${session.access_token}`,
-      ...(options.headers || {})
-    }
+      ...(options.headers || {}),
+    },
   });
 }
 
@@ -70,6 +71,7 @@ loginForm?.addEventListener("submit", async (e) => {
 
   session = data.session;
   userRole = session.user?.user_metadata?.role || "customer";
+
   window.location.href = "../index.html";
 });
 
@@ -89,6 +91,7 @@ signupForm?.addEventListener("submit", async (e) => {
 
   session = data.session;
   userRole = session.user?.user_metadata?.role || "customer";
+
   window.location.href = "../index.html";
 });
 
