@@ -70,5 +70,4 @@ searchInput?.addEventListener("input", e => {
     await initAuth();
     await loadInventory();
 
-});
-
+})();
