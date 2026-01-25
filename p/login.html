@@ -105,4 +105,16 @@
     <div id="main"></div>
   </div>
 </body>
+  <script>
+    document.getElementById("sulink").addEventListener("click", function (e) {
+     e.preventDefault(); // stop link from jumping
+     document.getElementById("login-form-container").classList.add("hidden");
+     document.getElementById("signup-form-container").classList.remove("hidden");
+   });
+    document.getElementById("lilink").addEventListener("click", function (e) {
+      e.preventDefault(); // stop link from jumping
+      document.getElementById("login-form-container").classList.remove("hidden");
+      document.getElementById("signup-form-container").classList.add("hidden");
+    });
+  </script>
 </html>
