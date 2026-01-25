@@ -9,7 +9,7 @@ let inventory = [];
 
 async function loadInventory() {
   try {
-    const res = await apiFetch(`${API_BASE}/books`);
+    const res = await fetch(`${API_BASE}/books`);
     if (!res.ok) throw new Error("Failed to fetch books");
 
     inventory = await res.json();
@@ -46,6 +46,8 @@ function renderInventory(data) {
           <div class="shareline">
             <h3 class="price">$${Number(book.price).toFixed(2)}</h3>
             <h3 class="quant">Qty. ${book.quantity}</h3>
+            <button class="priceChange" data-isbn=${book.isbn}>Update Price</button>
+            <button class="quantChange" data-isbn=${book.isbn}>Update Quantity</button>
           </div>
         </div>
       `;
