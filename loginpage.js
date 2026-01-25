@@ -53,6 +53,9 @@ export async function initAuth() {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
+    document.querySelectorAll(".eonly").forEach(el => {
+    el.style.display = "none";
+  });
   }
 }
 
