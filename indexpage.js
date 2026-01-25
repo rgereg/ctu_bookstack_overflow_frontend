@@ -35,9 +35,9 @@ function renderInventory(data) {
 
     div.innerHTML = `
       <img
-        src="REDACTED/storage/v1/object/public/${book.image_path}"
+        src="${API_BASE}/storage/v1/object/public/${book.image_path}"
         alt="${book.title}"
-        onerror="this.src='REDACTED/storage/v1/object/public/image/book/cover.jpg';"
+        onerror="this.src='${API_BASE}/storage/v1/object/public/image/book/cover.jpg';"
       />
 
       <div class="itemnonimage">
