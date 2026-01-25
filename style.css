@@ -166,7 +166,7 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  height: 100%;
+  height: auto%;
 }
 
 .itemnonimage {
