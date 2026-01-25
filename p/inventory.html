@@ -2,44 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Inventory - Bookstack Overflow</title>
-  <link rel="icon" type="image/png" href="../image/icon.png">
-  <link rel="stylesheet" href="../style.css">
+  <title>Bookstack Overflow - Inventory</title>
+  <link rel="icon" type="image/png" href="image/icon.png">
+  <link rel="stylesheet" href="style.css">
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../script.js" defer></script>
+  <script type="module" src="loginpage.js"></script>
 </head>
-
 <body>
   <div id="container">
 
     <div id="top">
-      <a href="../index.html">
-        <img src="../image/bow.png" alt="Bookstack Overflow logo" />
+      <a href="index.html">
+        <img src="image/bow.png" alt="Logo" />
       </a>
+
       <div id="notlogo">
-      <div id="notlogoupper">
-      <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-      <a href="cart.html">
-        <img src="../image/cart.png" alt="Shopping Cart" />
-      </a>
-      <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-      <button id="logoutBtn" class="hidden">Logout</button>
-      </div>
-      <div id="notlogolower">
-        <a href="../index.html"><p>Home</p></a>
-        <p class="linkspacers">|</p>
-        <a href="orders.html"><p>Orders</p></a>
-        <p class="linkspacers">|</p>
-        <a href="inventory.html"><p>Inventory</p></a>
-        <p class="linkspacers">|</p>
-        <a href="sales.html"><p>Sales</p></a>
-      </div>
+        <div id="notlogoupper">
+          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+
+          <a href="cart.html">
+            <img src="image/cart.png" alt="Shopping Cart" />
+          </a>
+
+          <button id="loginBtn">Login</button>
+          <button id="logoutBtn" class="hidden">Logout</button>
+        </div>
+
+        <div id="notlogolower">
+          <a href="index.html"><p>Home</p></a>
+          <p class="linkspacers">|</p>
+          <a href="orders.html"><p>Orders</p></a>
+          <p class="linkspacers">|</p>
+          <a href="inventory.html"><p>Inventory</p></a>
+          <p class="linkspacers">|</p>
+          <a href="sales.html"><p>Sales</p></a>
+          <p class="linkspacers">|</p>
+          <a href="cart.html"><p>Cart</p></a>
+        </div>
       </div>
     </div>
 
-    <div id="main"></div>
+    <div id="you-are-logged-in" class="hidden">
+      <p>You are logged in!</p>
+    </div>
+
+    <div id="main">
+      <h1>Inventory</h1>
+      <div id="inventoryList">Loading inventory...</div>
+    </div>
 
   </div>
+
+  <script type="module">
+    import { userRole, apiFetch } from "./loginpage.js";
+
+    async function loadInventory() {
+      if (userRole !== "employee") {
+        document.getElementById("inventoryList").innerHTML = "<p>Access denied. Employees only.</p>";
+        return;
+      }
+
+      try {
+        const res = await apiFetch("/books");
+        const books = await res.json();
+
+        if (books.length === 0) {
+          document.getElementById("inventoryList").innerHTML = "<p>No books in inventory.</p>";
+          return;
+        }
+
+        let tableHtml = `
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Price</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        books.forEach(book => {
+          tableHtml += `
+            <tr>
+              <td>${book.title}</td>
+              <td>${book.author}</td>
+              <td>${book.isbn}</td>
+              <td>$${book.price.toFixed(2)}</td>
+              <td>${book.quantity}</td>
+            </tr>
+          `;
+        });
+
+        tableHtml += "</tbody></table>";
+        document.getElementById("inventoryList").innerHTML = tableHtml;
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("inventoryList").innerHTML = "<p>Error loading inventory.</p>";
+      }
+    }
+
+    loadInventory();
+  </script>
+
 </body>
 </html>
+
