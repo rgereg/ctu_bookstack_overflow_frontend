@@ -46,8 +46,6 @@ function renderInventory(data) {
           <div class="shareline">
             <h3 class="price">$${Number(book.price).toFixed(2)}</h3>
             <h3 class="quant">Qty. ${book.quantity}</h3>
-            <button class="priceChange" data-isbn=${book.isbn}>Update Price</button>
-            <button class="quantChange" data-isbn=${book.isbn}>Update Quantity</button>
           </div>
         </div>
       `;
@@ -73,3 +71,4 @@ searchInput?.addEventListener("input", e => {
     await loadInventory();
 
 });
+
