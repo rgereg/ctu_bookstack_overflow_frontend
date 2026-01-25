@@ -1,100 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8">
-        <title>Inventory - Bookstack Overflow</title>
-        <link rel="icon" type="image/png" href="../image/icon.png">
-        <link rel="stylesheet" href="../style.css">
+  <meta charset="UTF-8">
+  <title>Bookstack Overflow - testing</title>
+  <link rel="icon" type="image/png" href="../image/icon.png">
+  <link rel="stylesheet" href="../style.css">
 
-        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-        <script src="../script.js" defer></script>
+  <script type="module" src="../loginpage.js"></script>
 </head>
-
 <body>
-        <div id="container">
+  <div id="container">
 
-                <div id="top">
-                        <a href="../index.html">
-                                <img src="../image/bow.png" alt="Bookstack Overflow logo" />
-                </a>
-                <div id="notlogo">
-                <div id="notlogoupper">
-                <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-                <a href="cart.html">
-                        <img src="../image/cart.png" alt="Shopping Cart" />
-                </a>
-                <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-                <button id="logoutBtn" class="hidden">Logout</button>
-                </div>
-                <div id="notlogolower">
-                        <a href="../index.html"><p>Home</p></a>
-                        <p class="linkspacers">|</p>
-                                <a href="testing.html"><p>testing2</p></a>
-                        <p class="linkspacers">|</p>
-                        <input id="searchInput" placeholder="Search by title or ISBN" />
-                        <button onclick="searchBooks()">Search</button>
-                
-                        </div>
-                        </div>
-                </div>
-                
-                <div id="results"></div>
-                <div id="main"></div>
-                <script>
-                async function searchBooks() {
-                        const query = document.getElementById("searchInput").value;
-                        const res = await fetch(
-                                `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`
-                        );
-                        const data = await res.json();
-                        
-                        const resultsDiv = document.getElementById("results");
-                        resultsDiv.innerHTML = "";
-                        
-                        data.items?.forEach(item => {
-                        const info = item.volumeInfo;
-                        
-                        const isbn =
-                        info.industryIdentifiers?.find(i => i.type.includes("ISBN"))?.identifier || "";
-                        
-                        const book = {
-                title: info.title || "",
-                                author: info.authors?.join(", ") || "",
-                                isbn: isbn,
-                                image_path: info.imageLinks?.thumbnail
-                                ?.replace("http://", "https://") || ""
-                                };
-                
-                        resultsDiv.innerHTML += `
-                         <div>
-                           <img src="${book.image_path}" />
-                           <p>${book.title} – ${book.author}</p>
-                           <input type="number" placeholder="Quantity" id="qty-${isbn}">
-                           <input type="number" placeholder="Price" id="price-${isbn}">
-                           <button onclick='addBook(${JSON.stringify(book)})'>Add</button>
-                         </div>
-                               `;
-                        });
-                }
-                
-                async function addBook(book) {
-                        const quantity = document.getElementById(`qty-${book.isbn}`).value;
-                        const price = document.getElementById(`price-${book.isbn}`).value;
-                        
-                        const res = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/add-book", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                        ...book,
-                                        quantity: Number(quantity),
-                                        price: Number(price)
-                        })
-                });
-                
-                if (res.ok) alert("Book added!");
-                else alert("Error adding book");
-                }
-                </script>
+    <div id="top">
+      <a href="../index.html">
+        <img src="../image/bow.png" alt="Logo" />
+      </a>
+
+      <div id="notlogo">
+        <div id="notlogoupper">
+          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+          <a href="cart.html">
+            <img src="../image/cart.png" alt="Shopping Cart" />
+          </a>
+          <button id="loginBtn">Login</button>
+          <button id="logoutBtn" class="hidden">Logout</button>
         </div>
+
+        <div id="notlogolower">
+          <a href="../index.html"><p>Home</p></a>
+          <p class="linkspacers">|</p>
+          <a href="testing121212.html"><p>Add Books</p></a>
+          <p class="linkspacers">|</p>
+          <a href="orders.html"><p>Orders</p></a>
+          <p class="linkspacers">|</p>
+          <a href="inventory.html"><p>Inventory</p></a>
+          <p class="linkspacers">|</p>
+          <a href="sales.html"><p>Sales</p></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="you-are-logged-in" class="hidden">
+      <p>You are logged in!</p>
+    </div>
+
+    <div id="main">
+      <h1>Search Books to Add</h1>
+      <input id="searchInput" placeholder="Search by title or ISBN" />
+      <button id="searchBtn">Search</button>
+      <div id="results"></div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { userRole, apiFetch, session } from "../loginpage.js";
+
+    const searchBtn = document.getElementById("searchBtn");
+    const resultsDiv = document.getElementById("results");
+
+    searchBtn.addEventListener("click", async () => {
+      const query = document.getElementById("searchInput").value;
+      if (!query) return;
+
+      resultsDiv.innerHTML = "Searching...";
+      try {
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        resultsDiv.innerHTML = "";
+
+        data.items?.forEach(item => {
+          const info = item.volumeInfo;
+          const isbn = info.industryIdentifiers?.find(i => i.type.includes("ISBN"))?.identifier || "";
+
+          const book = {
+            title: info.title || "",
+            author: info.authors?.join(", ") || "",
+            isbn: isbn,
+            image_path: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
+            description: info.description || ""
+          };
+
+          resultsDiv.innerHTML += `
+            <div class="book-card">
+              <img src="${book.image_path}" alt="${book.title}" />
+              <p><strong>${book.title}</strong> – ${book.author}</p>
+              ${userRole === "employee" ? `
+                <input type="number" placeholder="Quantity" id="qty-${isbn}" min="1">
+                <input type="number" placeholder="Price" id="price-${isbn}" min="0" step="0.01">
+                <button id="add-${isbn}">Add Book</button>
+              ` : `<p>Login as employee to add books.</p>`}
+            </div>
+          `;
+
+          if (userRole === "employee") {
+            document.getElementById(`add-${isbn}`).addEventListener("click", async () => {
+              const quantity = Number(document.getElementById(`qty-${isbn}`).value);
+              const price = Number(document.getElementById(`price-${isbn}`).value);
+
+              if (!quantity || !price) {
+                alert("Please enter quantity and price");
+                return;
+              }
+
+              try {
+                const res = await apiFetch("/add-book", {
+                  method: "POST",
+                  body: JSON.stringify({ ...book, quantity, price })
+                });
+
+                const data = await res.json();
+                if (res.ok) alert("Book added!");
+                else alert("Error adding book: " + (data.detail || JSON.stringify(data)));
+              } catch (err) {
+                console.error(err);
+                alert("Error adding book");
+              }
+            });
+          }
+        });
+
+      } catch (err) {
+        console.error(err);
+        resultsDiv.innerHTML = "<p>Error fetching books.</p>";
+      }
+    });
+  </script>
+
 </body>
 </html>
