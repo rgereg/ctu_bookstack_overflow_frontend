@@ -1,8 +1,11 @@
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+
 const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const main = document.getElementById("main");
 const searchInput = document.getElementById("search");
@@ -56,9 +59,15 @@ async function apiFetch(path, options = {}) {
 
 async function loadInventory() {
   const res = await fetch(`${API_BASE}/books`);
+  if (!res.ok) {
+    console.error("Failed to load books");
+    return;
+  }
   inventory = await res.json();
+  console.log("BOOKS:", inventory);
   renderInventory(inventory);
 }
+
 
 function renderInventory(data) {
   main.innerHTML = "";
