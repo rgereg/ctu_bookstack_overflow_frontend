@@ -3,7 +3,6 @@ import { initAuth, session, userRole, apiFetch } from "./loginpage.js";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
-const booksContainer = document.getElementById("booksContainer");
 const searchInput = document.getElementById("search");
 
 let inventory = [];
@@ -17,15 +16,15 @@ async function loadInventory() {
     renderInventory(inventory);
   } catch (err) {
     console.error(err);
-    booksContainer.innerHTML = "<p>Error loading books.</p>";
+    main.innerHTML = "<p>Error loading books.</p>";
   }
 }
 
 function renderInventory(data) {
-  booksContainer.innerHTML = "";
+  main.innerHTML = "";
 
   if (!data.length) {
-    booksContainer.innerHTML = "<p>No books found.</p>";
+    main.innerHTML = "<p>No books found.</p>";
     return;
   }
 
@@ -59,7 +58,7 @@ function renderInventory(data) {
       </div>
     `;
 
-    booksContainer.appendChild(div);
+    main.appendChild(div);
   });
 
   wireOrderButtons();
