@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bookstack Overflow</title>
+  <title>Bookstack Overflow - Home</title>
   <link rel="icon" type="image/png" href="image/icon.png">
   <link rel="stylesheet" href="style.css">
 
   <script type="module" src="loginpage.js"></script>
 </head>
-
 <body>
   <div id="container">
 
     <div id="top">
       <a href="index.html">
-        <img src="image/bow.png" alt="Bookstack Overflow logo" />
+        <img src="image/bow.png" alt="Logo" />
       </a>
 
       <div id="notlogo">
         <div id="notlogoupper">
           <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
 
-          <a href="p/cart.html">
+          <a href="cart.html">
             <img src="image/cart.png" alt="Shopping Cart" />
           </a>
 
@@ -32,13 +31,13 @@
         <div id="notlogolower">
           <a href="index.html"><p>Home</p></a>
           <p class="linkspacers">|</p>
-          <a href="p/orders.html"><p>Orders</p></a>
+          <a href="orders.html"><p>Orders</p></a>
           <p class="linkspacers">|</p>
-          <a href="p/inventory.html"><p>Inventory</p></a>
+          <a href="inventory.html"><p>Inventory</p></a>
           <p class="linkspacers">|</p>
-          <a href="p/sales.html"><p>Sales</p></a>
+          <a href="sales.html"><p>Sales</p></a>
           <p class="linkspacers">|</p>
-          <a href="p/cart.html"><p>Cart</p></a>
+          <a href="cart.html"><p>Cart</p></a>
         </div>
       </div>
     </div>
@@ -47,9 +46,68 @@
       <p>You are logged in!</p>
     </div>
 
-    <div id="featured"></div>
-    <div id="main"></div>
+    <div id="main">
+      <h1>Books</h1>
+      <div id="bookList">Loading books...</div>
+    </div>
 
   </div>
+
+  <script type="module">
+    import { userRole, apiFetch, session } from "./loginpage.js";
+
+    async function loadBooks() {
+      try {
+        const res = await apiFetch("/books");
+        const books = await res.json();
+
+        if (books.length === 0) {
+          document.getElementById("bookList").innerHTML = "<p>No books available.</p>";
+          return;
+        }
+
+        let html = "<div class='book-grid'>";
+        books.forEach(book => {
+          html += `
+            <div class="book-card">
+              <h3>${book.title}</h3>
+              <p>${book.author}</p>
+              <p>Price: $${book.price.toFixed(2)}</p>
+              <p>Available: ${book.quantity}</p>
+              ${userRole === "customer" ? `<button data-isbn="${book.isbn}" class="add-to-cart-btn">Add to Cart</button>` : ""}
+            </div>
+          `;
+        });
+        html += "</div>";
+
+        document.getElementById("bookList").innerHTML = html;
+
+        document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
+          btn.addEventListener("click", async (e) => {
+            const isbn = e.target.dataset.isbn;
+            const quantity = 1;
+            try {
+              const orderRes = await apiFetch("/orders", {
+                method: "POST",
+                body: JSON.stringify({ isbn, quantity })
+              });
+              const data = await orderRes.json();
+              alert(`Added to cart: ${data.book_title}`);
+            } catch(err) {
+              console.error(err);
+              alert("Failed to add to cart.");
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("bookList").innerHTML = "<p>Error loading books.</p>";
+      }
+    }
+
+    loadBooks();
+  </script>
+
 </body>
 </html>
