@@ -96,26 +96,30 @@ async function loadOrders() {
 
 function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
+
   orders.forEach(order => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${order.book_title}</td>
-      <td>${order.quantity}</td>
-      <td>${order.status}</td>
-      <td>${userRole === "employee" ? order.customer_id : "-"}</td>
-      <td>
-        ${userRole === "employee" ? `
-          <select onchange="updateOrderStatus('${order.id}', this.value)">
-            <option value="pending" ${order.status==="pending"?"selected":""}>Pending</option>
-            <option value="shipped" ${order.status==="shipped"?"selected":""}>Shipped</option>
-            <option value="delivered" ${order.status==="delivered"?"selected":""}>Delivered</option>
-          </select>
-        ` : ""}
-      </td>
-    `;
-    ordersTableBody.appendChild(tr);
+    order.order_items.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.books.title}</td>
+        <td>${item.quantity}</td>
+        <td>${order.status}</td>
+        <td>${userRole === "employee" ? order.customer_id : "-"}</td>
+        <td>
+          ${userRole === "employee" ? `
+            <select onchange="updateOrderStatus('${order.id}', this.value)">
+              <option value="pending">Pending</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          ` : ""}
+        </td>
+      `;
+      ordersTableBody.appendChild(tr);
+    });
   });
 }
+
 
 async function placeOrder(isbn) {
   if (!session) return alert("Login required");
