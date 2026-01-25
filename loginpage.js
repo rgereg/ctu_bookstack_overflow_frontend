@@ -34,12 +34,14 @@ export async function initAuth() {
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const loggedInMsg = document.getElementById("you-are-logged-in");
+  const loginFormContainer = document.getElementById("login-form-container");
 
   if (session) {
     userRole = session.user?.user_metadata?.role || "customer";
 
     loginBtn?.classList.add("hidden");
     logoutBtn?.classList.remove("hidden");
+    loginFormContainer?.classList.add("hidden");
     loggedInMsg?.classList.remove("hidden");
 
     document.querySelectorAll("#notlogolower a").forEach(link => {
