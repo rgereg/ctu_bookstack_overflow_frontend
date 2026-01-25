@@ -1,6 +1,6 @@
 import { initAuth, session, userRole, apiFetch } from "./loginpage.js";
 
-const API_BASE = "REDACTED";
+const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
 const booksContainer = document.getElementById("booksContainer");
