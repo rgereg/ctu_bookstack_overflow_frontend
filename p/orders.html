@@ -12,8 +12,8 @@
   <div id="container">
 
     <div id="top">
-      <a href="index.html">
-        <img src="image/bow.png" alt="Logo" />
+      <a href="../index.html">
+        <img src="../image/bow.png" alt="Logo" />
       </a>
 
       <div id="notlogo">
@@ -21,7 +21,7 @@
           <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
 
           <a href="cart.html">
-            <img src="image/cart.png" alt="Shopping Cart" />
+            <img src="../image/cart.png" alt="Shopping Cart" />
           </a>
 
           <button id="loginBtn">Login</button>
@@ -54,7 +54,7 @@
   </div>
 
   <script type="module">
-    import { session, userRole, apiFetch } from "./loginpage.js";
+    import { session, userRole, apiFetch } from "../loginpage.js";
 
     async function loadOrders() {
       if (!session) {
