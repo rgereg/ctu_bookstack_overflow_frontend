@@ -28,31 +28,30 @@ function renderInventory(data) {
     return;
   }
 
-  data.forEach(book => {
+  data.forEach(item => {
     const div = document.createElement("div");
     div.className = "item";
-
     div.innerHTML = `
       <img
-        src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${book.image_path}"
-        alt="${book.title}"
+        src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.image_path}"
+        alt="${item.title}"
         onerror="this.src='http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
       />
 
       <div class="itemnonimage">
-        <h1>${book.title}</h1>
-        <h2>by ${book.author}</h2>
-        <p>ISBN: ${book.isbn}</p>
-        <p>${book.description || ""}</p>
+        <h1>${item.title}</h1>
+        <h2>by ${item.author}</h2>
+        <p>ISBN: ${item.isbn}</p>
+        <p>${item.description || ""}</p>
 
         <div class="shareline">
-          <h3 class="price">$${Number(book.price).toFixed(2)}</h3>
-          <h3 class="quant">Qty. ${book.quantity}</h3>
+          <h3 class="price">$${Number(item.price).toFixed(2)}</h3>
+          <h3 class="quant">Qty. ${item.quantity}</h3>
         </div>
 
         ${
           session && userRole === "customer"
-            ? `<button class="order-btn" data-isbn="${book.isbn}">Order</button>`
+            ? `<button class="order-btn" data-isbn="${item.isbn}">Order</button>`
             : ""
         }
       </div>
