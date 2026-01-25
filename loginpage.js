@@ -44,12 +44,11 @@ export async function initAuth() {
     loginFormContainer?.classList.add("hidden");
     loggedInMsg?.classList.remove("hidden");
 
-    document.querySelectorAll("#notlogolower a").forEach(link => {
-      const text = link.textContent.trim().toLowerCase();
-      if (["inventory", "sales"].includes(text) && userRole !== "employee") {
-        link.style.display = "none";
-      }
-    });
+    if (userRole !== "employee") {
+  document.querySelectorAll(".eonly").forEach(el => {
+    el.style.display = "none";
+  });
+}
   } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
