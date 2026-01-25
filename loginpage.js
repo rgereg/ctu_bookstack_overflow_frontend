@@ -105,15 +105,4 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   window.location.href = "../index.html";
 });
 
-// document.getElementById("sulink").addEventListener("click", function (e) {
-    // e.preventDefault(); // stop link from jumping
-    // document.getElementById("login-form-container").classList.add("hidden");
-    // document.getElementById("signup-form-container").classList.remove("hidden");
-  // });
-//document.getElementById("lilink").addEventListener("click", function (e) {
-      //e.preventDefault(); // stop link from jumping
-      //document.getElementById("login-form-container").classList.remove("hidden");
-      //document.getElementById("signup-form-container").classList.add("hidden");
-    //});
-
 initAuth();
