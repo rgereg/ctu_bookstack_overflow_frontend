@@ -1,0 +1,51 @@
+// experimental test index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bookstack Overflow</title>
+  <link rel="icon" type="image/png" href="image/icon.png">
+  <link rel="stylesheet" href="style.css">
+
+  <script type="module" src="loginpage.js"></script>
+  <script type="module" src="indexpage.js" defer></script>
+</head>
+<body>
+  <div id="container">
+
+    <div id="top">
+      <a href="index.html">
+        <img src="image/bow.png" alt="Bookstack Overflow logo" />
+      </a>
+      <div id="notlogo">
+        <div id="notlogoupper">
+          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+          <a href="cart.html">
+            <img src="image/cart.png" alt="Shopping Cart" />
+          </a>
+          <button id="loginBtn">Login</button>
+          <button id="logoutBtn" class="hidden">Logout</button>
+        </div>
+        <div id="notlogolower">
+          <a href="index.html"><p>Home</p></a>
+          <p class="linkspacers">|</p>
+          <a href="p/orders.html"><p>Orders</p></a>
+          <p class="linkspacers">|</p>
+          <a href="p/inventory.html"><p>Inventory</p></a>
+          <p class="linkspacers">|</p>
+          <a href="p/sales.html"><p>Sales</p></a>
+          <p class="linkspacers">|</p>
+          <a href="p/testing.html"><p>testing8</p></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="main">
+      <h1>Available Books</h1>
+      <div id="booksContainer"></div>
+    </div>
+
+  </div>
+</body>
+</html>
