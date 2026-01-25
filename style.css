@@ -265,7 +265,8 @@ button:hover {
 }
 
 #login-form-container,
-#signup-form-container {
+#signup-form-container,
+#you-are-logged-in{
   position: fixed;
   top: 50%;
   left: 50%;
@@ -279,7 +280,8 @@ button:hover {
 }
 
 #login-form-container::before,
-#signup-form-container::before {
+#signup-form-container::before, 
+#you-are-logged-in::before{
   content: "";
   position: absolute;
   inset: 0;
@@ -292,7 +294,8 @@ button:hover {
 }
 
 #login-form-container h2,
-#signup-form-container h2 {
+#signup-form-container h2,
+#you-are-logged-in{
   margin-bottom: 15px;
   text-align: center;
 }
