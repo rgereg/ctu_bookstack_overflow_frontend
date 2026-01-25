@@ -2,60 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Orders - Bookstack Overflow</title>
-  <link rel="icon" type="image/png" href="../image/icon.png">
-  <link rel="stylesheet" href="../style.css">
+  <title>Bookstack Overflow - Orders</title>
+  <link rel="icon" type="image/png" href="image/icon.png">
+  <link rel="stylesheet" href="style.css">
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../script.js" defer></script>
+  <script type="module" src="loginpage.js"></script>
 </head>
-
 <body>
   <div id="container">
 
     <div id="top">
-      <a href="../index.html">
-        <img src="../image/bow.png" alt="Bookstack Overflow logo" />
+      <a href="index.html">
+        <img src="image/bow.png" alt="Logo" />
       </a>
+
       <div id="notlogo">
-      <div id="notlogoupper">
-      <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-      <a href="cart.html">
-        <img src="../image/cart.png" alt="Shopping Cart" />
-      </a>
-      <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-      <button id="logoutBtn" class="hidden">Logout</button>
+        <div id="notlogoupper">
+          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+
+          <a href="cart.html">
+            <img src="image/cart.png" alt="Shopping Cart" />
+          </a>
+
+          <button id="loginBtn">Login</button>
+          <button id="logoutBtn" class="hidden">Logout</button>
+        </div>
+
+        <div id="notlogolower">
+          <a href="index.html"><p>Home</p></a>
+          <p class="linkspacers">|</p>
+          <a href="orders.html"><p>Orders</p></a>
+          <p class="linkspacers">|</p>
+          <a href="inventory.html"><p>Inventory</p></a>
+          <p class="linkspacers">|</p>
+          <a href="sales.html"><p>Sales</p></a>
+          <p class="linkspacers">|</p>
+          <a href="cart.html"><p>Cart</p></a>
+        </div>
       </div>
-      <div id="notlogolower">
-        <a href="../index.html"><p>Home</p></a>
-        <p class="linkspacers">|</p>
-        <a href="orders.html"><p>Orders</p></a>
-        <p class="linkspacers">|</p>
-        <a href="inventory.html"><p>Inventory</p></a>
-        <p class="linkspacers">|</p>
-        <a href="sales.html"><p>Sales</p></a>
-      </div>
-      </div>
+    </div>
+
+    <div id="you-are-logged-in" class="hidden">
+      <p>You are logged in!</p>
     </div>
 
     <div id="main">
-      <div id="orders-container">
-      <h2>Your Orders</h2>
-      <table id="ordersTable">
-        <thead>
-          <tr>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Customer</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <h1>Orders</h1>
+      <div id="ordersList">Loading orders...</div>
     </div>
-  </div>
 
   </div>
+
+  <script type="module">
+    import { session, userRole, apiFetch } from "./loginpage.js";
+
+    async function loadOrders() {
+      if (!session) {
+        document.getElementById("ordersList").innerHTML = "<p>Please log in to see orders.</p>";
+        return;
+      }
+
+      try {
+        const res = await apiFetch("/orders");
+        let orders = await res.json();
+
+        if (userRole !== "employee") {
+          orders = orders.filter(o => o.customer_id === session.user.id);
+        }
+
+        if (orders.length === 0) {
+          document.getElementById("ordersList").innerHTML = "<p>No orders found.</p>";
+          return;
+        }
+
+        let tableHtml = `
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Book Title</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Customer ID</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        orders.forEach(order => {
+          tableHtml += `
+            <tr>
+              <td>${new Date(order.created_at).toLocaleDateString()}</td>
+              <td>${order.book_title}</td>
+              <td>${order.quantity}</td>
+              <td>${order.status}</td>
+              <td>${order.customer_id}</td>
+            </tr>
+          `;
+        });
+
+        tableHtml += "</tbody></table>";
+        document.getElementById("ordersList").innerHTML = tableHtml;
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("ordersList").innerHTML = "<p>Error loading orders.</p>";
+      }
+    }
+
+    loadOrders();
+  </script>
+
 </body>
 </html>
+
