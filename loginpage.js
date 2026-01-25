@@ -1,122 +1,93 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
 const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODc2NDQ4OSwiZXhwIjoyMDg0MzQwNDg5fQ.uDvtOGNokH33H8Dly0E-MF3scULNwjsDFFkTlc58jFs";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-window.supabaseClient = supabaseClient;
+export const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export let session = null;
+export let userRole = "customer";
 
-const loginBtn = document.getElementById("loginBtn");
-const signupBtn = document.getElementById("signupBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-
-const loginFormContainer = document.getElementById("login-form-container");
-const signupFormContainer = document.getElementById("signup-form-container");
-const youareloggedin = document.getElementById("you-are-logged-in");
-
-const loginForm = document.getElementById("loginForm");
-const signupForm = document.getElementById("signupForm");
-
-let session = null;
-
-function updateUI() {
-  if (session) {
-    loginBtn?.classList.add("hidden");
-    signupBtn?.classList.add("hidden");
-    logoutBtn?.classList.remove("hidden");
-
-    loginFormContainer?.classList.add("hidden");
-    signupFormContainer?.classList.add("hidden");
-    youareloggedin?.classList.remove("hidden");
-  } else {
-    loginBtn?.classList.remove("hidden");
-    signupBtn?.classList.remove("hidden");
-    logoutBtn?.classList.add("hidden");
-
-    loginFormContainer?.classList.remove("hidden");
-    signupFormContainer?.classList.add("hidden");
-    youareloggedin?.classList.add("hidden");
-  }
-}
-
-async function initAuth() {
-  const { data } = await supabaseClient.auth.getSession();
-  session = data.session;
-  updateUI();
-}
-
-supabaseClient.auth.onAuthStateChange((_event, newSession) => {
-  session = newSession;
-  updateUI();
-});
-
-initAuth();
-
-function apiFetch(path, options = {}) {
+export async function apiFetch(path, options = {}) {
   if (!session) throw new Error("Not authenticated");
 
-  return fetch(`${API_BASE}${path}`, {
+  return fetch(path, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.access_token}`,
-      ...(options.headers || {}),
-    },
+      "Authorization": `Bearer ${session.access_token}`,
+      ...(options.headers || {})
+    }
   });
 }
 
-window.apiFetch = apiFetch;
+export async function initAuth() {
+  const { data } = await supabaseClient.auth.getSession();
+  session = data.session;
 
-loginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = loginForm.email.value;
-  const password = loginForm.password.value;
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loggedInMsg = document.getElementById("you-are-logged-in");
 
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (session) {
+    loginBtn?.classList.add("hidden");
+    logoutBtn?.classList.remove("hidden");
+    loggedInMsg?.classList.remove("hidden");
 
-  if (error) {
-    alert(error.message);
-  }
-});
+    userRole = session.user?.user_metadata?.role || "customer";
 
-signupForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = signupForm.email.value;
-  const password = signupForm.password.value;
-
-  const { error } = await supabaseClient.auth.signUp({ email, password });
-
-  if (error) {
-    alert(error.message);
+    const adminLinks = document.querySelectorAll("#notlogolower a");
+    adminLinks.forEach(link => {
+      const text = link.textContent.trim().toLowerCase();
+      if (["inventory", "sales"].includes(text) && userRole !== "employee") {
+        link.style.display = "none";
+      }
+    });
   } else {
-    alert("Check your email to confirm signup");
+    loginBtn?.classList.remove("hidden");
+    logoutBtn?.classList.add("hidden");
+    loggedInMsg?.classList.add("hidden");
   }
-});
+}
 
+const logoutBtn = document.getElementById("logoutBtn");
 logoutBtn?.addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
+  window.location.href = "login.html";
 });
 
-document.getElementById("sulink")?.addEventListener("click", (e) => {
+const loginForm = document.getElementById("loginForm");
+loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  loginFormContainer.classList.add("hidden");
-  signupFormContainer.classList.remove("hidden");
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) return alert(error.message);
+
+  session = data.session;
+  userRole = session.user?.user_metadata?.role || "customer";
+  window.location.href = "index.html";
 });
 
-document.getElementById("lilink")?.addEventListener("click", (e) => {
+const signupForm = document.getElementById("signupForm");
+signupForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  signupFormContainer.classList.add("hidden");
-  loginFormContainer.classList.remove("hidden");
+
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: { data: { role: "customer" } }
+  });
+  if (error) return alert(error.message);
+
+  session = data.session;
+  userRole = session.user?.user_metadata?.role || "customer";
+  window.location.href = "index.html";
 });
 
-window.loadOrders = async () => {
-  try {
-    const res = await apiFetch("/orders");
-    const data = await res.json();
-    console.log("Orders:", data);
-  } catch (err) {
-    console.error("Error fetching orders:", err);
-  }
-};
+initAuth();
