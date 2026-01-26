@@ -309,6 +309,11 @@ button:hover {
   text-align: center;
 }
 
+#you-are-logged-in p,
+#message p{
+  text-align: center;
+}
+
 #login-form-container input,
 #signup-form-container input {
   width: calc(100% - 20px);
