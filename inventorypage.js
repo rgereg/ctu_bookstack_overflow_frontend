@@ -57,12 +57,14 @@ function wireOrderButtons() {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
       await updatePrice(isbn);
-    })
+    });
+  });
+  document.querySelectorAll(".quantUpdateBtn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
       await updateQuant(isbn);
-    })
-  })
+    });
+  });
 }
 
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
