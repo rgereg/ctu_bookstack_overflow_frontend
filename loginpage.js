@@ -43,7 +43,7 @@ export async function initAuth() {
   console.log("Current session:", session);
   if (session) {
     console.log("Access token:", session.access_token);
-  const payload = JSON.parse(atob(session.access_token.split('.')[1]));
+    const payload = JSON.parse(atob(session.access_token.split('.')[1]));
     console.log("JWT payload:", payload);
   //for debug remove above later
   }
