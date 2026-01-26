@@ -9,6 +9,7 @@ export const supabaseClient = createClient(
   SUPABASE_ANON_KEY
 );
 export let userRole = "customer";
+export let session = null;
 
 export async function apiFetch(path, options = {}) {
   const { data } = await supabaseClient.auth.getSession();
