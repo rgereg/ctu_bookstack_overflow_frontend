@@ -106,8 +106,6 @@ async function updateQuant(isbn) {
     alert("Quantity in stock can't be less than 0");
     return;
   }
-
-  console.log("quantity: ", quantity); // DEBUG REMOVE THIS LINE TODO
   
   try {
     const res = await apiFetch(`/update_quantity`, {
@@ -115,11 +113,7 @@ async function updateQuant(isbn) {
       body: JSON.stringify({ isbn, quantity })
     });
 
-    console.log("res:", res); // DEBUG REMOVE THIS LINE TODO
-
     if (!res.ok) {
-      const text = await res.text(); // DEBUG REMOVE THIS LINE TODO
-      console.error("Response not OK:", text); // DEBUG REMOVE THIS LINE TODO
       throw new Error("Update failed");
     }
     
@@ -181,3 +175,4 @@ bookForm?.addEventListener("submit", async e => {
     await loadInventory();
 
 })();
+
