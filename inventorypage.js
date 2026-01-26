@@ -44,11 +44,41 @@ function renderInventory(data) {
           <p>ISBN: ${book.isbn}</p>
           <h3>$${Number(book.price).toFixed(2)}</h3>
           <h3>Qty. ${book.quantity}</h3>
+
+          ${
+            session && userRole === "employee"
+              ? `<button class="priceUpdateBtn" data-isbn="${book.isbn}>Update Price</button>
+                <button class="quantUpdateBtn" data-isbn="${book.isbn}>Update Quantity</button>`
+              : ""
+          }
         </div>
       `;
 
       main.appendChild(div);
     });
+  wireOrderButtons();
+}
+
+function wireOrderButtons() {
+  document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const isbn = btn.dataset.isbn;
+      await updatePrice(isbn);
+    })
+    btn.addEventListener("click", async () => {
+      const isbn = btn.dataset.isbn;
+      await updateQuant(isbn);
+    })
+  })
+}
+
+// Below are placeholder functions for updating price and quantity, gonna mess with backend to add them in
+async function updatePrice(isbn) {
+  console.log(`Attempted to update price for ISBN: ${isbn}`);
+}
+
+async function updateQuant(isbn) {
+  console.log(`Attempted to update quantity for ISBN: ${isbn}`)
 }
 
 searchInput?.addEventListener("input", e => {
