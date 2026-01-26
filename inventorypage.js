@@ -9,6 +9,9 @@ const addForm = document.getElementById("add-form-container");
 const bookForm = document.getElementById("bookForm");
 
 let inventory = [];
+let session = null;
+
+session = await initAuth();
 
 if (!session || userRole !== "employee") {
         document.getElementById("main").innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
@@ -180,6 +183,7 @@ bookForm?.addEventListener("submit", async e => {
     await loadInventory();
 
 })();
+
 
 
 
