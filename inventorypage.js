@@ -187,6 +187,8 @@ bookForm?.addEventListener("submit", async e => {
     //await loadInventory();
 
 //})();
+initPage();
+
 
 
 
