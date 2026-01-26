@@ -21,8 +21,10 @@
       border-radius: 10px;
       width: 21%;
       filter: drop-shadow(0px 5px 5px black);
-      display: inline-block;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       justify-content: space-between;
+      gap: 2px;
       /*align-items: flex-start;*/
       height: auto;
     }
@@ -34,13 +36,11 @@
       max-height: initial;
       width: 30%;
       height: auto;
-      display: inline;
       /*flex:1;*/
     }
 
     .item #itemnonimage {
       width:auto;
-      display: inline;
       /*flex:2;*/
     }
 
