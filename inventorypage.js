@@ -1,4 +1,4 @@
-import { initAuth, session, userRole, apiFetch } from "./loginpage.js";
+import { initAuth, userRole, apiFetch } from "./loginpage.js";
 
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
@@ -74,11 +74,6 @@ function wireOrderButtons() {
 async function updatePrice(isbn) {
   console.log(`Attempted to update price for ISBN: ${isbn}`);
 
-  if (!session) {
-    alert("Login required");
-    return;
-  }
-
   const input = prompt("Enter new price:");
   const price = parseFloat(input);
 
@@ -105,10 +100,6 @@ async function updatePrice(isbn) {
 
 async function updateQuant(isbn) {
   console.log(`Attempted to update quantity for ISBN: ${isbn}`)
-  if (!session) {
-    alert("Login required");
-    return;
-  }
 
   const quantity = Number(prompt("Enter quantity:"));
   if (!Number.isInteger(quantity) || quantity < 0) {
@@ -119,11 +110,13 @@ async function updateQuant(isbn) {
   try {
     const res = await apiFetch(`/update_quantity`, {
       method: "POST",
-      body: JSON.stringify({isbn, quantity})
+      body: JSON.stringify({ isbn, quantity })
     });
 
     if (!res.ok) throw new Error("Update failed");
+    const data = await res.json();
     alert("Quantity has been updated");
+    console.log("Backend response:", data);
   } catch (err) {
     console.error(err);
     alert("Update failed");
@@ -163,7 +156,13 @@ bookForm?.addEventListener("submit", async e => {
       method: "POST",
       body: JSON.stringify(newBook)
     });
+
+    if (!res.ok) throw new Error("Failed to add book");
+    const data = await res.json();
+    inventory.push(data);
+    renderInventory(inventory);
   } catch (err) {
+    console.error(err);
     alert("Failed to add book");
   }
 });
@@ -173,6 +172,7 @@ bookForm?.addEventListener("submit", async e => {
     await loadInventory();
 
 })();
+
 
 
 
