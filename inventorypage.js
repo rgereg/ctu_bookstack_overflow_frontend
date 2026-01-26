@@ -11,7 +11,7 @@ const bookForm = document.getElementById("bookForm");
 let inventory = [];
 
 if (!session || userRole !== "employee") {
-        document.getElementById("main").innerHTML = "<p>This page is for Employees Only.</p>";
+        document.getElementById("main").innerHTML = "<div id="you-are-logged-in"><p>This page is for Employees Only.</p></div>";
 }
 else {
 async function loadInventory() {
@@ -180,5 +180,6 @@ bookForm?.addEventListener("submit", async e => {
     await loadInventory();
 
 })();
+
 
 
