@@ -73,26 +73,30 @@ function wireOrderButtons() {
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
 async function updatePrice(isbn) {
   console.log(`Attempted to update price for ISBN: ${isbn}`);
+
   if (!session) {
     alert("Login required");
     return;
   }
 
-  const price = Number(prompt("Enter price:"));
-  if (isNaN(price) || price <= 0) {
+  const input = prompt("Enter new price:");
+  const price = parseFloat(input);
 
-    alert("Price can't be less than or equal to 0");
+  if (isNaN(price) || price <= 0) {
+    alert("Price must be a number greater than 0");
     return;
   }
 
   try {
-    const res = await apiFetch(`/update_price`, {
+    const res = await apiFetch("/update_price", {
       method: "POST",
-      body: JSON.stringify({isbn, price})
+      body: JSON.stringify({ isbn, price })
     });
-
+    
     if (!res.ok) throw new Error("Update failed");
-    alert("Price has been updated");
+    const data = await res.json();
+    alert(`Price updated successfully for ISBN ${isbn}`);
+    console.log("Backend response:", data);
   } catch (err) {
     console.error(err);
     alert("Update failed");
@@ -169,6 +173,7 @@ bookForm?.addEventListener("submit", async e => {
     await loadInventory();
 
 })();
+
 
 
 
