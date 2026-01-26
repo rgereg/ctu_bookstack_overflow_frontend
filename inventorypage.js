@@ -15,7 +15,7 @@ async function initPage() {
   session = await initAuth();
 
   if (!session || userRole !== "employee") {
-    main.innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
+    main.innerHTML = "<p>This page is for Employees Only.</p>";
     return;
   }
   else {
@@ -188,6 +188,7 @@ bookForm?.addEventListener("submit", async e => {
 
 //})();
 initPage();
+
 
 
 
