@@ -13,6 +13,9 @@ export let session = null;
 export let userRole = "customer";
 
 export async function apiFetch(path, options = {}) {
+  const { data } = await supabaseClient.auth.getSession();
+  const session = data.session;
+
   if (!session) {
     throw new Error("Not authenticated");
   }
