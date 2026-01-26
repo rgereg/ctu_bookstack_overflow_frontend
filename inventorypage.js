@@ -74,6 +74,29 @@ async function updatePrice(isbn) {
 
 async function updateQuant(isbn) {
   console.log(`Attempted to update quantity for ISBN: ${isbn}`)
+  if (!session) {
+    alert("Login required");
+    return;
+  }
+
+  const quantity = Number(prompt("Enter quantity:"));
+  if (!Number.isInteger(quantity) || quantity < 0) {
+    alert("Quantity in stock can't be less than 0");
+    return;
+  }
+
+  try {
+    const res = await apiFetch(`${API_BASE}/update_quantity`, {
+      method: "POST",
+      body: JSON.stringify({isbn, quantity})
+    });
+
+    if (!res.ok) throw new Error("Update failed");
+    alert("Quantity has been updated");
+  } catch (err) {
+    console.error(err);
+    alert("Update failed");
+  }
 }
 
 searchInput?.addEventListener("input", e => {
