@@ -13,7 +13,7 @@ export let session = null;
 
 export async function apiFetch(path, options = {}) {
   const { data } = await supabaseClient.auth.getSession();
-  const session = data.session;
+  session = data.session;
 
   if (!session) {
     throw new Error("Not authenticated");
@@ -33,28 +33,23 @@ export async function initAuth() {
   const { data } = await supabaseClient.auth.getSession();
   session = data.session;
 
+  userRole = session?.user?.user_metadata?.role || "customer";
+  
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const loggedInMsg = document.getElementById("you-are-logged-in");
   const loginFormContainer = document.getElementById("login-form-container");
 
   if (session) {
-    userRole = session.user?.user_metadata?.role || "customer";
-
     loginBtn?.classList.add("hidden");
     logoutBtn?.classList.remove("hidden");
     loginFormContainer?.classList.add("hidden");
     loggedInMsg?.classList.remove("hidden");
-
-    if (userRole !== "employee") {
-  document.querySelectorAll(".eonly").forEach(el => el.style.display = "none"
-  )}
-} else {
+  } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
-    document.querySelectorAll(".eonly").forEach(el => el.style.display = "none"
-  )}
+  }
   
   return userRole;
 }
