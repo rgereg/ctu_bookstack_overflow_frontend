@@ -47,13 +47,13 @@ export async function initAuth() {
 
     if (userRole !== "employee") {
   document.querySelectorAll(".eonly").forEach(el => el.style.display = "none"
-  }
+  )}
 } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
     document.querySelectorAll(".eonly").forEach(el => el.style.display = "none"
-  }
+  )}
   
   return userRole;
 }
