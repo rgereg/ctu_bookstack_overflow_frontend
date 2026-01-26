@@ -199,6 +199,7 @@ button:hover {
   max-width: 150px;
   margin-left: 10px;
   width:30%;
+  height:auto;
 }
 
 .shareline {
