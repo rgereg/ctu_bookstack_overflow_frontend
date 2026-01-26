@@ -38,7 +38,6 @@ export async function initAuth() {
 
   if (session) {
     userRole = session.user?.user_metadata?.role || "customer";
-    console.log(userRole);
 
     loginBtn?.classList.add("hidden");
     logoutBtn?.classList.remove("hidden");
@@ -58,6 +57,7 @@ export async function initAuth() {
     el.style.display = "none";
   });
   }
+  return userRole;
 }
 
 document.getElementById("logoutBtn")?.addEventListener("click", async () => {
@@ -110,4 +110,4 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   window.location.href = "../index.html";
 });
 
-initAuth();
+userRole = initAuth();

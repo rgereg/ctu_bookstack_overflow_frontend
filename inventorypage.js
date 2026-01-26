@@ -72,7 +72,7 @@ function wireOrderButtons() {
   })
 }
 
-// Below are placeholder functions for updating price and quantity, gonna mess with backend to add them in
+// updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
 async function updatePrice(isbn) {
   console.log(`Attempted to update price for ISBN: ${isbn}`);
 }
