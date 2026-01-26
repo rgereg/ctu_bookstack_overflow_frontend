@@ -78,14 +78,15 @@ async function updatePrice(isbn) {
     return;
   }
 
-  const price = parseFloat(prompt("Enter price:")).toFixed(2);
-  if (!Number.isFloat(price) || price <= 0.0) {
+  const price = Number(prompt("Enter price:"));
+  if (isNaN(price) || price <= 0) {
+
     alert("Price can't be less than or equal to 0");
     return;
   }
 
   try {
-    const res = await apiFetch(`${API_BASE}/update_price`, {
+    const res = await apiFetch(`/update_price`, {
       method: "POST",
       body: JSON.stringify({isbn, price})
     });
@@ -168,6 +169,7 @@ bookForm?.addEventListener("submit", async e => {
     await loadInventory();
 
 })();
+
 
 
 
