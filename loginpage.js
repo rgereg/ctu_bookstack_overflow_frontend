@@ -51,10 +51,19 @@ export async function initAuth() {
     logoutBtn?.classList.remove("hidden");
     loginFormContainer?.classList.add("hidden");
     loggedInMsg?.classList.remove("hidden");
+    if (userRole !== "employee") {
+      document.querySelectorAll(".eonly").forEach(el => {
+        el.style.display = "none";
+      });
+    }
+    
   } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
+    document.querySelectorAll(".eonly").forEach(el => {
+        el.style.display = "none";
+      });
   }
   
   return userRole;
