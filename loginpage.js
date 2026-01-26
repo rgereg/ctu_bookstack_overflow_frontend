@@ -8,8 +8,6 @@ export const supabaseClient = createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
-
-export let session = null;
 export let userRole = "customer";
 
 export async function apiFetch(path, options = {}) {
@@ -48,18 +46,15 @@ export async function initAuth() {
     loggedInMsg?.classList.remove("hidden");
 
     if (userRole !== "employee") {
-  document.querySelectorAll(".eonly").forEach(el => {
-    el.style.display = "none";
-  });
-}
-  } else {
+  document.querySelectorAll(".eonly").forEach(el => el.style.display = "none"
+  }
+} else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
-    document.querySelectorAll(".eonly").forEach(el => {
-    el.style.display = "none";
-  });
+    document.querySelectorAll(".eonly").forEach(el => el.style.display = "none"
   }
+  
   return userRole;
 }
 
