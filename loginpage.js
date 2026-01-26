@@ -38,7 +38,7 @@ export async function apiFetch(path, options = {}) {
 export async function initAuth() {
   const { data } = await supabaseClient.auth.getSession();
   session = data.session;
-  }
+  
   userRole = session?.user?.user_metadata?.role || "customer";
   
   const loginBtn = document.getElementById("loginBtn");
