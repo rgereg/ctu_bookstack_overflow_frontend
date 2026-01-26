@@ -19,6 +19,12 @@ export async function apiFetch(path, options = {}) {
     throw new Error("Not authenticated");
   }
 
+// Debug: print session and token every time apiFetch is called
+  console.log("apiFetch called with path:", path);
+  console.log("Current session:", session);
+  console.log("Access token:", session.access_token);
+// remove above later just for debugging session problems
+
   return fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -32,7 +38,15 @@ export async function apiFetch(path, options = {}) {
 export async function initAuth() {
   const { data } = await supabaseClient.auth.getSession();
   session = data.session;
-
+  
+//for debug remove below later
+  console.log("Current session:", session);
+  if (session) {
+    console.log("Access token:", session.access_token);
+  const payload = JSON.parse(atob(session.access_token.split('.')[1]));
+    console.log("JWT payload:", payload);
+//for debug remove above later
+    
   userRole = session?.user?.user_metadata?.role || "customer";
   
   const loginBtn = document.getElementById("loginBtn");
