@@ -11,12 +11,17 @@ const bookForm = document.getElementById("bookForm");
 let inventory = [];
 let session = null;
 
-session = await initAuth();
+async function initPage() {
+  session = await initAuth();
 
-if (!session || userRole !== "employee") {
-        document.getElementById("main").innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
+  if (!session || userRole !== "employee") {
+    main.innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
+    return;
+  }
+  else {
+        await loadInventory();
+  }
 }
-else {
 async function loadInventory() {
   try {
     const res = await fetch(`${API_BASE}/books`);
@@ -176,13 +181,13 @@ bookForm?.addEventListener("submit", async e => {
     alert("Failed to add book");
   }
 });
-}
 
-(async function initPage() {
-    await initAuth();
-    await loadInventory();
+//(async function initPage() {
+    //await initAuth();
+    //await loadInventory();
 
-})();
+//})();
+
 
 
 
