@@ -4,6 +4,9 @@ const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
 const searchInput = document.getElementById("search");
+const addBook = document.getElementById("addBook");
+const addForm = document.getElementById("add-form-container");
+const bookForm = document.getElementById("bookForm");
 
 let inventory = [];
 
@@ -70,6 +73,29 @@ function wireOrderButtons() {
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
 async function updatePrice(isbn) {
   console.log(`Attempted to update price for ISBN: ${isbn}`);
+  if (!session) {
+    alert("Login required");
+    return;
+  }
+
+  const price = parseFloat(prompt("Enter price:")).toFixed(2);
+  if (!Number.isFloat(price) || price <= 0.0) {
+    alert("Price can't be less than or equal to 0");
+    return;
+  }
+
+  try {
+    const res = await apiFetch(`${API_BASE}/update_price`, {
+      method: "POST",
+      body: JSON.stringify({isbn, price})
+    });
+
+    if (!res.ok) throw new Error("Update failed");
+    alert("Price has been updated");
+  } catch (err) {
+    console.error(err);
+    alert("Update failed");
+  }
 }
 
 async function updateQuant(isbn) {
@@ -109,6 +135,32 @@ searchInput?.addEventListener("input", e => {
   );
 
   renderInventory(filtered);
+});
+
+addBook?.addEventListener("click", () => {
+  addForm.classList.toggle("hidden");
+});
+
+bookForm?.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const newBook = {
+    title: title.value,
+    author: author.value,
+    isbn: isbn.value,
+    description: description.value,
+    price: parseFloat(price.value),
+    quantity: parseInt(quantity.value)
+  };
+
+  try {
+    const res = await apiFetch("/books", {
+      method: "POST",
+      body: JSON.stringify(newBook)
+    });
+  } catch (err) {
+    alert("Failed to add book");
+  }
 });
 
 (async function initPage() {
