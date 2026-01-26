@@ -112,7 +112,7 @@ async function updateQuant(isbn) {
   }
 
   try {
-    const res = await apiFetch(`${API_BASE}/update_quantity`, {
+    const res = await apiFetch(`/update_quantity`, {
       method: "POST",
       body: JSON.stringify({isbn, quantity})
     });
