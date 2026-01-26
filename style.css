@@ -195,7 +195,7 @@ button:hover {
 }
 
 .item img {
-  flex:1;
+  /*flex:1;*/
   max-width: 150px;
   margin-left: 10px;
 }
