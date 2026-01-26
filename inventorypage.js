@@ -42,16 +42,8 @@ function renderInventory(data) {
         <div class="itemnonimage">
           <h1>${book.title}</h1>
           <p>ISBN: ${book.isbn}</p>
-          <h3>$${Number(book.price).toFixed(2)}</h3><button class="priceUpdateBtn" data-isbn="${book.isbn}>Update Price</button>
-          <h3>Qty. ${book.quantity}</h3><button class="quantUpdateBtn" data-isbn="${book.isbn}>Update Quantity</button>
-                
-
-          ${
-            session
-              ? `<button class="priceUpdateBtn" data-isbn="${book.isbn}>Update Price</button>
-                <button class="quantUpdateBtn" data-isbn="${book.isbn}>Update Quantity</button>`
-              : ""
-          }
+          <h3>$${Number(book.price).toFixed(2)}</h3><button class="priceUpdateBtn" data-isbn="${book.isbn}">Update Price</button>
+          <h3>Qty. ${book.quantity}</h3><button class="quantUpdateBtn" data-isbn="${book.isbn}">Update Quantity</button>
         </div>
       `;
 
@@ -99,4 +91,5 @@ searchInput?.addEventListener("input", e => {
     await loadInventory();
 
 })();
+
 
