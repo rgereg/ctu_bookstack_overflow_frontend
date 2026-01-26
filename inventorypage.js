@@ -15,7 +15,7 @@ async function initPage() {
   session = await initAuth();
 
   if (!session || userRole !== "employee") {
-    main.innerHTML = "<p>This page is for Employees Only.</p>";
+    main.innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
     return;
   }
   else {
@@ -31,7 +31,7 @@ async function loadInventory() {
     renderInventory(inventory);
   } catch (err) {
     console.error(err);
-    main.innerHTML = "<p>Error loading books.</p>";
+    main.innerHTML = "<div id='message'><p>Error loading books.</p></div>";
   }
 }
 
@@ -39,7 +39,7 @@ function renderInventory(data) {
     main.innerHTML = "";
 
     if (!data.length) {
-        main.innerHTML = "<p>No books found.</p>";
+        main.innerHTML = "<div id='message'><p>No books found.</p></div>";
         return;
     }
 
@@ -188,6 +188,7 @@ bookForm?.addEventListener("submit", async e => {
 
 //})();
 initPage();
+
 
 
 
