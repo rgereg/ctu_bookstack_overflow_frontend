@@ -10,6 +10,10 @@ const bookForm = document.getElementById("bookForm");
 
 let inventory = [];
 
+if (!session || userRole !== "employee") {
+        document.getElementById("main").innerHTML = "<p>This page is for Employees Only.</p>";
+}
+else {
 async function loadInventory() {
   try {
     const res = await fetch(`${API_BASE}/books`);
@@ -169,10 +173,12 @@ bookForm?.addEventListener("submit", async e => {
     alert("Failed to add book");
   }
 });
+}
 
 (async function initPage() {
     await initAuth();
     await loadInventory();
 
 })();
+
 
