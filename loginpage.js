@@ -110,4 +110,4 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   window.location.href = "../index.html";
 });
 
-userRole = initAuth();
+initAuth();

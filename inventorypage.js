@@ -46,7 +46,7 @@ function renderInventory(data) {
           <h3>Qty. ${book.quantity}</h3>
 
           ${
-            session && userRole === "employee"
+            session
               ? `<button class="priceUpdateBtn" data-isbn="${book.isbn}>Update Price</button>
                 <button class="quantUpdateBtn" data-isbn="${book.isbn}>Update Quantity</button>`
               : ""
