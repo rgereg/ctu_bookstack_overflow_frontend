@@ -83,7 +83,7 @@ function wireOrderButtons() {
 }
 
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
-async function updatePrice(id) {
+async function updatePrice(title) {
   console.log(`Attempted to update price for ISBN: ${isbn}`);
 
   const input = prompt("Enter new price:");
@@ -110,7 +110,7 @@ async function updatePrice(id) {
   }
 }
 
-async function updateQuant(id) {
+async function updateQuant(title) {
   console.log(`Attempted to update quantity for ISBN: ${isbn}`)
 
   const quantity = Number(prompt("Enter quantity:"));
@@ -188,6 +188,7 @@ bookForm?.addEventListener("submit", async e => {
 
 //})();
 initPage();
+
 
 
 
