@@ -70,14 +70,18 @@ function renderInventory(data) {
 function wireOrderButtons() {
   document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      const isbn = btn.dataset.isbn;
-      await updatePrice(isbn);
+      //const isbn = btn.dataset.isbn; sorry
+      //await updatePrice(isbn);
+      const title = btn.dataset.title;
+      await updatePrice(title);
     });
   });
   document.querySelectorAll(".quantUpdateBtn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      const isbn = btn.dataset.isbn;
-      await updateQuant(isbn);
+      //const isbn = btn.dataset.isbn;
+      //await updateQuant(isbn);
+      const title = btn.dataset.title;
+      await updateQuant(title);
     });
   });
 }
@@ -189,6 +193,7 @@ bookForm?.addEventListener("submit", async e => {
 
 //})();
 initPage();
+
 
 
 
