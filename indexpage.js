@@ -42,7 +42,7 @@ function renderInventory(data) {
         <h1>${item.title}</h1>
         <h2>by ${item.author}</h2>
         <p>ISBN: ${item.isbn}</p>
-        <p>${item.description || ""}${item.id}</p>
+        <p>${item.description || ""}</p>
 
         <div class="shareline">
           <h3 class="price">$${Number(item.price).toFixed(2)}</h3>
