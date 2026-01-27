@@ -70,25 +70,21 @@ function renderInventory(data) {
 function wireOrderButtons() {
   document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      //const isbn = btn.dataset.isbn; sorry
-      //await updatePrice(isbn);
-      const title = btn.dataset.title;
-      await updatePrice(title);
+      const isbn = btn.dataset.isbn;
+      await updatePrice(isbn);
     });
   });
   document.querySelectorAll(".quantUpdateBtn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      //const isbn = btn.dataset.isbn;
-      //await updateQuant(isbn);
-      const title = btn.dataset.title;
-      await updateQuant(title);
+      const isbn = btn.dataset.isbn;
+      await updateQuant(isbn);
     });
   });
 }
 
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
-async function updatePrice(title) {
-  console.log(`Attempted to update price for title: ${title}`);
+async function updatePrice(isbn) {
+  console.log(`Attempted to update price for isbn: ${isbn}`);
 
   const input = prompt("Enter new price:");
   const price = parseFloat(input);
@@ -101,12 +97,12 @@ async function updatePrice(title) {
   try {
     const res = await apiFetch("/update_price", {
       method: "POST",
-      body: JSON.stringify({ title, price })
+      body: JSON.stringify({ isbn, price })
     });
     
     if (!res.ok) throw new Error("Update failed");
     const data = await res.json();
-    alert(`Price updated successfully for title ${title}`);
+    alert(`Price updated successfully for isbn ${isbn}`);
     console.log("Backend response:", data);
   } catch (err) {
     console.error(err);
@@ -114,8 +110,8 @@ async function updatePrice(title) {
   }
 }
 
-async function updateQuant(title) {
-  console.log(`Attempted to update quantity for title: ${title}`)
+async function updateQuant(isbn) {
+  console.log(`Attempted to update quantity for isbn: ${isbn}`)
 
   const quantity = Number(prompt("Enter quantity:"));
   
@@ -127,7 +123,7 @@ async function updateQuant(title) {
   try {
     const res = await apiFetch(`/update_quantity`, {
       method: "POST",
-      body: JSON.stringify({ title, quantity })
+      body: JSON.stringify({ isbn, quantity })
     });
 
     if (!res.ok) {
@@ -135,7 +131,7 @@ async function updateQuant(title) {
     }
     
     const data = await res.json();
-    alert(`Quantity has been updated for title: ${title}`);
+    alert(`Quantity has been updated for isbn: ${isbn}`);
     console.log("Backend response:", data);
   } catch (err) {
     console.error(err);
@@ -187,12 +183,13 @@ bookForm?.addEventListener("submit", async e => {
   }
 });
 
-//(async function initPage() {
-    //await initAuth();
-    //await loadInventory();
+(async function initPage() {
+    await initAuth();
+    await loadInventory();
 
-//})();
-initPage();
+})();
+//initPage(); why
+
 
 
 
