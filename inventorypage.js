@@ -57,8 +57,17 @@ function renderInventory(data) {
         <div class="itemnonimage">
           <h1>${book.title}</h1>
           <p>ISBN: ${book.isbn}</p>
-          <h3>$${Number(book.price).toFixed(2)} <button class="priceUpdateBtn" data-isbn="${book.isbn}">Update Price</button></h3>
-          <h3>Qty. ${book.quantity} <button class="quantUpdateBtn" data-isbn="${book.isbn}">Update Quantity</button></h3>
+          <h3>  $<span class="price" data-isbn="${book.isbn}"> 
+                ${Number(book.price).toFixed(2)} </span>
+                <button class="priceUpdateBtn" data-isbn="${book.isbn}">Update Price</button>
+          </h3>
+
+          <h3>
+                Qty. <span class="quantity" data-isbn="${book.isbn}">
+                ${book.quantity} </span>
+                <button class="quantUpdateBtn" data-isbn="${book.isbn}">Update Quantity</button>
+          </h3>
+
         </div>
       `;
 
@@ -189,6 +198,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
