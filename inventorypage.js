@@ -73,23 +73,19 @@ function renderInventory(data) {
 
       main.appendChild(div);
     });
-  wireOrderButtons();
+  wireUpdateButtons();
 }
 
-function wireOrderButtons() {
+function wireUpdateButtons() {
   document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const isbn = btn.dataset.isbn;
-      await updatePrice(isbn);
-    });
+    btn.onclick = () => enableInlineEdit(btn.dataset.isbn, "price");
   });
+
   document.querySelectorAll(".quantUpdateBtn").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const isbn = btn.dataset.isbn;
-      await updateQuant(isbn);
-    });
+    btn.onclick = () => enableInlineEdit(btn.dataset.isbn, "quantity");
   });
 }
+
 
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
 async function updatePrice(isbn) {
@@ -198,6 +194,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
