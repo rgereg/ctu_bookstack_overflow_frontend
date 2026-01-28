@@ -224,6 +224,23 @@ const card = valueSpan.closest(".item");
       }
     }
 
+    // NO Operation Check: Do NOT submit if value did not change
+  if (field === "price") {
+    const oldValue = parseFloat(originalText);
+    if (!Number.isNaN(oldValue) && newValue === oldValue) {
+      showInlineStatus(card, "No changes to save.", "error");
+      cancelEdit();
+      return;
+    }
+  } else {
+    const oldValue = Number(originalText);
+    if (Number.isInteger(oldValue) && newValue === oldValue) {
+      showInlineStatus(card, "No changes to save.", "error");
+      cancelEdit();
+      return;
+    }
+  }
+      
     const payload = field === "price" ? { price: newValue } : { quantity: newValue };
 
     try {
@@ -394,6 +411,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
