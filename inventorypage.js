@@ -88,7 +88,7 @@ function wireUpdateButtons() {
 }
 
 
-/**
+/** ENABLE INLINE EDIT OF QTY / PRICE
  * Enables inline editing for a single field (price or quantity) on a book item.
  *
  * This function:
@@ -109,7 +109,7 @@ function wireUpdateButtons() {
  */
 function enableInlineEdit(btn, field) {
   const isbn = btn.dataset.isbn;
-
+  
   // Locate the book card for the clicked button
   const item = btn.closest(".item");
   if (!item) return;
@@ -128,6 +128,9 @@ function enableInlineEdit(btn, field) {
   );
   if (!valueSpan) return;
 
+  // Reference the full book card for inline status messages
+const card = valueSpan.closest(".item");
+  
   // Instruction line at the bottom of the card
   const hint = item.querySelector(".editHint");
 
@@ -184,6 +187,32 @@ function enableInlineEdit(btn, field) {
     const raw = input.value.trim();
     const newValue = field === "price" ? parseFloat(raw) : Number(raw);
 
+ /* Helper: Inline success/error message for book update.
+  * Instead of popups, we will:
+    - Show a small status message at the bottom of the book card
+    - Green text for success
+    - Red text for errors
+    - Auto-hide after a few seconds*/
+  function showInlineStatus(card, message, type = "success") {
+  let status = card.querySelector(".inline-status");
+
+  if (!status) {
+    status = document.createElement("div");
+    status.className = "inline-status hidden";
+    card.appendChild(status);
+  }
+
+  status.textContent = message;
+  status.className = `inline-status ${type}`;
+  status.classList.remove("hidden");
+
+  setTimeout(() => {
+    status.classList.add("hidden");
+  }, 3000);
+}
+
+
+      
     // Validate
     if (field === "price") {
       if (Number.isNaN(newValue) || newValue <= 0) {
@@ -367,6 +396,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
