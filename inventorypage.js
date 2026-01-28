@@ -77,7 +77,6 @@ function renderInventory(data) {
 }
 
 function wireUpdateButtons() {
-  console.log("wireUpdateButtons executed");
   document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
     btn.onclick = () => enableInlineEdit(btn.dataset.isbn, "price");
   });
@@ -87,7 +86,88 @@ function wireUpdateButtons() {
   });
 }
 
+/**
+ * Enables inline editing for a single field (price or quantity) on a book item.
+ *
+ * This function:
+ * 1. Locates the correct book card in the DOM using the ISBN
+ * 2. Replaces the displayed value (price or quantity) with an editable input
+ * 3. Pre-fills the input with the current value
+ * 4. Converts the "Update" button into a "Save" button
+ * 5. Sends the update to the backend using the unified PUT /books/{isbn} route
+ * 6. Updates the UI only after the database confirms success
+ *
+ * @param {string} isbn - ISBN of the book being edited
+ * @param {"price"|"quantity"} field - Which field to edit
+ */
+function enableInlineEdit(isbn, field) {
+  const item = document.querySelector(`[data-isbn="${isbn}"]`).closest(".item");
 
+  const valueEl = field === "price"
+    ? item.querySelector("h3")
+    : item.querySelectorAll("h3")[1];
+
+  const button = item.querySelector(
+    field === "price" ? ".priceUpdateBtn" : ".quantUpdateBtn"
+  );
+
+  const currentValue = field === "price"
+    ? parseFloat(valueEl.textContent.replace("$", ""))
+    : parseInt(valueEl.textContent.replace("Qty.", "").trim());
+
+  // Replace text with input
+  const input = document.createElement("input");
+  input.type = "number";
+  input.value = currentValue;
+  input.step = field === "price" ? "0.01" : "1";
+  input.min = "0";
+  input.style.width = "80px";
+
+  valueEl.innerHTML = "";
+  valueEl.appendChild(input);
+
+  // Convert button into Save
+  button.textContent = "Save";
+  button.onclick = async () => {
+    const newValue = field === "price"
+      ? parseFloat(input.value)
+      : parseInt(input.value);
+
+    if (isNaN(newValue) || newValue < 0) {
+      alert("Invalid value");
+      return;
+    }
+
+    const payload = {};
+    payload[field] = newValue;
+
+    try {
+      const res = await apiFetch(`/books/${isbn}`, {
+        method: "PUT",
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("Update failed");
+
+      // Update UI
+      valueEl.textContent = field === "price"
+        ? `$${newValue.toFixed(2)}`
+        : `Qty. ${newValue}`;
+
+      button.textContent = field === "price" ? "Update Price" : "Update Quantity";
+
+      // Rewire buttons cleanly
+      wireUpdateButtons();
+
+      alert("Update successful");
+    } catch (err) {
+      console.error(err);
+      alert("Update failed");
+    }
+  };
+}
+
+/*
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
 async function updatePrice(isbn) {
   console.log(`Attempted to update price for isbn: ${isbn}`);
@@ -144,7 +224,8 @@ async function updateQuant(isbn) {
     alert("Update failed");
   }
 }
-
+*/
+  
 searchInput?.addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
 
@@ -195,6 +276,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
