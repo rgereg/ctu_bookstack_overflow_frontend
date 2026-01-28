@@ -78,13 +78,14 @@ function renderInventory(data) {
 
 function wireUpdateButtons() {
   document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
-    btn.onclick = () => enableInlineEdit(btn.dataset.isbn, "price");
+    btn.onclick = () => enableInlineEdit(btn, "price");
   });
 
   document.querySelectorAll(".quantUpdateBtn").forEach(btn => {
-    btn.onclick = () => enableInlineEdit(btn.dataset.isbn, "quantity");
+    btn.onclick = () => enableInlineEdit(btn, "quantity");
   });
 }
+
 
 /**
  * Enables inline editing for a single field (price or quantity) on a book item.
@@ -100,20 +101,20 @@ function wireUpdateButtons() {
  * @param {string} isbn - ISBN of the book being edited
  * @param {"price"|"quantity"} field - Which field to edit
  */
-function enableInlineEdit(isbn, field) {
-  const valueSpan = document.querySelector(
-    field === "price"
-      ? `.price[data-isbn="${CSS.escape(isbn)}"]`
-      : `.quantity[data-isbn="${CSS.escape(isbn)}"]`
+function enableInlineEdit(btn, field) {
+  const isbn = btn.dataset.isbn;
+
+  // Find the card the clicked button belongs to
+  const item = btn.closest(".item");
+  if (!item) return;
+
+  // Find the correct span inside THIS card only (so we do not accidentally target a different book)
+  const valueSpan = item.querySelector(
+    field === "price" ? `.price[data-isbn="${CSS.escape(isbn)}"]`
+                      : `.quantity[data-isbn="${CSS.escape(isbn)}"]`
   );
 
-  const button = document.querySelector(
-    field === "price"
-      ? `.priceUpdateBtn[data-isbn="${CSS.escape(isbn)}"]`
-      : `.quantUpdateBtn[data-isbn="${CSS.escape(isbn)}"]`
-  );
-
-  if (!valueSpan || !button) return;
+  if (!valueSpan) return;
 
   // If already editing, treat click as submit
   const existingInput = valueSpan.querySelector("input");
@@ -150,8 +151,8 @@ function enableInlineEdit(isbn, field) {
           ? newValue.toFixed(2)
           : String(newValue);
 
-        // Restore button label
-        button.textContent = field === "price" ? "Update Price" : "Update Quantity";
+        // Restore button label on the SAME button that was clicked
+        btn.textContent = field === "price" ? "Update Price" : "Update Quantity";
 
         // Update local inventory state
         const i = inventory.findIndex(b => b.isbn === isbn);
@@ -182,11 +183,13 @@ function enableInlineEdit(isbn, field) {
   valueSpan.textContent = "";
   valueSpan.appendChild(input);
 
-  button.textContent = "Submit";
+  // Change clicked button text to Submit
+  btn.textContent = "Submit";
 
   input.focus();
   input.select();
 }
+
 
 
 /*
@@ -298,6 +301,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
