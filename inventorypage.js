@@ -241,7 +241,17 @@ const card = valueSpan.closest(".item");
     }
   }
       
-    const payload = field === "price" ? { price: newValue } : { quantity: newValue };
+  const book = inventory.find(b => b.isbn === isbn);
+if (!book) {
+  showInlineStatus(card, "Book not found in local inventory.", "error");
+  return;
+}
+
+const payload =
+  field === "price"
+    ? { price: newValue, quantity: book.quantity }
+    : { price: book.price, quantity: newValue };
+  
 
     try {
       // Optional: prevent double submit
@@ -268,6 +278,7 @@ const card = valueSpan.closest(".item");
         if (field === "price") inventory[i].price = newValue;
         else inventory[i].quantity = newValue;
       }
+
 
       // Restore buttons and hint
       btn.textContent = originalBtnText;
@@ -411,6 +422,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
