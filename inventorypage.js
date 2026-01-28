@@ -87,6 +87,30 @@ function wireUpdateButtons() {
   });
 }
 
+/* Helper: Show Inline Status:
+  Inline success/error message for book update.
+  * Instead of popups, we will:
+    - Show a small status message at the bottom of the book card
+    - Green text for success
+    - Red text for errors
+    - Auto-hide after a few seconds*/
+  function showInlineStatus(card, message, type = "success") {
+  let status = card.querySelector(".inline-status");
+
+  if (!status) {
+    status = document.createElement("div");
+    status.className = "inline-status hidden";
+    card.appendChild(status);
+  }
+
+  status.textContent = message;
+  status.className = `inline-status ${type}`;
+  status.classList.remove("hidden");
+
+  setTimeout(() => {
+    status.classList.add("hidden");
+  }, 3000);
+}
 
 /** ENABLE INLINE EDIT OF QTY / PRICE
  * Enables inline editing for a single field (price or quantity) on a book item.
@@ -187,41 +211,15 @@ const card = valueSpan.closest(".item");
     const raw = input.value.trim();
     const newValue = field === "price" ? parseFloat(raw) : Number(raw);
 
- /* Helper: Inline success/error message for book update.
-  * Instead of popups, we will:
-    - Show a small status message at the bottom of the book card
-    - Green text for success
-    - Red text for errors
-    - Auto-hide after a few seconds*/
-  function showInlineStatus(card, message, type = "success") {
-  let status = card.querySelector(".inline-status");
-
-  if (!status) {
-    status = document.createElement("div");
-    status.className = "inline-status hidden";
-    card.appendChild(status);
-  }
-
-  status.textContent = message;
-  status.className = `inline-status ${type}`;
-  status.classList.remove("hidden");
-
-  setTimeout(() => {
-    status.classList.add("hidden");
-  }, 3000);
-}
-
-
-      
     // Validate
     if (field === "price") {
       if (Number.isNaN(newValue) || newValue <= 0) {
-        alert("Price must be a number greater than 0");
+        showInlineStatus(card, "Price must be a number greater than 0", "error");
         return;
       }
     } else {
       if (!Number.isInteger(newValue) || newValue < 0) {
-        alert("Quantity cannot be less than 0");
+        showInlineStatus(card, "Quantity cannot be less than 0", "error");
         return;
       }
     }
@@ -262,12 +260,12 @@ const card = valueSpan.closest(".item");
       if (otherBtn) otherBtn.disabled = false;
       wireUpdateButtons();
 
-      alert("Update successful");
+      showInlineStatus(card, "Update successful", "success");
     } catch (err) {
       console.error(err);
       btn.disabled = false;
       cancelBtn.disabled = false;
-      alert(err.message || "Update failed");
+      showInlineStatus(card, err.message || "Update failed", "error");
     }
   };
 
@@ -396,26 +394,4 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
