@@ -213,7 +213,7 @@ const card = valueSpan.closest(".item");
 
     // Validate
     if (field === "price") {
-      if (Number.isNaN(newValue) || newValue = 0) {
+      if (Number.isNaN(newValue) || newValue < 0) {
         showInlineStatus(card, "Price cannot be less than 0.00", "error");
         return;
       }
@@ -394,5 +394,6 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
