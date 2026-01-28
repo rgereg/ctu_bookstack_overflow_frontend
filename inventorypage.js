@@ -77,6 +77,7 @@ function renderInventory(data) {
 }
 
 function wireUpdateButtons() {
+  console.log("wireUpdateButtons executed");
   document.querySelectorAll(".priceUpdateBtn").forEach(btn => {
     btn.onclick = () => enableInlineEdit(btn.dataset.isbn, "price");
   });
@@ -194,6 +195,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
