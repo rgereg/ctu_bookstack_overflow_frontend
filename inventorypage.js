@@ -101,71 +101,93 @@ function wireUpdateButtons() {
  * @param {"price"|"quantity"} field - Which field to edit
  */
 function enableInlineEdit(isbn, field) {
-  const item = document.querySelector(`[data-isbn="${isbn}"]`).closest(".item");
-
-  const valueEl = field === "price"
-    ? item.querySelector("h3")
-    : item.querySelectorAll("h3")[1];
-
-  const button = item.querySelector(
-    field === "price" ? ".priceUpdateBtn" : ".quantUpdateBtn"
+  const valueSpan = document.querySelector(
+    field === "price"
+      ? `.price[data-isbn="${CSS.escape(isbn)}"]`
+      : `.quantity[data-isbn="${CSS.escape(isbn)}"]`
   );
 
-  const currentValue = field === "price"
-    ? parseFloat(valueEl.textContent.replace("$", ""))
-    : parseInt(valueEl.textContent.replace("Qty.", "").trim());
+  const button = document.querySelector(
+    field === "price"
+      ? `.priceUpdateBtn[data-isbn="${CSS.escape(isbn)}"]`
+      : `.quantUpdateBtn[data-isbn="${CSS.escape(isbn)}"]`
+  );
 
-  // Replace text with input
-  const input = document.createElement("input");
-  input.type = "number";
-  input.value = currentValue;
-  input.step = field === "price" ? "0.01" : "1";
-  input.min = "0";
-  input.style.width = "80px";
+  if (!valueSpan || !button) return;
 
-  valueEl.innerHTML = "";
-  valueEl.appendChild(input);
+  // If already editing, treat click as submit
+  const existingInput = valueSpan.querySelector("input");
+  if (existingInput) {
+    const raw = existingInput.value.trim();
+    const newValue = field === "price" ? parseFloat(raw) : Number(raw);
 
-  // Convert button into Save
-  button.textContent = "Save";
-  button.onclick = async () => {
-    const newValue = field === "price"
-      ? parseFloat(input.value)
-      : parseInt(input.value);
-
-    if (isNaN(newValue) || newValue < 0) {
-      alert("Invalid value");
-      return;
+    if (field === "price") {
+      if (Number.isNaN(newValue) || newValue <= 0) {
+        alert("Price must be a number greater than 0");
+        return;
+      }
+    } else {
+      if (!Number.isInteger(newValue) || newValue < 0) {
+        alert("Quantity cannot be less than 0");
+        return;
+      }
     }
 
-    const payload = {};
-    payload[field] = newValue;
+    const payload = field === "price" ? { price: newValue } : { quantity: newValue };
 
-    try {
-      const res = await apiFetch(`/books/${isbn}`, {
-        method: "PUT",
-        body: JSON.stringify(payload)
+    apiFetch(`/books/${encodeURIComponent(isbn)}`, {
+      method: "PUT",
+      body: JSON.stringify(payload)
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || "Update failed");
+        }
+
+        // Update displayed value
+        valueSpan.textContent = field === "price"
+          ? newValue.toFixed(2)
+          : String(newValue);
+
+        // Restore button label
+        button.textContent = field === "price" ? "Update Price" : "Update Quantity";
+
+        // Update local inventory state
+        const i = inventory.findIndex(b => b.isbn === isbn);
+        if (i !== -1) {
+          if (field === "price") inventory[i].price = newValue;
+          else inventory[i].quantity = newValue;
+        }
+
+        alert("Update successful");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err.message || "Update failed");
       });
 
-      if (!res.ok) throw new Error("Update failed");
+    return;
+  }
 
-      // Update UI
-      valueEl.textContent = field === "price"
-        ? `$${newValue.toFixed(2)}`
-        : `Qty. ${newValue}`;
+  // Enter edit mode: replace span text with an input
+  const currentValue = valueSpan.textContent.trim();
 
-      button.textContent = field === "price" ? "Update Price" : "Update Quantity";
+  const input = document.createElement("input");
+  input.type = "number";
+  input.step = field === "price" ? "0.01" : "1";
+  input.value = currentValue;
+  input.style.width = "80px";
 
-      // Rewire buttons cleanly
-      wireUpdateButtons();
+  valueSpan.textContent = "";
+  valueSpan.appendChild(input);
 
-      alert("Update successful");
-    } catch (err) {
-      console.error(err);
-      alert("Update failed");
-    }
-  };
+  button.textContent = "Submit";
+
+  input.focus();
+  input.select();
 }
+
 
 /*
 // updatePrice and updateQuant are placeholder functions for updating price and quantity, gonna mess with backend to add them in
@@ -276,6 +298,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
