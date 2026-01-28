@@ -67,6 +67,7 @@ function renderInventory(data) {
                 ${book.quantity} </span>
                 <button class="quantUpdateBtn" data-isbn="${book.isbn}">Update Quantity</button>
           </h3>
+          <p class="editHint hidden">Input a new value, then press Enter to save, or Esc to cancel.</p>
 
         </div>
       `;
@@ -100,28 +101,90 @@ function wireUpdateButtons() {
  *
  * @param {string} isbn - ISBN of the book being edited
  * @param {"price"|"quantity"} field - Which field to edit
+ - Keeps everything scoped to the clicked card
+ - Adds Cancel button
+ - Shows the hint line
+ - Enter submits
+ - Esc cancels
  */
 function enableInlineEdit(btn, field) {
   const isbn = btn.dataset.isbn;
 
-  // Find the card the clicked button belongs to
+  // Locate the book card for the clicked button
   const item = btn.closest(".item");
   if (!item) return;
 
-  // Find the correct span inside THIS card only (so we do not accidentally target a different book)
-  const valueSpan = item.querySelector(
-    field === "price" ? `.price[data-isbn="${CSS.escape(isbn)}"]`
-                      : `.quantity[data-isbn="${CSS.escape(isbn)}"]`
+  // Disable the other update button on this card while editing
+  const otherBtn = item.querySelector(
+    field === "price" ? ".quantUpdateBtn" : ".priceUpdateBtn"
   );
+  if (otherBtn) otherBtn.disabled = true;
 
+  // Find the correct value span in THIS card
+  const valueSpan = item.querySelector(
+    field === "price"
+      ? `.price[data-isbn="${CSS.escape(isbn)}"]`
+      : `.quantity[data-isbn="${CSS.escape(isbn)}"]`
+  );
   if (!valueSpan) return;
+
+  // Instruction line at the bottom of the card
+  const hint = item.querySelector(".editHint");
 
   // If already editing, treat click as submit
   const existingInput = valueSpan.querySelector("input");
   if (existingInput) {
-    const raw = existingInput.value.trim();
+    existingInput.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+    return;
+  }
+
+  // Save original state so we can revert cleanly
+  const originalText = valueSpan.textContent.trim();
+  const originalBtnText = btn.textContent;
+
+  // Enter edit mode: replace span text with an input
+  const input = document.createElement("input");
+  input.type = "number";
+  input.step = field === "price" ? "0.01" : "1";
+  input.min = "0";
+  input.value = originalText;
+  input.style.width = "90px";
+
+  valueSpan.textContent = "";
+  valueSpan.appendChild(input);
+
+  // Turn Update button into Submit
+  btn.textContent = "Submit";
+
+  // Create a Cancel button (only while editing)
+  const cancelBtn = document.createElement("button");
+  cancelBtn.type = "button";
+  cancelBtn.textContent = "Cancel";
+  cancelBtn.className = "cancelUpdateBtn";
+  cancelBtn.style.marginLeft = "6px";
+
+  // Insert cancel button right after the submit button
+  btn.insertAdjacentElement("afterend", cancelBtn);
+
+  // Show hint line
+  if (hint) hint.classList.remove("hidden");
+
+  // Helper: revert UI back to original state
+  const cancelEdit = () => {
+    valueSpan.textContent = originalText;
+    btn.textContent = originalBtnText;
+    cancelBtn.remove();
+    if (hint) hint.classList.add("hidden");
+    if (otherBtn) otherBtn.disabled = false;
+    wireUpdateButtons(); // restore normal click handlers
+  };
+
+  // Helper: submit the change
+    const submitEdit = async () => {
+    const raw = input.value.trim();
     const newValue = field === "price" ? parseFloat(raw) : Number(raw);
 
+    // Validate
     if (field === "price") {
       if (Number.isNaN(newValue) || newValue <= 0) {
         alert("Price must be a number greater than 0");
@@ -136,56 +199,59 @@ function enableInlineEdit(btn, field) {
 
     const payload = field === "price" ? { price: newValue } : { quantity: newValue };
 
-    apiFetch(`/books/${encodeURIComponent(isbn)}`, {
-      method: "PUT",
-      body: JSON.stringify(payload)
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.detail || "Update failed");
-        }
+    try {
+      // Optional: prevent double submit
+      btn.disabled = true;
+      cancelBtn.disabled = true;
 
-        // Update displayed value
-        valueSpan.textContent = field === "price"
-          ? newValue.toFixed(2)
-          : String(newValue);
-
-        // Restore button label on the SAME button that was clicked
-        btn.textContent = field === "price" ? "Update Price" : "Update Quantity";
-
-        // Update local inventory state
-        const i = inventory.findIndex(b => b.isbn === isbn);
-        if (i !== -1) {
-          if (field === "price") inventory[i].price = newValue;
-          else inventory[i].quantity = newValue;
-        }
-
-        alert("Update successful");
-      })
-      .catch((err) => {
-        console.error(err);
-        alert(err.message || "Update failed");
+      const res = await apiFetch(`/books/${encodeURIComponent(isbn)}`, {
+        method: "PUT",
+        body: JSON.stringify(payload)
       });
 
-    return;
-  }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Update failed");
+      }
 
-  // Enter edit mode: replace span text with an input
-  const currentValue = valueSpan.textContent.trim();
+      // Update UI value after DB confirms success
+      valueSpan.textContent =
+        field === "price" ? newValue.toFixed(2) : String(newValue);
 
-  const input = document.createElement("input");
-  input.type = "number";
-  input.step = field === "price" ? "0.01" : "1";
-  input.value = currentValue;
-  input.style.width = "80px";
+      // Update local inventory array so search/filter stays accurate
+      const i = inventory.findIndex(b => b.isbn === isbn);
+      if (i !== -1) {
+        if (field === "price") inventory[i].price = newValue;
+        else inventory[i].quantity = newValue;
+      }
 
-  valueSpan.textContent = "";
-  valueSpan.appendChild(input);
+      // Restore buttons and hint
+      btn.textContent = originalBtnText;
+      btn.disabled = false;
+      cancelBtn.remove();
+      if (hint) hint.classList.add("hidden");
+      if (otherBtn) otherBtn.disabled = false;
+      wireUpdateButtons();
 
-  // Change clicked button text to Submit
-  btn.textContent = "Submit";
+      alert("Update successful");
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      cancelBtn.disabled = false;
+      alert(err.message || "Update failed");
+    }
+  };
 
+  // Cancel button click
+  cancelBtn.onclick = cancelEdit;
+
+  // Keyboard support: Enter submits, Esc cancels
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submitEdit();
+    if (e.key === "Escape") cancelEdit();
+  });
+
+  // Focus for fast editing
   input.focus();
   input.select();
 }
@@ -301,6 +367,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
