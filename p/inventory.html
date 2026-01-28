@@ -78,6 +78,27 @@
     #add-form-container{
       z-index: 1;
     }
+
+      .inline-status {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+  }
+  
+  .inline-status.success {
+    color: #0b6623;
+    background: rgba(11, 102, 35, 0.12);
+  }
+  
+  .inline-status.error {
+    color: #8b0000;
+    background: rgba(139, 0, 0, 0.12);
+  }
+  
+  .inline-status.hidden {
+    display: none;
+  }
   </style>
 
   <script type="module" src="../inventorypage.js"></script>
