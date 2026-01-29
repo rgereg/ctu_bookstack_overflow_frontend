@@ -401,7 +401,7 @@ bookForm?.addEventListener("submit", async e => {
   };
 
   try {
-    const res = await apiFetch("/books", {
+    const res = await apiFetch(`/books`, {
       method: "POST",
       body: JSON.stringify(newBook)
     });
@@ -422,6 +422,7 @@ bookForm?.addEventListener("submit", async e => {
 
 })();
 //initPage(); why
+
 
 
 
