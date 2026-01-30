@@ -5,6 +5,7 @@ const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 const main = document.getElementById("main");
 
 let currentOrder = [];
+let session = null;
 
 // Going to be messing with this more, using old cart loading function that was in the HTML for the page
 
