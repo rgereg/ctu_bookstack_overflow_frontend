@@ -39,10 +39,29 @@ async function initAuth() {
 
 //inventory
 async function loadInventory() {
+  if (!session) return;
+
   try {
-    const res = await fetch(`${API_BASE}/books`);
-    inventory = await res.json();
+    const token = session.access_token;
+    const res = await fetch(`${API_BASE}/books`, {
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!res.ok) throw new Error(`Failed to load inventory (${res.status})`);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      console.error("Inventory response is not an array:", data);
+      inventoryList.innerHTML = "<p>Error loading inventory</p>";
+      return;
+    }
+
+    inventory = data;
     renderInventory(inventory);
+
   } catch (err) {
     console.error(err);
     inventoryList.innerHTML = "<p>Error loading inventory</p>";
@@ -52,6 +71,7 @@ async function loadInventory() {
 function renderInventory(data) {
   inventoryList.innerHTML = "";
   if (!data.length) inventoryList.innerHTML = "<p>No books found</p>";
+
   data.forEach(book => {
     const div = document.createElement("div");
     div.className = "item";
@@ -79,15 +99,24 @@ window.updatePrice = async function(isbn) {
   if (isNaN(price) || price <= 0) return alert("Price must be greater than 0");
 
   try {
+    const token = session.access_token;
     const res = await fetch(`${API_BASE}/update_price`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json" 
+      },
       body: JSON.stringify({ isbn, price })
     });
-    if (!res.ok) throw new Error("Failed");
+
+    if (!res.ok) throw new Error("Failed to update price");
     alert("Price updated!");
     await loadInventory();
-  } catch (err) { console.error(err); alert("Failed"); }
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update price");
+  }
 };
 
 window.updateQuantity = async function(isbn) {
@@ -95,23 +124,56 @@ window.updateQuantity = async function(isbn) {
   if (!Number.isInteger(qty) || qty < 0) return alert("Quantity cannot be negative");
 
   try {
+    const token = session.access_token;
     const res = await fetch(`${API_BASE}/update_quantity`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json" 
+      },
       body: JSON.stringify({ isbn, quantity: qty })
     });
+
     if (!res.ok) throw new Error("Failed to update quantity");
     alert("Quantity updated!");
     await loadInventory();
-  } catch (err) { console.error(err); alert("Update failed"); }
+
+  } catch (err) {
+    console.error(err);
+    alert("Update failed");
+  }
 };
 
 //orders stuff
 async function loadOrders() {
+  if (!session) return;
+
   try {
-    const res = await fetch(`${API_BASE}/orders`);
-    orders = await res.json();
+    const token = session.access_token;
+    const res = await fetch(`${API_BASE}/orders`, {
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json" 
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to load orders:", res.status);
+      ordersList.innerHTML = "<p>Error loading orders</p>";
+      return;
+    }
+
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      console.error("Orders response is not an array:", data);
+      ordersList.innerHTML = "<p>Error loading orders</p>";
+      return;
+    }
+
+    orders = data;
     renderOrders(orders);
+
   } catch (err) {
     console.error(err);
     ordersList.innerHTML = "<p>Error loading orders</p>";
@@ -138,6 +200,7 @@ function renderOrders(data) {
 
 //login
 loginBtn?.addEventListener("click", () => loginFormContainer.classList.toggle("hidden"));
+
 document.getElementById("loginForm")?.addEventListener("submit", async e => {
   e.preventDefault();
   const email = document.getElementById("loginEmail").value;
@@ -145,6 +208,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async e => {
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return alert(error.message);
+
   session = data.session;
   userRole = session.user?.user_metadata?.role || "customer";
   window.location.reload();
@@ -159,7 +223,9 @@ logoutBtn?.addEventListener("click", async () => {
 searchInput?.addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
   const filteredInventory = inventory.filter(b =>
-    b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || b.isbn.includes(q)
+    b.title.toLowerCase().includes(q) ||
+    b.author.toLowerCase().includes(q) ||
+    b.isbn.includes(q)
   );
   const filteredOrders = orders.filter(o =>
     o.id.includes(q) || o.customer_id.includes(q)
