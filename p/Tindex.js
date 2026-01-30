@@ -34,7 +34,7 @@ async function initAuth() {
 //inventory stuff
 async function loadInventory() {
   try {
-    const res = await fetch("${API_BASE}/books");
+    const res = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/books");
     inventory = await res.json();
     renderInventory(inventory);
   } catch (err) {
