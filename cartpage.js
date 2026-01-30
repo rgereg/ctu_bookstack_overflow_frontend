@@ -69,7 +69,4 @@ async function loadCart() {
     }
 }
 
-(async function initPage() {
-  await initAuth();
-  await loadCart();
-})();
+initPage();
