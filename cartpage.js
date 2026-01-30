@@ -10,23 +10,14 @@ let session = null;
 // Going to be messing with this more, using old cart loading function that was in the HTML for the page
 
 async function initPage() {
-//  await initAuth();
-//
-//  if (!session || userRole !== "customer") {
-//    main.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
-//    return;
-//  }
-//  else {
-//        await loadCart();
-//  }
-  session = await initAuth();
+  await initAuth();
 
   if (!session || userRole !== "customer") {
-    main.innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
+    main.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
     return;
   }
   else {
-        main.innerHTML = "Else option";
+        await loadCart();
   }
 }
 
@@ -43,7 +34,7 @@ async function loadCart() {
 }
 
 function renderOrders(data) {
-    main.innerHTML = "";
+    main.innerHTML = "Render orders";
 
     if (!data.length) {
         main.innerHTML = "<div id='message'><p>No orders found</p></div>";
