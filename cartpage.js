@@ -42,14 +42,15 @@ function renderOrders(data) {
         return;
     }
 
-    data.forEach(order => {
+    data.forEach(item => {
         const div = document.createElement("div");
         div.className = "item";
 
         div.innerHTML = `
         <div class="itemnonimage">
-            <h1>${order.id}</h1>
-            <h2>${order.customer_id}</h2>
+            <h1>Book ID: ${item.book_id}</h1>
+            <h2>Order Quantity: ${item.quantity}</h2>
+            <h3>Unit Price: ${item.unit_price}</h3>
         </div>
         `;
 
