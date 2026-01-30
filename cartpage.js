@@ -25,6 +25,7 @@ async function initPage() {
 async function loadCart() {
     try {
       const res = await apiFetch(`/cart`);
+      console.log(res.status);
       currentOrder = await res.json();
       renderOrders(currentOrder);
     } catch (err) {
@@ -34,7 +35,7 @@ async function loadCart() {
 }
 
 function renderOrders(data) {
-    main.innerHTML = "Render orders";
+    main.innerHTML = "";
 
     if (!data.length) {
         main.innerHTML = "<div id='message'><p>No orders found</p></div>";
