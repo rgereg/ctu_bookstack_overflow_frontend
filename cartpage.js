@@ -29,43 +29,53 @@ async function loadCart() {
   }
 
   try {
-    const res = await apiFetch(`/orders`);
-    const orders = await res.json();
+    const res = await apiFetch(`/cart`);
+    const currentOrder = await res.json();
 
-    const cartOrders = orders.filter(o => o.customer_id === session.user.id && o.status === "pending");
-
-    if (cartOrders.length === 0) {
+    if (currentOrder.length === 0) {
       main.innerHTML = "<div id='message'><p>Your cart is empty.</p></div>";
       return;
     }
 
-    let html = `
-        <table>
-        <thead>
-            <tr>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-    `;
+    //let html = `
+    //    <table>
+    //    <thead>
+    //        <tr>
+    //        <th>Book</th>
+    //        <th>Quantity</th>
+    //        </tr>
+    //    </thead>
+    //    <tbody>
+    //`;
 
-    cartOrders.forEach(order => {
-        html += `
-        <tr>
-            <td>${order.book_title}</td>
-            <td>${order.quantity}</td>
-        </tr>
-        `;
+    //cartOrders.forEach(order => {
+    //    html += `
+    //    <tr>
+    //        <td>${order.book_title}</td>
+    //        <td>${order.quantity}</td>
+    //    </tr>
+    //    `;
+    //});
+
+    //html += "</tbody></table>";
+    //main.innerHTML = html;
+
+    currentOrder.forEach(order => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+        <div class="itemnonimage">
+          <h1>${order.id}</h1>
+          <h2>${order.customer_id}</h2>
+        </div>
+        `
+
+        main.appendChild(div);
     });
 
-    html += "</tbody></table>";
-    main.innerHTML = html;
-
     } catch (err) {
-    console.error(err);
-    main.innerHTML = "<div id='message'><p>Error loading cart.</p></div>";
+      console.error(err);
+      main.innerHTML = "<div id='message'><p>Error loading cart.</p></div>";
     }
 }
 
