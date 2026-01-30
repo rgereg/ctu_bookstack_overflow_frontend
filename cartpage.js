@@ -29,7 +29,7 @@ async function loadCart() {
   }
 
   try {
-    const res = await apiFetch(`/cart`);
+    const res = await fetch(`${API_BASE}/cart`);
     const currentOrder = await res.json();
 
     if (currentOrder.length === 0) {
