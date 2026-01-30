@@ -47,10 +47,17 @@ function renderCart(data) {
         div.className = "item";
 
         div.innerHTML = `
+        <img
+          src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.books.image_path}"
+          alt="${item.books.title}"
+          onerror="this.src='http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
+        />
+
         <div class="itemnonimage">
             <h1>Title: ${item.books.title}</h1>
-            <h2>Quantity: ${item.quantity}</h2>
-            <h3>Price: ${item.books.price}</h3>
+            <h2>ISBN: ${item.books.isbn}</h2>
+            <h3>Unit Price: ${Number(item.books.price).toFixed(2)}</h3>
+            <h3>Quantity in cart: ${item.quantity}</h3>
         </div>
         `;
 
