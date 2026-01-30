@@ -10,17 +10,17 @@ let session = null;
 async function initPage() {
   session = await initAuth();
 
-  if (!session || userRole !== "customer") {
-    main.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
+  if (!session) {
+    main.innerHTML = "<div id='message'><p>Please log in to view orders.</p></div>";
     return;
   }
   else {
-        await loadCart();
+        await loadOrders();
   }
 }
 
 
-async function loadCart() {
+async function loadOrders() {
     try {
       const res = await apiFetch(`/orders`);
       orderList = await res.json();

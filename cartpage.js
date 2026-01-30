@@ -27,14 +27,14 @@ async function loadCart() {
       const res = await apiFetch(`/cart`);
       currentOrder = await res.json();
       console.log(currentOrder);
-      renderOrders(currentOrder);
+      renderCart(currentOrder);
     } catch (err) {
       console.error(err);
       main.innerHTML = "<div id='message'><p>Error loading cart.</p></div>";
     }
 }
 
-function renderOrders(data) {
+function renderCart(data) {
     main.innerHTML = "";
 
     if (!data.length) {
