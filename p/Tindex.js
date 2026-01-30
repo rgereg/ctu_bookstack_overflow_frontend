@@ -55,8 +55,11 @@ function renderInventory(data) {
            onerror="this.src='image/book/cover.jpg'">
       <div class="itemnonimage">
         <h1>${book.title}</h1>
-        <h2>${book.author}</h2>
+        <h2>Author: ${book.author}</h2>
+        <h3>ISBN: ${book.isbn || "N/A"}</h3>
+        <p>${book.description || "No description available."}</p>
         <h3>Price: $${Number(book.price).toFixed(2)}</h3>
+        <h3>Quantity: ${book.quantity ?? 0}</h3>
       </div>
     `;
     main.appendChild(div);
