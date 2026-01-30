@@ -2,6 +2,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdnBscGJ4c3J4Z2RsZGNvc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NjQ0ODksImV4cCI6MjA4NDM0MDQ4OX0.Uw5xQLK2TSYeEVDzTYW0jwwui_1CMS_pfPpl4h5_bLk";
+const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -33,7 +34,7 @@ async function initAuth() {
 //inventory stuff
 async function loadInventory() {
   try {
-    const res = await fetch("https://redacted.onrender.com/books");
+    const res = await fetch("${API_BASE}/books");
     inventory = await res.json();
     renderInventory(inventory);
   } catch (err) {
