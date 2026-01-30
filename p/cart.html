@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
 
-  <script type="module" src="../loginpage.js"></script>
+  <script type="module" src="../cartpage.js"></script>
 </head>
 <body>
   <div id="container">
@@ -39,66 +39,9 @@
       </div>
     </div>
 
-    <div id="main">
-      <h1>Your Cart</h1>
-      <div id="cartList">Loading your cart...</div>
-    </div>
+    <div id="main"></div>
 
   </div>
-
-  <script type="module">
-    import { session, userRole, apiFetch } from "../loginpage.js";
-
-    async function loadCart() {
-      if (!session || userRole !== "customer") {
-        document.getElementById("cartList").innerHTML = "<p>Please log in as a customer to view your cart.</p>";
-        return;
-      }
-
-      try {
-        const res = await apiFetch("/orders");
-        const orders = await res.json();
-
-        const cartOrders = orders.filter(o => o.customer_id === session.user.id && o.status === "pending");
-
-        if (cartOrders.length === 0) {
-          document.getElementById("cartList").innerHTML = "<p>Your cart is empty.</p>";
-          return;
-        }
-
-        let html = `
-          <table>
-            <thead>
-              <tr>
-                <th>Book</th>
-                <th>Quantity</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        cartOrders.forEach(order => {
-          html += `
-            <tr>
-              <td>${order.book_title}</td>
-              <td>${order.quantity}</td>
-              <td>${order.status}</td>
-            </tr>
-          `;
-        });
-
-        html += "</tbody></table>";
-        document.getElementById("cartList").innerHTML = html;
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById("cartList").innerHTML = "<p>Error loading cart.</p>";
-      }
-    }
-
-    loadCart();
-  </script>
 
 </body>
 </html>
