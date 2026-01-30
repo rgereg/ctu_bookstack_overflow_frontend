@@ -58,5 +58,5 @@ async function loadCart() {
 
 (async function initPage() {
   await initAuth();
-  await loadInventory();
+  await loadCart();
 })();
