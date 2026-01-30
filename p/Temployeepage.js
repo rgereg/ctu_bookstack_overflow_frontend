@@ -214,37 +214,34 @@ async function loadOrders() {
 
 function renderOrders(data) {
   ordersList.innerHTML = "";
-  if (!data.length) {
-    ordersList.innerHTML = "<p>No orders</p>";
-    return;
-  }
+  if (!data.length) ordersList.innerHTML = "<p>No orders</p>";
 
   data.forEach(order => {
     const div = document.createElement("div");
-    div.className = "order-item";
-    
-    let itemsHtml = "";
-    if (order.items && order.items.length) {
-      itemsHtml = "<ul>";
-      order.items.forEach(item => {
-        itemsHtml += `<li>${item.book_id} — Quantity: ${item.quantity}, Unit Price: $${Number(item.unit_price).toFixed(2)}</li>`;
-      });
-      itemsHtml += "</ul>";
-    } else {
-      itemsHtml = "<p>No items</p>";
-    }
+    div.className = "item";
+
+    let itemsHTML = "";
+    const items = order.items || [];
+    items.forEach(item => {
+      const title = item.title || "Unknown";
+      const qty = item.quantity ?? 0;
+      const price = Number(item.price ?? 0).toFixed(2);
+      itemsHTML += `<p>${title} — Quantity: ${qty}, Unit Price: $${price}</p>`;
+    });
 
     div.innerHTML = `
-      <h3>Order #: ${order.order_number || order.id}</h3>
-      <p>Customer ID: ${order.customer_id}</p>
-      <p>Status: ${order.status}</p>
-      <p>Created: ${new Date(order.created_at).toLocaleString()}</p>
-      <h4>Items:</h4>
-      ${itemsHtml}
+      <div class="itemnonimage">
+        <h1>Order ID: ${order.id}</h1>
+        <h2>Customer ID: ${order.customer_id}</h2>
+        <h3>Status: ${order.status}</h3>
+        <h4>Created: ${new Date(order.created_at).toLocaleString()}</h4>
+        <div>Items: ${itemsHTML || "<p>No items</p>"}</div>
+      </div>
     `;
     ordersList.appendChild(div);
   });
 }
+
 
 //login
 loginBtn?.addEventListener("click", () => loginFormContainer.classList.toggle("hidden"));
