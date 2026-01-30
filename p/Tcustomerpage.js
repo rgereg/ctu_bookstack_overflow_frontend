@@ -140,7 +140,7 @@ checkoutBtn.addEventListener("click", async () => {
 
   try {
     const token = session.access_token;
-    const res = await fetch(`${API_BASE}/checkout`, {
+    const res = await fetch(`https://ctu-bookstack-overflow-backend.onrender.com/checkout`, {
       method: "POST",
       headers: { 
         "Authorization": `Bearer ${token}`,
