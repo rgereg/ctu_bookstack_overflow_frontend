@@ -48,9 +48,9 @@ function renderOrders(data) {
 
         div.innerHTML = `
         <div class="itemnonimage">
-            <h1>Book ID: ${item.books.title}</h1>
+            <h1>Title: ${item.books.title}</h1>
             <h2>Quantity: ${item.quantity}</h2>
-            <h3>Placeholder: ${item.unit_price}</h3>
+            <h3>Price: ${item.books.price}</h3>
         </div>
         `;
 
