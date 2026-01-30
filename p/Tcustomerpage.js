@@ -140,7 +140,8 @@ checkoutBtn.addEventListener("click", async () => {
 
   try {
     const token = session.access_token;
-    const res = await fetch(`https://ctu-bookstack-overflow-backend.onrender.com/checkout`, {
+
+    const res = await fetch(`${API_BASE}/checkout`, {
       method: "POST",
       headers: { 
         "Authorization": `Bearer ${token}`,
@@ -149,16 +150,21 @@ checkoutBtn.addEventListener("click", async () => {
       body: JSON.stringify({ items: payload })
     });
 
-    if (!res.ok) throw new Error("Checkout failed");
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Checkout failed: ${text}`);
+    }
 
-    alert("Order placed!");
+    const data = await res.json();
+    alert(`Order placed! Order ID: ${data.order_id}`);
+
     cart = [];
     renderCart();
     await loadOrders();
 
   } catch (err) {
     console.error(err);
-    alert("Checkout failed");
+    alert(err.message);
   }
 });
 
