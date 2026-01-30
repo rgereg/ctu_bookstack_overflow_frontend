@@ -12,6 +12,24 @@ const loginFormContainer = document.getElementById("login-form-container");
 const inventoryList = document.getElementById("inventoryList");
 const ordersList = document.getElementById("ordersList");
 const searchInput = document.getElementById("search");
+const viewInventoryBtn = document.getElementById("viewInventoryBtn");
+const viewOrdersBtn = document.getElementById("viewOrdersBtn");
+const inventorySection = document.getElementById("inventorySection");
+const ordersSection = document.getElementById("ordersSection");
+
+// Initially show inventory, hide orders
+inventorySection.style.display = "block";
+ordersSection.style.display = "none";
+
+viewInventoryBtn.addEventListener("click", () => {
+  inventorySection.style.display = "block";
+  ordersSection.style.display = "none";
+});
+
+viewOrdersBtn.addEventListener("click", () => {
+  inventorySection.style.display = "none";
+  ordersSection.style.display = "block";
+});
 
 let session = null;
 let userRole = "customer";
