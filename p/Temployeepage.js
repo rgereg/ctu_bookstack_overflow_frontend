@@ -182,42 +182,29 @@ async function loadOrders() {
     }
 
     const data = await res.json();
+    const customerOrders = Array.isArray(data) ? data : [data];
+    orders = customerOrders;
 
-    if (!data || typeof data !== "object") {
-      console.error("Orders response is not an object:", data);
-      ordersList.innerHTML = "<p>Error loading orders</p>";
-      return;
-    }
-
-    ordersList.innerHTML = "";
-
-    for (const [customerId, customerOrders] of Object.entries(data)) {
-      const customerDiv = document.createElement("div");
-      customerDiv.className = "customer-orders";
-      customerDiv.innerHTML = `<h2>Customer ID: ${customerId}</h2>`;
-      
-      customerOrders.forEach(order => {
-        const orderDiv = document.createElement("div");
-        orderDiv.className = "order-item";
-        let itemsHtml = "";
-        if (order.items && order.items.length) {
-          itemsHtml = "<ul>" + order.items.map(item =>
-            `<li>${item.quantity} × Book ID ${item.book_id} ($${Number(item.unit_price).toFixed(2)} each)</li>`
-          ).join("") + "</ul>";
-        } else {
-          itemsHtml = "<p>No items</p>";
+    const ordersWithItems = await Promise.all(
+      customerOrders.map(async order => {
+        try {
+          const itemsRes = await fetch(`${API_BASE}/order_items?order_id=${order.id}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+          });
+          const itemsData = await itemsRes.json();
+          order.items = Array.isArray(itemsData) ? itemsData : [itemsData];
+        } catch (err) {
+          console.error(`Failed to load items for order ${order.id}`, err);
+          order.items = [];
         }
+        return order;
+      })
+    );
 
-        orderDiv.innerHTML = `
-          <h3>Order #: ${order.order_number} - Status: ${order.status}</h3>
-          <p>Created: ${new Date(order.created_at).toLocaleString()}</p>
-          ${itemsHtml}
-        `;
-        customerDiv.appendChild(orderDiv);
-      });
-
-      ordersList.appendChild(customerDiv);
-    }
+    renderOrders(ordersWithItems);
 
   } catch (err) {
     console.error(err);
@@ -225,20 +212,35 @@ async function loadOrders() {
   }
 }
 
-
 function renderOrders(data) {
   ordersList.innerHTML = "";
-  if (!data.length) ordersList.innerHTML = "<p>No orders</p>";
+  if (!data.length) {
+    ordersList.innerHTML = "<p>No orders</p>";
+    return;
+  }
 
   data.forEach(order => {
     const div = document.createElement("div");
-    div.className = "item";
+    div.className = "order-item";
+    
+    let itemsHtml = "";
+    if (order.items && order.items.length) {
+      itemsHtml = "<ul>";
+      order.items.forEach(item => {
+        itemsHtml += `<li>${item.book_id} — Quantity: ${item.quantity}, Unit Price: $${Number(item.unit_price).toFixed(2)}</li>`;
+      });
+      itemsHtml += "</ul>";
+    } else {
+      itemsHtml = "<p>No items</p>";
+    }
+
     div.innerHTML = `
-      <div class="itemnonimage">
-        <h1>Order ID: ${order.id}</h1>
-        <h2>Customer ID: ${order.customer_id}</h2>
-        <h3>Status: ${order.status}</h3>
-      </div>
+      <h3>Order #: ${order.order_number || order.id}</h3>
+      <p>Customer ID: ${order.customer_id}</p>
+      <p>Status: ${order.status}</p>
+      <p>Created: ${new Date(order.created_at).toLocaleString()}</p>
+      <h4>Items:</h4>
+      ${itemsHtml}
     `;
     ordersList.appendChild(div);
   });
