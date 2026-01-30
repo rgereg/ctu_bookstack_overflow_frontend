@@ -11,8 +11,8 @@ let session = null;
 
 async function initPage() {
   //session = await initAuth();
-  session === "customer";
-  userRole === "customer";
+  session = "customer";
+  userRole = "customer";
 
   if (!session || userRole !== "customer") {
     main.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
