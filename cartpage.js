@@ -25,8 +25,8 @@ async function initPage() {
 async function loadCart() {
     try {
       const res = await apiFetch(`/cart`);
-      console.log(res.status);
       currentOrder = await res.json();
+      console.log(currentOrder);
       renderOrders(currentOrder);
     } catch (err) {
       console.error(err);
