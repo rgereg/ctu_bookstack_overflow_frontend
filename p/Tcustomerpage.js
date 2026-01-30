@@ -41,9 +41,26 @@ async function initAuth() {
 //books
 async function loadBooks() {
   try {
-    const res = await fetch(`${API_BASE}/books`);
-    books = await res.json();
+    const token = session.access_token;
+    const res = await fetch(`${API_BASE}/books`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!res.ok) throw new Error(`Failed to load books (${res.status})`);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      console.error("Books response is not an array:", data);
+      booksList.innerHTML = "<p>Error loading books</p>";
+      return;
+    }
+
+    books = data;
     renderBooks(books);
+
   } catch (err) {
     console.error(err);
     booksList.innerHTML = "<p>Error loading books</p>";
@@ -122,16 +139,23 @@ checkoutBtn.addEventListener("click", async () => {
   }));
 
   try {
+    const token = session.access_token;
     const res = await fetch(`${API_BASE}/checkout`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ items: payload })
     });
+
     if (!res.ok) throw new Error("Checkout failed");
+
     alert("Order placed!");
     cart = [];
     renderCart();
     await loadOrders();
+
   } catch (err) {
     console.error(err);
     alert("Checkout failed");
@@ -141,15 +165,39 @@ checkoutBtn.addEventListener("click", async () => {
 //customer orders here
 async function loadOrders() {
   if (!session) return;
+
   try {
-    const res = await fetch(`${API_BASE}/orders?customer_id=${session.user.id}`);
-    orders = await res.json();
+    const token = session.access_token;
+    const res = await fetch(`${API_BASE}/orders?customer_id=${session.user.id}`, {
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to load orders:", res.status);
+      ordersList.innerHTML = "<p>Error loading orders</p>";
+      return;
+    }
+
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      console.error("Orders response is not an array:", data);
+      ordersList.innerHTML = "<p>Error loading orders</p>";
+      return;
+    }
+
+    orders = data;
     renderOrders(orders);
+
   } catch (err) {
     console.error(err);
     ordersList.innerHTML = "<p>Error loading orders</p>";
   }
 }
+
 
 function renderOrders(data) {
   ordersList.innerHTML = "";
@@ -170,6 +218,7 @@ function renderOrders(data) {
 
 //login
 loginBtn?.addEventListener("click", () => loginFormContainer.classList.toggle("hidden"));
+
 document.getElementById("loginForm")?.addEventListener("submit", async e => {
   e.preventDefault();
   const email = document.getElementById("loginEmail").value;
@@ -177,6 +226,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async e => {
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return alert(error.message);
+
   session = data.session;
   window.location.reload();
 });
