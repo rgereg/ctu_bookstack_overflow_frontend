@@ -6,16 +6,6 @@
   <link rel="icon" type="../image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
   <script type="module" defer src="Temployeepage.js"></script>
-  <style>
-  #toggleViewBtn {
-    position: relative;
-    z-index: 10;
-  }
-  #inventorySection, #ordersSection {
-    position: relative;
-    z-index: 1;
-  }
-</style>
 </head>
 <body>
 <div id="container">
@@ -31,18 +21,16 @@
         <a href="Tindex.html"><p>Home</p></a>
         <p class="linkspacers">|</p>
         <a href="Temployee.html"><p>Employee</p></a>
+        <p class="linkspacers">|</p>
+        <h1>Employee Dashboard</h1>
+        <p class="linkspacers">|</p>
+        <button id="viewInventoryBtn">Inventory</button>
+        <button id="viewOrdersBtn">Orders</button>
       </div>
     </div>
   </div>
 
   <div id="main">
-  <h1>Employee Dashboard</h1>
-  
-  <div id="viewButtons">
-    <button id="viewInventoryBtn">Inventory</button>
-    <button id="viewOrdersBtn">Orders</button>
-  </div>
-
   <div id="inventorySection">
     <h2>Inventory</h2>
     <div id="inventoryList">Loading inventory...</div>
