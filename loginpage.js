@@ -40,6 +40,8 @@ export async function initAuth() {
   session = data.session;
   
   userRole = session?.user?.user_metadata?.role || "customer";
+  // Checking userRole being returned for customer accounts
+  console.log(userRole);
   
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
