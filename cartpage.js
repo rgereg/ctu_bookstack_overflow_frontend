@@ -56,4 +56,7 @@ async function loadCart() {
     }
 }
 
-loadCart();
+(async function initPage() {
+  await initAuth();
+  await loadInventory();
+})();
