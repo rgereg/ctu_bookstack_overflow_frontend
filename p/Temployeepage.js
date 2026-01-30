@@ -165,20 +165,48 @@ async function loadOrders() {
 
     const data = await res.json();
 
-    if (!Array.isArray(data)) {
-      console.error("Orders response is not an array:", data);
+    if (!data || typeof data !== "object") {
+      console.error("Orders response is not an object:", data);
       ordersList.innerHTML = "<p>Error loading orders</p>";
       return;
     }
 
-    orders = data;
-    renderOrders(orders);
+    ordersList.innerHTML = "";
+
+    for (const [customerId, customerOrders] of Object.entries(data)) {
+      const customerDiv = document.createElement("div");
+      customerDiv.className = "customer-orders";
+      customerDiv.innerHTML = `<h2>Customer ID: ${customerId}</h2>`;
+      
+      customerOrders.forEach(order => {
+        const orderDiv = document.createElement("div");
+        orderDiv.className = "order-item";
+        let itemsHtml = "";
+        if (order.items && order.items.length) {
+          itemsHtml = "<ul>" + order.items.map(item =>
+            `<li>${item.quantity} × Book ID ${item.book_id} ($${Number(item.unit_price).toFixed(2)} each)</li>`
+          ).join("") + "</ul>";
+        } else {
+          itemsHtml = "<p>No items</p>";
+        }
+
+        orderDiv.innerHTML = `
+          <h3>Order #: ${order.order_number} - Status: ${order.status}</h3>
+          <p>Created: ${new Date(order.created_at).toLocaleString()}</p>
+          ${itemsHtml}
+        `;
+        customerDiv.appendChild(orderDiv);
+      });
+
+      ordersList.appendChild(customerDiv);
+    }
 
   } catch (err) {
     console.error(err);
     ordersList.innerHTML = "<p>Error loading orders</p>";
   }
 }
+
 
 function renderOrders(data) {
   ordersList.innerHTML = "";
