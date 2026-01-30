@@ -168,16 +168,21 @@ async function loadOrders() {
 
   try {
     const token = session.access_token;
-    const res = await fetch(`${API_BASE}/orders?customer_id=${session.user.id}`, {
-      headers: { 
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
+
+    const res = await fetch(
+      `${API_BASE}/orders?customer_id=${session.user.id}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
 
     if (!res.ok) {
-      console.error("Failed to load orders:", res.status);
-      ordersList.innerHTML = "<p>Error loading orders</p>";
+      const text = await res.text();
+      console.error("Orders API failed:", res.status, text);
+      ordersList.innerHTML = `<p>Error loading orders (${res.status})</p>`;
       return;
     }
 
@@ -185,7 +190,7 @@ async function loadOrders() {
 
     if (!Array.isArray(data)) {
       console.error("Orders response is not an array:", data);
-      ordersList.innerHTML = "<p>Error loading orders</p>";
+      ordersList.innerHTML = "<p>Invalid orders response</p>";
       return;
     }
 
@@ -193,11 +198,10 @@ async function loadOrders() {
     renderOrders(orders);
 
   } catch (err) {
-    console.error(err);
-    ordersList.innerHTML = "<p>Error loading orders</p>";
+    console.error("Network / fetch error:", err);
+    ordersList.innerHTML = "<p>Network error loading orders</p>";
   }
 }
-
 
 function renderOrders(data) {
   ordersList.innerHTML = "";
