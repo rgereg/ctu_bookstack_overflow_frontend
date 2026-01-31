@@ -8,6 +8,13 @@ const addBook = document.getElementById("addBook");
 const addForm = document.getElementById("add-form-container");
 const bookForm = document.getElementById("bookForm");
 
+const titleInput = document.getElementById("title");
+const authorInput = document.getElementById("author");
+const isbnInput = document.getElementById("isbn");
+const descriptionInput = document.getElementById("description");
+const priceInput = document.getElementById("price");
+const quantityInput = document.getElementById("quantity");
+
 let inventory = [];
 let session = null;
 
@@ -392,12 +399,12 @@ bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
 
   const newBook = {
-    title: title.value,
-    author: author.value,
-    isbn: isbn.value,
-    description: description.value,
-    price: parseFloat(price.value),
-    quantity: parseInt(quantity.value)
+    title: titleInput.value.trim(),
+    author: authorInput.value.trim(),
+    isbn: isbnInput.value.trim(),
+    description: descriptionInput.value.trim(),
+    price: parseFloat(priceInput.value),
+    quantity: parseInt(quantityInput.value)
   };
 
   try {
@@ -424,6 +431,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
