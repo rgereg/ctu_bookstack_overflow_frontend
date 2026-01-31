@@ -416,12 +416,15 @@ bookForm?.addEventListener("submit", async e => {
   }
 });
 
+/*
 (async function initPage() {
     await initAuth();
     await loadInventory();
 
 })();
-//initPage(); why
+*/
+initPage();
+
 
 
 
