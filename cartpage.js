@@ -1,8 +1,9 @@
-import { initAuth, userRole, apiFetch } from "./loginpage.js";
+import { initAuth, userRole, apiFetch, refreshAuth } from "./loginpage.js";
 
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
+const refreshAuthBtn = document.getElementById("refreshAuthBtn");
 
 let currentOrder = [];
 let session = null;
@@ -63,5 +64,12 @@ function renderCart(data) {
         main.appendChild(div);
     });
 }
+
+// Button to call refreshAuth function
+refreshAuthBtn.addEventListener("click", async () => {
+  await refreshAuth();
+  await loadCart();
+});
+// Can be removed once cart is working again
 
 initPage();

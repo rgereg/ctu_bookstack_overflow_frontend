@@ -69,6 +69,13 @@ export async function initAuth() {
   return userRole;
 }
 
+// Temp function to refresh session token
+export async function refreshAuth() {
+  const { data } = await supabaseClient.auth.refreshSession();
+  session = data.session;
+}
+// Can remove above once working
+
 document.getElementById("logoutBtn")?.addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
   window.location.href = "https://rgereg.github.io/ctu_bookstack_overflow_frontend/p/login.html";
