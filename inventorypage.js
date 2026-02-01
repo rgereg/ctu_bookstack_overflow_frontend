@@ -398,8 +398,6 @@ addBook?.addEventListener("click", () => {
 bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const token = session.access_token;
-
   const newBook = {
     title: titleInput.value.trim(),
     author: authorInput.value.trim(),
@@ -412,10 +410,6 @@ bookForm?.addEventListener("submit", async e => {
   try {
     const res = await apiFetch(`/books`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
       body: JSON.stringify(newBook)
     });
 
@@ -458,6 +452,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
