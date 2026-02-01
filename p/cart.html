@@ -6,6 +6,12 @@
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
   <style>
+    #cartcontainer{
+      width:100%;
+      display: grid;
+      grid-template-columns: 85% 10%;
+    }
+    
     #main{
       justify-content: flex-start;
       padding-left:3vw;
@@ -41,7 +47,7 @@
       border-radius: 10px;
       width: 10%;
       filter: drop-shadow(0px 5px 5px black);
-      display: flex;
+      display: grid;
       justify-content: space-between;
       align-items: flex-start;
       height: auto;
@@ -130,10 +136,12 @@
       </div>
     </div>
 
-    <div id="main"></div>
-    <div id="checkoutbox">
-      <div id="totalCost"></div>
-      <button id="checkoutBtn">Checkout</button>
+    <div id="cartcontainer">
+      <div id="main"></div>
+      <div id="checkoutbox">
+        <div id="totalCost"></div>
+        <button id="checkoutBtn">Checkout</button>
+      </div>
     </div>
 
   </div>
