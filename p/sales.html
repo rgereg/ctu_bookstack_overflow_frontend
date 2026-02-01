@@ -6,7 +6,73 @@
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
 
-  <script type="module" src="../loginpage.js"></script>
+  <script type="module">
+    import { initAuth, apiFetch } from "../loginpage.js";
+
+    const main = document.getElementById("main");
+
+    async function initPage() {
+      const session = await initAuth();
+      if (!session) {
+        main.innerHTML = "<p>Please log in to view sales.</p>";
+        return;
+      }
+
+      await loadSales();
+    }
+
+    async function loadSales() {
+      try {
+        const res = await apiFetch("/sales/last30days");
+        if (!res.ok) throw new Error("Failed to fetch sales");
+
+        const sales = await res.json();
+
+        if (!sales.length) {
+          main.innerHTML = "<h1>Last 30 Days Sales</h1><p>No sales in the last 30 days.</p>";
+          return;
+        }
+
+        let html = `
+          <h1>Last 30 Days Sales</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Book</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Status</th>
+                <th>Customer</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        sales.forEach(item => {
+          html += `
+            <tr>
+              <td>${new Date(item.created_at).toLocaleString()}</td>
+              <td>${item.book_title}</td>
+              <td>${item.quantity}</td>
+              <td>$${Number(item.unit_price).toFixed(2)}</td>
+              <td>${item.status}</td>
+              <td>${item.customer_id}</td>
+            </tr>
+          `;
+        });
+
+        html += "</tbody></table>";
+        main.innerHTML = html;
+
+      } catch (err) {
+        console.error(err);
+        main.innerHTML = "<p>Error loading sales report.</p>";
+      }
+    }
+
+    initPage();
+  </script>
 </head>
 <body>
   <div id="container">
@@ -37,76 +103,9 @@
     </div>
 
     <div id="main">
-      <h1>Last 30 Days Sales</h1>
-      <div id="salesReport">
-        <p>Loading sales report…</p>
-      </div>
+      <p>Loading sales report…</p>
     </div>
 
   </div>
-
-  <script type="module">
-    import { initAuth, userRole, apiFetch } from "../loginpage.js";
-
-    const reportEl = document.getElementById("salesReport");
-
-    async function loadSales() {
-      await initAuth();
-
-      if (userRole !== "employee") {
-        reportEl.innerHTML = "<p>Access denied. Employees only.</p>";
-        return;
-      }
-
-      try {
-        const res = await apiFetch("/sales/last30days");
-        if (!res.ok) throw new Error("Failed to fetch sales");
-
-        const sales = await res.json();
-
-        if (!sales.length) {
-          reportEl.innerHTML = "<p>No sales in the last 30 days.</p>";
-          return;
-        }
-
-        let html = `
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Book</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Status</th>
-                <th>Customer</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        sales.forEach(row => {
-          html += `
-            <tr>
-              <td>${new Date(row.created_at).toLocaleDateString()}</td>
-              <td>${row.book_title}</td>
-              <td>${row.quantity}</td>
-              <td>$${Number(row.unit_price).toFixed(2)}</td>
-              <td>${row.status}</td>
-              <td>${row.customer_id}</td>
-            </tr>
-          `;
-        });
-
-        html += "</tbody></table>";
-        reportEl.innerHTML = html;
-
-      } catch (err) {
-        console.error(err);
-        reportEl.innerHTML = "<p>Error loading sales report.</p>";
-      }
-    }
-
-    loadSales();
-  </script>
 </body>
 </html>
