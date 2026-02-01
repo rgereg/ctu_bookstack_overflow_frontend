@@ -44,16 +44,28 @@ function renderOrders(data) {
         const div = document.createElement("div");
         div.className = "item";
 
+          let itemsHTML = "";
+        const items = order.items || [];
+        items.forEach(item => {
+          const title = item.title || "Unknown";
+          const qty = item.quantity ?? 0;
+          const price = Number(item.price ?? 0).toFixed(2);
+          itemsHTML += `<p>${title} — Quantity: ${qty}, Unit Price: $${price}</p>`;
+        });
+    
         div.innerHTML = `
-        <div class="itemnonimage">
-            <h1>Order ID: ${item.id}</h1>
-            <h2>Customer ID: ${item.customer_id}</h2>
-            <h3>Status: ${item.status}</h3>
-        </div>
+          <div class="itemnonimage">
+            <h1>Order ID: ${order.id}</h1>
+            <h2>Customer ID: ${order.customer_id}</h2>
+            <h3>Status: ${order.status}</h3>
+            <h4>Created: ${new Date(order.created_at).toLocaleString()}</h4>
+            <div>Items: ${itemsHTML || "<p>No items</p>"}</div>
+          </div>
         `;
 
         main.appendChild(div);
     });
 }
+
 
 initPage();
