@@ -21,10 +21,11 @@ async function initPage() {
   }
 }
 
-
 async function loadCart() {
     try {
-      const res = await apiFetch(`/cart`);
+      const res = await apiFetch(`/cart`, {
+        method: "GET"
+      });
       currentOrder = await res.json();
       console.log(currentOrder);
       renderCart(currentOrder);
