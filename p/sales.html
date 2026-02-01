@@ -18,13 +18,9 @@
 
       <div id="notlogo">
         <div id="notlogoupper">
-          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
-
-          <a href="cart.html">
-            <img src="../image/cart.png" alt="Shopping Cart" />
-          </a>
-
-          <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
+          <input type="text" id="search" placeholder="Search..." autocomplete="off" />
+          <a href="cart.html"><img src="../image/cart.png" /></a>
+          <button id="loginBtn">Login</button>
           <button id="logoutBtn" class="hidden">Logout</button>
         </div>
 
@@ -41,79 +37,76 @@
     </div>
 
     <div id="main">
-      <h1>Last 30 Days Sales Report</h1>
+      <h1>Last 30 Days Sales</h1>
       <div id="salesReport">
-        <p>Loading sales...</p>
+        <p>Loading sales report…</p>
       </div>
     </div>
 
   </div>
 
   <script type="module">
-    import { session, userRole, apiFetch } from "../loginpage.js";
+    import { initAuth, userRole, apiFetch } from "../loginpage.js";
 
-    async function loadSalesReport() {
+    const reportEl = document.getElementById("salesReport");
+
+    async function loadSales() {
+      await initAuth();
+
       if (userRole !== "employee") {
-        document.getElementById("salesReport").innerHTML = "<p>Access denied. Employees only.</p>";
+        reportEl.innerHTML = "<p>Access denied. Employees only.</p>";
         return;
       }
 
       try {
-        const res = await apiFetch("/orders");
-        const orders = await res.json();
+        const res = await apiFetch("/sales/last30days");
+        if (!res.ok) throw new Error("Failed to fetch sales");
 
-        const today = new Date();
-        const thirtyDaysAgo = new Date(today);
-        thirtyDaysAgo.setDate(today.getDate() - 30);
+        const sales = await res.json();
 
-        const recentOrders = orders.filter(order => {
-          const orderDate = new Date(order.created_at);
-          return orderDate >= thirtyDaysAgo && orderDate <= today;
-        });
-
-        if (recentOrders.length === 0) {
-          document.getElementById("salesReport").innerHTML = "<p>No sales in the last 30 days.</p>";
+        if (!sales.length) {
+          reportEl.innerHTML = "<p>No sales in the last 30 days.</p>";
           return;
         }
 
-        let tableHtml = `
+        let html = `
           <table>
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Book Title</th>
+                <th>Book</th>
                 <th>Quantity</th>
+                <th>Unit Price</th>
                 <th>Status</th>
-                <th>Customer ID</th>
+                <th>Customer</th>
               </tr>
             </thead>
             <tbody>
         `;
 
-        recentOrders.forEach(order => {
-          tableHtml += `
+        sales.forEach(row => {
+          html += `
             <tr>
-              <td>${new Date(order.created_at).toLocaleDateString()}</td>
-              <td>${order.book_title}</td>
-              <td>${order.quantity}</td>
-              <td>${order.status}</td>
-              <td>${order.customer_id}</td>
+              <td>${new Date(row.created_at).toLocaleDateString()}</td>
+              <td>${row.book_title}</td>
+              <td>${row.quantity}</td>
+              <td>$${Number(row.unit_price).toFixed(2)}</td>
+              <td>${row.status}</td>
+              <td>${row.customer_id}</td>
             </tr>
           `;
         });
 
-        tableHtml += "</tbody></table>";
-
-        document.getElementById("salesReport").innerHTML = tableHtml;
+        html += "</tbody></table>";
+        reportEl.innerHTML = html;
 
       } catch (err) {
         console.error(err);
-        document.getElementById("salesReport").innerHTML = "<p>Error loading sales report.</p>";
+        reportEl.innerHTML = "<p>Error loading sales report.</p>";
       }
     }
 
-    loadSalesReport();
+    loadSales();
   </script>
-
 </body>
 </html>
