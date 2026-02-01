@@ -31,6 +31,21 @@
       margin-bottom: -18px;
       margin-top: 0px;
     }
+    
+    #checkoutbox {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 20px;
+      margin: 0px 20px;
+      border-radius: 10px;
+      width: 10%;
+      filter: drop-shadow(0px 5px 5px black);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      height: auto;
+    }
   
     .item img {
       /*max-width: 150px;
@@ -116,7 +131,10 @@
     </div>
 
     <div id="main"></div>
-    <div id="totalCost"></div>
+    <div id="checkoutbox">
+      <div id="totalCost"></div>
+      <button id="checkoutBtn">Checkout</button>
+    </div>
 
   </div>
 
