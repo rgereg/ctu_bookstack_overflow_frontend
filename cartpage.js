@@ -1,4 +1,4 @@
-import { initAuth, userRole, apiFetch, refreshAuth } from "./loginpage.js";
+import { initAuth, userRole, apiFetch, refreshAuth, supabaseClient } from "./loginpage.js";
 
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
@@ -11,7 +11,7 @@ let session = null;
 // Going to be messing with this more, using old cart loading function that was in the HTML for the page
 
 async function initPage() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   session = data.session;
   //session = await initAuth(); testing to see what breaks
 
@@ -125,5 +125,6 @@ refreshAuthBtn.addEventListener("click", async () => {
 
 
 initPage();
+
 
 
