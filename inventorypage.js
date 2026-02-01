@@ -398,6 +398,8 @@ addBook?.addEventListener("click", () => {
 bookForm?.addEventListener("submit", async e => {
   e.preventDefault();
 
+  const token = session.access_token;
+
   const newBook = {
     title: titleInput.value.trim(),
     author: authorInput.value.trim(),
@@ -456,6 +458,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
