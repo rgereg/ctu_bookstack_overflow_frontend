@@ -8,7 +8,9 @@ let orderList = [];
 let session = null;
 
 async function initPage() {
-  session = await initAuth();
+  const { data } = await supabase.auth.getSession();
+  session = data.session;
+  //session = await initAuth(); testing to see what breaks
 
   if (!session) {
     main.innerHTML = "<div id='message'><p>Please log in to view orders.</p></div>";
@@ -69,3 +71,4 @@ function renderOrders(data) {
 
 
 initPage();
+
