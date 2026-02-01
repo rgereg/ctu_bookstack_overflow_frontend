@@ -36,9 +36,17 @@ export async function apiFetch(path, options = {}) {
 }
 
 export async function initAuth() {
-  const { data } = await supabaseClient.auth.getSession();
-  session = data.session;
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("Error getting session:", error);
+    session = null;
+    userRole = "customer";
+    return null;
+  }
+
   
+  session = data.session;
   userRole = session?.user?.user_metadata?.role || "customer";
   
   const loginBtn = document.getElementById("loginBtn");
@@ -56,7 +64,6 @@ export async function initAuth() {
         el.style.display = "none";
       });
     }
-    
   } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
@@ -65,8 +72,8 @@ export async function initAuth() {
         el.style.display = "none";
       });
   }
-  
-  return userRole;
+  return session;
+  //return userRole;  testing this change to see what breaks TODO 
 }
 
 // Temp function to refresh session token
