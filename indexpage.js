@@ -92,7 +92,7 @@ async function placeOrder(isbn, curQty) {
   try {
     // Swapping out the order call with cart to try it out, if still broken by morning feel free to change -Tommy
     const res = await apiFetch("/cart", {
-      method: "PUT",
+      method: "POST",
       body: JSON.stringify({ isbn, quantity: qty })
     });
 
