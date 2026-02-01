@@ -410,15 +410,17 @@ bookForm?.addEventListener("submit", async e => {
   try {
     const res = await apiFetch(`/books`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newBook)
     });
 
-    const result = await res.json();
-
     if (!res.ok) {
-      alert("Failed to add book");
+      const err = await res.json().catch(() => ({}));
+      alert(err.detail || "Failed to add book");
       return;
     }
+    
+    const result = await res.json();
 
     const insertedBook = Array.isArray(result) ? result[0] : result;
 
@@ -451,6 +453,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
