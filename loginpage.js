@@ -22,7 +22,6 @@ export async function apiFetch(path, options = {}) {
   // Debug: print session and token every time apiFetch is called
   console.log("apiFetch called with path:", path);
   console.log("Current session:", session);
-  console.log("Access token:", session.access_token);
   // remove above later just for debugging session problems
 
   return fetch(`${API_BASE}${path}`, {
