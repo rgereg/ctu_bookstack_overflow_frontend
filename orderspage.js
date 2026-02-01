@@ -22,16 +22,65 @@ async function initPage() {
 }
 
 
+//async function loadOrders() {
+//    try {
+//      const res = await apiFetch(`/orders`);
+//      orderList = await res.json();
+//      console.log(orderList);
+//      renderOrders(orderList);
+//    } catch (err) {
+//      console.error(err);
+//      main.innerHTML = "<div id='message'><p>Error loading orders.</p></div>";
+//    }
+//}
+
 async function loadOrders() {
-    try {
-      const res = await apiFetch(`/orders`);
-      orderList = await res.json();
-      console.log(orderList);
-      renderOrders(orderList);
-    } catch (err) {
-      console.error(err);
-      main.innerHTML = "<div id='message'><p>Error loading orders.</p></div>";
+  if (!session) return;
+
+  try {
+    const token = session.access_token;
+    const res = await fetch(`${API_BASE}/orders`, {
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json" 
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to load orders:", res.status);
+      ordersList.innerHTML = "<p>Error loading orders</p>";
+      return;
     }
+
+    const data = await res.json();
+    const customerOrders = Array.isArray(data) ? data : [data];
+    orders = customerOrders;
+
+    const ordersWithItems = await Promise.all(
+      customerOrders.map(async order => {
+        try {
+          const itemsRes = await fetch(`${API_BASE}/order_items?order_id=${order.id}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+          });
+          const itemsData = await itemsRes.json();
+          order.items = Array.isArray(itemsData) ? itemsData : [itemsData];
+        } catch (err) {
+          console.error(`Failed to load items for order ${order.id}`, err);
+          order.items = [];
+        }
+        return order;
+      })
+    );
+
+    renderOrders(ordersWithItems);
+
+  } catch (err) {
+    console.error(err);
+    ordersList.innerHTML = "<p>Error loading orders</p>";
+  }
 }
 
 function renderOrders(data) {
@@ -71,5 +120,6 @@ function renderOrders(data) {
 
 
 initPage();
+
 
 
