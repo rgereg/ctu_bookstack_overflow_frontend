@@ -1,4 +1,4 @@
-import { initAuth, userRole, apiFetch } from "./loginpage.js";
+import { initAuth, userRole, apiFetch, supabaseClient } from "./loginpage.js";
 
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
@@ -8,7 +8,7 @@ let orderList = [];
 let session = null;
 
 async function initPage() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   session = data.session;
   //session = await initAuth(); testing to see what breaks
 
@@ -71,4 +71,5 @@ function renderOrders(data) {
 
 
 initPage();
+
 
