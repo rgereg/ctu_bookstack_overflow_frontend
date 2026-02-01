@@ -11,7 +11,9 @@ let session = null;
 // Going to be messing with this more, using old cart loading function that was in the HTML for the page
 
 async function initPage() {
-  session = await initAuth();
+  const { data } = await supabase.auth.getSession();
+  session = data.session;
+  //session = await initAuth(); testing to see what breaks
 
   if (!session || userRole !== "customer") {
     main.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
@@ -123,4 +125,5 @@ refreshAuthBtn.addEventListener("click", async () => {
 
 
 initPage();
+
 
