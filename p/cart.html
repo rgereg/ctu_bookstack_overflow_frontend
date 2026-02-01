@@ -5,6 +5,101 @@
   <title>Bookstack Overflow - Shopping Cart</title>
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
+  <style>
+    #main{
+      justify-content: flex-start;
+      padding-left:3vw;
+      width: calc(100% - 3vw);
+    }
+
+    .item {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 1vw;
+      margin: 0px 0px;
+      border-radius: 10px;
+      /*width: 21%;*/
+      filter: drop-shadow(0px 5px 5px black);
+      display: grid;
+      grid-template-columns: 1.2fr 2fr;
+      justify-content: space-between;
+      gap: 2px;
+      /*align-items: flex-start;*/
+      height: auto;
+    }
+  
+    .item img {
+      /*max-width: 150px;
+      max-height: 300px;*/
+      max-width: initial;
+      max-height: initial;
+      margin:0px;
+      padding:0px;
+      margin-left: -5px;
+      width: 100%;
+      height: auto;
+    }
+
+    .item .itemnonimage {
+      width:100%;
+      margin:0px;
+      padding:0px;
+    }
+
+    .item h1 {
+      font-size: clamp(0.9rem, 1rem, 2rem);
+    }
+
+    .item h3 {
+      font-size: clamp(0.8rem, 0.85rem, 1rem);
+    }
+
+    .item button {
+      font-size: clamp(0.8rem, 0.85rem, 1rem);
+      height:auto;
+      margin:0px;
+    }
+    
+    #notlogolower button {
+      margin:0px;
+      position:relative;
+      bottom:5px;
+    }
+
+    #add-form-container button {
+      margin:0px;
+    }
+
+    .item p {
+      font-size: clamp(0.7rem, 0.75rem, 0.85rem);
+    }
+
+    #add-form-container{
+      z-index: 1;
+    }
+
+  .inline-status {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+  }
+  
+  .inline-status.success {
+    color: #0b6623;
+    background: rgba(11, 102, 35, 0.12);
+  }
+  
+  .inline-status.error {
+    color: #8b0000;
+    background: rgba(139, 0, 0, 0.12);
+  }
+  
+  .inline-status.hidden {
+    display: none;
+  }
+  </style>
 
   <script type="module" src="../cartpage.js"></script>
 </head>
