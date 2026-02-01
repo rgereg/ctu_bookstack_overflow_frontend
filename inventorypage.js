@@ -413,6 +413,21 @@ bookForm?.addEventListener("submit", async e => {
       body: JSON.stringify(newBook)
     });
 
+    const result = await res.json();
+
+    if (!res.ok) {
+      alert("Failed to add book");
+      return;
+    }
+
+    const insertedBook = Array.isArray(result) ? result[0] : result;
+
+    inventory.push(insertedBook);
+    renderInventory(inventory);
+    bookForm.reset();
+    alert("Book Added!");
+    
+   /* //old code taking out to try something different 
     if (!res.ok) throw new Error("Failed to add book");
     const data = await res.json();
     inventory.push(data);
@@ -421,6 +436,7 @@ bookForm?.addEventListener("submit", async e => {
     console.error(err);
     alert("Failed to add book");
   }
+  */
 });
 
 /*
@@ -431,6 +447,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
