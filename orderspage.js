@@ -6,6 +6,8 @@ const main = document.getElementById("main");
 
 let orderList = [];
 let session = null;
+let inventory = [];
+let orders = [];
 
 async function initPage() {
   const { data } = await supabaseClient.auth.getSession();
@@ -120,6 +122,7 @@ function renderOrders(data) {
 
 
 initPage();
+
 
 
 
