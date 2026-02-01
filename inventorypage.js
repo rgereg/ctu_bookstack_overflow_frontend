@@ -410,7 +410,10 @@ bookForm?.addEventListener("submit", async e => {
   try {
     const res = await apiFetch(`/books`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify(newBook)
     });
 
@@ -453,6 +456,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
