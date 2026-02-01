@@ -19,7 +19,9 @@ let inventory = [];
 let session = null;
 
 async function initPage() {
-  session = await initAuth();
+  const { data } = await supabase.auth.getSession();
+  session = data.session;
+  //session = await initAuth(); testing to see what breaks
 
   if (!session || userRole !== "employee") {
     main.innerHTML = "<div id='message'><p>This page is for Employees Only.</p></div>";
@@ -452,6 +454,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
