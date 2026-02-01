@@ -51,7 +51,7 @@ function renderInventory(data) {
 
         ${
           session && userRole === "customer"
-            ? `<button class="order-btn" data-isbn="${item.isbn}">Add to Cart</button>`
+            ? `<button class="order-btn" data-isbn="${item.isbn} data-curQty="${item.quantity}">Add to Cart</button>`
             : ""
         }
       </div>
@@ -67,12 +67,14 @@ function wireOrderButtons() {
   document.querySelectorAll(".order-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
-      await placeOrder(isbn);
+      const curQty = btn.dataset.curQty;
+      await placeOrder(isbn, curQty);
     });
   });
 }
 
-async function placeOrder(isbn) {
+// Added current quantity for book as additional check, added in new backend function
+async function placeOrder(isbn, curQty) {
   if (!session) {
     alert("Login required");
     return;
@@ -82,17 +84,21 @@ async function placeOrder(isbn) {
   if (!Number.isInteger(qty) || qty <= 0) {
     alert("Invalid quantity");
     return;
+  } else if (qty > curQty) {
+    alert("Not enough books in stock");
+    return;
   }
 
   try {
-    const res = await apiFetch("/orders", {
-      method: "POST",
+    // Swapping out the order call with cart to try it out, if still broken by morning feel free to change -Tommy
+    const res = await apiFetch("/cart", {
+      method: "PUT",
       body: JSON.stringify({ isbn, quantity: qty })
     });
 
-    if (!res.ok) throw new Error("Order failed");
+    if (!res.ok) throw new Error("Add to cart failed");
 
-    alert("Order placed!");
+    alert("Add to cart success!");
   } catch (err) {
     console.error(err);
     alert("Failed to place order.");
