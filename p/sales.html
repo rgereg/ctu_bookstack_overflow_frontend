@@ -7,15 +7,24 @@
   <link rel="stylesheet" href="../style.css">
 
   <script type="module">
-import { initAuth, userRole, apiFetch } from "../loginpage.js";
+import { initAuth, userRole, supabaseClient, apiFetch } from "../loginpage.js";
 
 const main = document.getElementById("main");
 
 async function initPage() {
-  const session = await initAuth();
+  let session = await initAuth();
 
   if (!session) {
     main.innerHTML = "<p>Please log in to view sales.</p>";
+    return;
+  }
+
+  try {
+    const { data } = await supabaseClient.auth.refreshSession();
+    session = data.session || session;
+  } catch (err) {
+    console.error("Failed to refresh session:", err);
+    main.innerHTML = "<p>Authentication failed. Please log in again.</p>";
     return;
   }
 
@@ -81,13 +90,14 @@ async function loadSales() {
     main.innerHTML = html;
 
   } catch (err) {
-    console.error(err);
+    console.error("Error loading sales:", err);
     main.innerHTML = `<p>Error loading sales report: ${err.message}</p>`;
   }
 }
 
 initPage();
 </script>
+
 
 </head>
 <body>
