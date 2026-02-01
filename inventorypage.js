@@ -437,6 +437,10 @@ bookForm?.addEventListener("submit", async e => {
     alert("Failed to add book");
   }
   */
+} catch (err) {
+  console.error(err);
+}
+    
 });
 
 /*
@@ -447,6 +451,7 @@ bookForm?.addEventListener("submit", async e => {
 })();
 */
 initPage();
+
 
 
 
