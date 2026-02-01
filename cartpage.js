@@ -42,7 +42,15 @@ function renderCart(data) {
         return;
     }
 
+    let totalCost = 0;
+  
     data.forEach(item => {
+
+        const price = Number(item.books.price);
+        const quantity = Number(item.quantity);
+
+        totalCost += price * quantity;
+      
         const div = document.createElement("div");
         div.className = "item";
 
@@ -63,6 +71,7 @@ function renderCart(data) {
 
         main.appendChild(div);
     });
+    document.getElementById("totalCost").textContent = `Total: $${totalCost.toFixed(2)}`;
 }
 
 // Button to call refreshAuth function
@@ -71,5 +80,6 @@ refreshAuthBtn.addEventListener("click", async () => {
   await loadCart();
 });
 // Can be removed once cart is working again
+
 
 initPage();
