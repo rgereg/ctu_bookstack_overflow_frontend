@@ -3,17 +3,11 @@ import { initAuth, userRole, apiFetch, supabaseClient } from "./loginpage.js";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
-const inventoryList = document.getElementById("inventoryList");
 const ordersList = document.getElementById("ordersList");
-const searchInput = document.getElementById("search");
-const viewInventoryBtn = document.getElementById("viewInventoryBtn");
-const viewOrdersBtn = document.getElementById("viewOrdersBtn");
-const inventorySection = document.getElementById("inventorySection");
 const ordersSection = document.getElementById("ordersSection");
 
 let orderList = [];
 let session = null;
-let inventory = [];
 let orders = [];
 
 async function initPage() {
@@ -129,6 +123,7 @@ function renderOrders(data) {
 
 
 initPage();
+
 
 
 
