@@ -52,12 +52,14 @@ export async function initAuth() {
   const logoutBtn = document.getElementById("logoutBtn");
   const loggedInMsg = document.getElementById("you-are-logged-in");
   const loginFormContainer = document.getElementById("login-form-container");
+  const authEmailDisplay = document.getElementById("authEmailDisplay"); // CHANGED:
 
   if (session) {
     loginBtn?.classList.add("hidden");
     logoutBtn?.classList.remove("hidden");
     loginFormContainer?.classList.add("hidden");
     loggedInMsg?.classList.remove("hidden");
+    authEmailDisplay && (authEmailDisplay.textContent = session.user?.email || "Guest, please log in"); // CHANGED:
     if (userRole !== "employee") {
       document.querySelectorAll(".eonly").forEach(el => {
         el.style.display = "none";
@@ -67,6 +69,7 @@ export async function initAuth() {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
+    authEmailDisplay && (authEmailDisplay.textContent = "Guest, please log in"); // CHANGED:
     document.querySelectorAll(".eonly").forEach(el => {
         el.style.display = "none";
       });
