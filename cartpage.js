@@ -4,6 +4,7 @@ const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
 const refreshAuthBtn = document.getElementById("refreshAuthBtn");
+const checkoutBtn = document.getElementById("checkoutBtn");
 
 let currentOrder = [];
 let session = null;
@@ -13,20 +14,17 @@ let session = null;
 async function initPage() {
   const { data } = await supabaseClient.auth.getSession();
   session = data.session;
-  //session = await initAuth(); testing to see what breaks
 
   if (!session || userRole !== "customer") {
     main.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
     return;
   }
-  else {
-        await loadCart();
-  }
+  await loadCart();
 }
 
 async function loadCart() {
     try {
-      const res = await apiFetch(`/cart`);
+      const res = await apiFetch("/cart");
       currentOrder = await res.json();
       console.log(currentOrder);
       renderCart(currentOrder);
@@ -56,8 +54,14 @@ function renderCart(data) {
     div.className = "item";
 
     div.innerHTML = `
+      <img
+          src="https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.image_path || 'image/book/cover.jpg'}"
+          alt="${item.title || 'Book'}"
+          onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
+      />
       <div class="itemnonimage">
-        <h1>Book ID: ${item.book_id}</h1>
+        <h1>Title: ${item.title}</h1>
+        <h2>ISBN: ${item.isbn}</h2>
         <h3>Unit Price: $${price.toFixed(2)}</h3>
         <h3>Quantity in cart: ${quantity}</h3>
       </div>
@@ -72,26 +76,32 @@ function renderCart(data) {
 
 //checkout
 checkoutBtn.addEventListener("click", async () => {
-  if (!currentOrder.length) return alert("Cart is empty");
+    if (!currentOrder.length) return alert("Cart is empty");
 
-  try {
-    const res = await apiFetch("/checkout", { method: "POST" });
+    try {
+        const res = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout", {
+            method: "POST",
+            headers: { 
+                "Authorization": `Bearer ${session.access_token}`,
+                "Content-Type": "application/json"
+            }
+        });
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Checkout failed: ${text}`);
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Checkout failed: ${text}`);
+        }
+
+        const data = await res.json();
+        alert(`Order placed! Order ID: ${data.order_id}`);
+
+        currentOrder = [];
+        await loadCart();
+
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
     }
-
-    const data = await res.json();
-    alert(`Order placed! Order ID: ${data.order_id}`);
-
-    currentOrder = [];
-    renderCart(currentOrder);
-    await loadCart();
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
 });
 
 /* below works but is most basic, upgrade test above
@@ -114,11 +124,4 @@ refreshAuthBtn.addEventListener("click", async () => {
 });
 // Can be removed once cart is working again
 
-
 initPage();
-
-
-
-
-
-
