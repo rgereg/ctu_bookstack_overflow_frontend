@@ -37,43 +37,37 @@ async function loadCart() {
 }
 
 function renderCart(data) {
-    main.innerHTML = "";
+  main.innerHTML = "";
 
-    if (!data.length) {
-        main.innerHTML = "<div id='message'><p>No orders found</p></div>";
-        return;
-    }
+  if (!data.length) {
+    main.innerHTML = "<div id='message'><p>Your cart is empty</p></div>";
+    document.getElementById("totalCost").textContent = "";
+    return;
+  }
 
-    let totalCost = 0;
-  
-    data.forEach(item => {
+  let totalCost = 0;
 
-        const price = Number(item.books.price);
-        const quantity = Number(item.quantity);
+  data.forEach(item => {
+    const price = Number(item.unit_price || 0);
+    const quantity = Number(item.quantity || 0);
+    totalCost += price * quantity;
 
-        totalCost += price * quantity;
-      
-        const div = document.createElement("div");
-        div.className = "item";
+    const div = document.createElement("div");
+    div.className = "item";
 
-        div.innerHTML = `
-        <img
-          src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.books.image_path}"
-          alt="${item.books.title}"
-          onerror="this.src='http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
-        />
+    div.innerHTML = `
+      <div class="itemnonimage">
+        <h1>Book ID: ${item.book_id}</h1>
+        <h3>Unit Price: $${price.toFixed(2)}</h3>
+        <h3>Quantity in cart: ${quantity}</h3>
+      </div>
+    `;
 
-        <div class="itemnonimage">
-            <h1>Title: ${item.books.title}</h1>
-            <h2>ISBN: ${item.books.isbn}</h2>
-            <h3>Unit Price: ${Number(item.books.price).toFixed(2)}</h3>
-            <h3>Quantity in cart: ${item.quantity}</h3>
-        </div>
-        `;
+    main.appendChild(div);
+  });
 
-        main.appendChild(div);
-    });
-    document.getElementById("totalCost").textContent = `Total: $${totalCost.toFixed(2)}`;
+  document.getElementById("totalCost").textContent =
+    `Total: $${totalCost.toFixed(2)}`;
 }
 
 //checkout
@@ -98,6 +92,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 
 
 initPage();
+
 
 
 
