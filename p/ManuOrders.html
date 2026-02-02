@@ -58,11 +58,15 @@
 
     const searchBtn = document.getElementById("searchBtn");
     const resultsDiv = document.getElementById("results");
-
+    const loggedInDiv = document.getElementById("you-are-logged-in");
+    loggedInDiv.addEventListener("click", () => {
+      loggedInDiv.classList.add("hidden");
+    });
+    
     searchBtn.addEventListener("click", async () => {
       const query = document.getElementById("searchInput").value;
       if (!query) return;
-      document.getElementById("you-are-logged-in").classList.add("hidden");
+      
       resultsDiv.innerHTML = "Searching...";
       try {
         const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
@@ -118,29 +122,38 @@
             button.addEventListener("click", async () => {
               const quantity = Number(qtyInput.value);
               const price = Number(priceInput.value);
-        
+            
               if (!quantity || quantity <= 0 || price < 0) {
                 alert("Please enter valid quantity and price");
                 return;
               }
-        
+            
               try {
                 const res = await apiFetch("/checkout-instant", {
                   method: "POST",
                   body: JSON.stringify({
-                    book: { ...book, price, quantity },
-                    quantity
+                    book: {
+                      title: book.title,
+                      author: book.author,
+                      isbn: book.isbn,
+                      description: book.description || "",
+                      price: Number(price),
+                      quantity: Number(quantity),
+                      image_path: book.image_path || ""
+                    },
+                    quantity: Number(quantity)
                   })
                 });
-        
+            
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.detail || "Order failed");
-        
+            
                 alert(`Order placed! Order ID: ${data.order_id}`);
               } catch (err) {
                 alert(err.message);
               }
             });
+
           } else {
             const loginMsg = document.createElement("p");
             loginMsg.textContent = "Login as employee to order books from manufacturer.";
