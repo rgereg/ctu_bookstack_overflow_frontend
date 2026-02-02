@@ -54,21 +54,63 @@ function renderCart(data) {
     div.className = "item";
 
     div.innerHTML = `
+      <img
+        src="${item.books.image_path || 'https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg'}"
+        alt="${item.books.title || 'Book'}"
+        onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
+      />
       <div class="itemnonimage">
-        <h1>Book Title: ${item.books.title}</h1>
+        <h1>Title: ${item.books.title}</h1>
+        <h2>ISBN: ${item.books.isbn}</h2>
         <h3>Unit Price: $${price.toFixed(2)}</h3>
-        <h3>Quantity in cart: ${quantity}</h3>
+        <h3>Quantity in cart: <input type="number" min="1" value="${quantity}" id="qty-${item.id}" style="width: 60px;"></h3>
+        <button id="update-${item.id}">Update Quantity</button>
+        <button id="remove-${item.id}">Remove Book</button>
       </div>
     `;
 
     main.appendChild(div);
+
+    document.getElementById(`update-${item.id}`).addEventListener("click", async () => {
+      const newQty = Number(document.getElementById(`qty-${item.id}`).value);
+      if (!newQty || newQty < 1) {
+        alert("Enter a valid quantity");
+        return;
+      }
+
+      try {
+        const res = await apiFetch(`/cart`, {
+          method: "PATCH",
+          body: JSON.stringify({ isbn: item.books.isbn, quantity: newQty })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to update quantity");
+        alert("Quantity updated");
+        await loadCart();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    document.getElementById(`remove-${item.id}`).addEventListener("click", async () => {
+      if (!confirm(`Remove "${item.books.title}" from cart?`)) return;
+
+      try {
+        const res = await apiFetch(`/cart/${item.books.isbn}`, { method: "DELETE" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to remove book");
+        alert("Book removed");
+        await loadCart();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
   });
 
-  document.getElementById("totalCost").textContent =
-    `Total: $${totalCost.toFixed(2)}`;
+  document.getElementById("totalCost").textContent = `Total: $${totalCost.toFixed(2)}`;
 }
 
-/* top of upgrade set 
+/*  hold this working function while i test cart editing above. TODO
 function renderCart(data) {
   main.innerHTML = "";
 
@@ -89,14 +131,8 @@ function renderCart(data) {
     div.className = "item";
 
     div.innerHTML = `
-      <img
-          src="https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.image_path || 'image/book/cover.jpg'}"
-          alt="${item.title || 'Book'}"
-          onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
-      />
       <div class="itemnonimage">
-        <h1>Title: ${item.title}</h1>
-        <h2>ISBN: ${item.isbn}</h2>
+        <h1>Book Title: ${item.books.title}</h1>
         <h3>Unit Price: $${price.toFixed(2)}</h3>
         <h3>Quantity in cart: ${quantity}</h3>
       </div>
@@ -108,40 +144,7 @@ function renderCart(data) {
   document.getElementById("totalCost").textContent =
     `Total: $${totalCost.toFixed(2)}`;
 }
-
-//checkout
-checkoutBtn.addEventListener("click", async () => {
-    if (!currentOrder.length) return alert("Cart is empty");
-
-    try {
-        const res = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout", {
-            method: "POST",
-            headers: { 
-                "Authorization": `Bearer ${session.access_token}`,
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!res.ok) {
-            const text = await res.text();
-            throw new Error(`Checkout failed: ${text}`);
-        }
-
-        const data = await res.json();
-        alert(`Order placed! Order ID: ${data.order_id}`);
-
-        currentOrder = [];
-        await loadCart();
-
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
-});
-below works but is most basic, upgrade test above
 */
-
-
 
 checkoutBtn.addEventListener("click", async () => {
   try {
@@ -163,4 +166,5 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
