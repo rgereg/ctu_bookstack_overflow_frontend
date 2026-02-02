@@ -73,7 +73,7 @@
         data.items?.forEach(item => {
           const info = item.volumeInfo;
           const isbn = info.industryIdentifiers?.find(i => i.type.includes("ISBN"))?.identifier || "";
-    
+        
           const book = {
             title: info.title || "",
             author: info.authors?.join(", ") || "",
@@ -81,29 +81,49 @@
             image_path: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
             description: info.description || ""
           };
-    
-          resultsDiv.innerHTML += `
-            <div class="book-card">
-              <img src="${book.image_path}" alt="${book.title}" />
-              <p><strong>${book.title}</strong> – ${book.author}</p>
-              ${userRole === "employee" ? `
-                <input type="number" placeholder="Quantity" id="qty-${isbn}" min="1">
-                <input type="number" placeholder="Price" id="price-${isbn}" min="0" step="0.01">
-                <button id="order-${isbn}">Order Book</button>
-              ` : `<p>Login as employee to order books from manufacturer.</p>`}
-            </div>
-          `;
-    
+        
+          const card = document.createElement("div");
+          card.className = "book-card";
+        
+          const img = document.createElement("img");
+          img.src = book.image_path;
+          img.alt = book.title;
+          card.appendChild(img);
+        
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>${book.title}</strong> – ${book.author}`;
+          card.appendChild(p);
+        
           if (userRole === "employee") {
-            document.getElementById(`order-${isbn}`).addEventListener("click", async () => {
-              const quantity = Number(document.getElementById(`qty-${isbn}`).value);
-              const price = Number(document.getElementById(`price-${isbn}`).value);
-    
+            const qtyInput = document.createElement("input");
+            qtyInput.type = "number";
+            qtyInput.placeholder = "Quantity";
+            qtyInput.min = 1;
+            qtyInput.id = `qty-${isbn}`;
+            card.appendChild(qtyInput);
+        
+            const priceInput = document.createElement("input");
+            priceInput.type = "number";
+            priceInput.placeholder = "Price";
+            priceInput.min = 0;
+            priceInput.step = "0.01";
+            priceInput.id = `price-${isbn}`;
+            card.appendChild(priceInput);
+        
+            const button = document.createElement("button");
+            button.id = `order-${isbn}`;
+            button.textContent = "Order Book";
+            card.appendChild(button);
+        
+            button.addEventListener("click", async () => {
+              const quantity = Number(qtyInput.value);
+              const price = Number(priceInput.value);
+        
               if (!quantity || quantity <= 0 || price < 0) {
                 alert("Please enter valid quantity and price");
                 return;
               }
-    
+        
               try {
                 const res = await apiFetch("/checkout-instant", {
                   method: "POST",
@@ -112,16 +132,22 @@
                     quantity
                   })
                 });
-    
+        
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.detail || "Order failed");
-    
+        
                 alert(`Order placed! Order ID: ${data.order_id}`);
               } catch (err) {
                 alert(err.message);
               }
             });
+          } else {
+            const loginMsg = document.createElement("p");
+            loginMsg.textContent = "Login as employee to order books from manufacturer.";
+            card.appendChild(loginMsg);
           }
+        
+          resultsDiv.appendChild(card);
         });
     
       } catch (err) {
