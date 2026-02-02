@@ -88,10 +88,10 @@ async function placeOrder(isbn, curQty) {
     alert("Not enough books in stock");
     return;
   }
+  const payload = {isbn: isbn, quantity: qty};
+  console.log(payload);
 
   try {
-    const payload = {isbn: isbn, quantity: qty};
-    console.log(payload);
     const res = await apiFetch("/cart", {
       method: "POST",
       body: JSON.stringify(payload)
