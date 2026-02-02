@@ -130,20 +130,21 @@
             
               const payload = {
                 book: {
-                  title: book.title,
-                  author: book.author,
-                  isbn: book.isbn,
+                  title: book.title || "",
+                  author: book.author || "",
+                  isbn: book.isbn || "",
                   description: book.description || "",
-                  price: price,
-                  quantity: quantity,
+                  price: Number(price),
+                  quantity: Number(quantity),
                   image_path: book.image_path || "",
-                  is_featured: book.is_featured ?? false,
-                  category: book.category || ""
+                  category: book.category || "",
+                  is_featured: book.is_featured || false
                 },
-                quantity: quantity
+                quantity: Number(quantity)
               };
-              console.log("Checkout payload:", payload); // TODO remove this debug
-
+            
+              console.log("Checkout payload:", payload);
+            
               try {
                 const res = await apiFetch("/checkout-instant", {
                   method: "POST",
@@ -155,12 +156,9 @@
             
                 alert(`Order placed! Order ID: ${data.order_id}`);
               } catch (err) {
-                console.error("Order error:", err);
                 alert(err.message);
               }
             });
-
-
           } else {
             const loginMsg = document.createElement("p");
             loginMsg.textContent = "Login as employee to order books from manufacturer.";
