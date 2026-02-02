@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bookstack Overflow - google book api holder</title>
+  <title>Bookstack Overflow - Exclusive Manufactuering Stock</title>
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
 
@@ -18,7 +18,8 @@
 
       <div id="notlogo">
         <div id="notlogoupper">
-          <input type="text" id="search" placeholder="Search by title, author, or ISBN..." autocomplete="off" />
+          <input id="searchInput" placeholder="Search by title or ISBN" autocomplete="off" />
+          <button id="searchBtn">Search</button>
           <a href="p/cart.html">
             <img src="../image/cart.png" alt="Shopping Cart" />
           </a>
@@ -28,7 +29,6 @@
 
         <div id="notlogolower">
           <a href="../index.html"><p>Home</p></a>
-          
           <p class="linkspacers">|</p>
           <a href="orders.html"><p>Orders</p></a>
           <p class="linkspacers">|</p>
@@ -36,10 +36,6 @@
           <p class="linkspacers">|</p>
           <a href="sales.html"><p>Sales</p></a>
           <p class="linkspacers">|</p>
-          <a href="Tindex.html"><p>3 page setup index</p></a>
-          <p class="linkspacers">|</p>
-          <input id="searchInput" placeholder="Search by title or ISBN" />
-          <button id="searchBtn">Search</button>
         </div>
       </div>
     </div>
@@ -93,10 +89,47 @@
               ${userRole === "employee" ? `
                 <input type="number" placeholder="Quantity" id="qty-${isbn}" min="1">
                 <input type="number" placeholder="Price" id="price-${isbn}" min="0" step="0.01">
-                <button id="add-${isbn}">Add Book</button>
-              ` : `<p>Login as employee to add books.</p>`}
+                <button id="order-${isbn}">Order Book</button>
+              ` : `<p>Login as employee to order books from manufacturer.</p>`}
             </div>
           `;
+
+          document.getElementById(`order-${isbn}`).addEventListener("click", async () => {
+            const quantity = Number(document.getElementById(`qty-${isbn}`).value);
+            const price = Number(document.getElementById(`price-${isbn}`).value);
+          
+            if (!quantity || quantity <= 0 || price < 0) {
+              alert("Please enter valid quantity and price");
+              return;
+            }
+          
+            try {
+              const res = await apiFetch("/checkout-instant", {
+                method: "POST",
+                body: JSON.stringify({
+                  book: {
+                    title: book.title,
+                    author: book.author,
+                    isbn: book.isbn,
+                    description: book.description,
+                    price: price,
+                    quantity: quantity
+                  },
+                  quantity: quantity
+                })
+              });
+          
+              const data = await res.json();
+          
+              if (!res.ok) {
+                throw new Error(data.detail || "Order failed");
+              }
+          
+              alert(`Order placed! Order ID: ${data.order_id}`);
+            } catch (err) {
+              alert(err.message);
+            }
+          });
 
           if (userRole === "employee") {
             document.getElementById(`add-${isbn}`).addEventListener("click", async () => {
@@ -115,11 +148,11 @@
                 });
 
                 const data = await res.json();
-                if (res.ok) alert("Book added!");
-                else alert("Error adding book: " + (data.detail || JSON.stringify(data)));
+                if (res.ok) alert("Order placed!");
+                else alert("Error placing order: " + (data.detail || JSON.stringify(data)));
               } catch (err) {
                 console.error(err);
-                alert("Error adding book");
+                alert("Error placing order");
               }
             });
           }
