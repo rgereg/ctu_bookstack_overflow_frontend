@@ -72,6 +72,30 @@ function renderCart(data) {
 
 //checkout
 checkoutBtn.addEventListener("click", async () => {
+  if (!currentOrder.length) return alert("Cart is empty");
+
+  try {
+    const res = await apiFetch("/checkout", { method: "POST" });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Checkout failed: ${text}`);
+    }
+
+    const data = await res.json();
+    alert(`Order placed! Order ID: ${data.order_id}`);
+
+    currentOrder = [];
+    renderCart(currentOrder);
+    await loadCart();
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+});
+
+/* below works but is most basic, upgrade test above
+checkoutBtn.addEventListener("click", async () => {
   try {
     const res = await apiFetch("/checkout", { method: "POST" });
     const data = await res.json();
@@ -81,7 +105,7 @@ checkoutBtn.addEventListener("click", async () => {
     alert(err.message);
   }
 });
-
+*/
 
 // Button to call refreshAuth function
 refreshAuthBtn.addEventListener("click", async () => {
@@ -92,6 +116,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 
 
 initPage();
+
 
 
 
