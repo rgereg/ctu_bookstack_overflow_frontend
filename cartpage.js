@@ -78,43 +78,16 @@ function renderCart(data) {
 
 //checkout
 checkoutBtn.addEventListener("click", async () => {
-  if (!cart.length) return alert("Cart is empty");
-
-  const payload = cart.map(item => ({
-    book_id: item.id,
-    quantity: item.quantity,
-    unit_price: item.price
-  }));
-
   try {
-    const token = session.access_token;
-
-    const res = await fetch(`${API_BASE}/checkout`, {
-      method: "POST",
-      headers: { 
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ items: payload })
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Checkout failed: ${text}`);
-    }
-
+    const res = await apiFetch("/checkout", { method: "POST" });
     const data = await res.json();
     alert(`Order placed! Order ID: ${data.order_id}`);
-
-    cart = [];
-    renderCart();
-    await loadOrders();
-
+    await loadCart();
   } catch (err) {
-    console.error(err);
     alert(err.message);
   }
 });
+
 
 // Button to call refreshAuth function
 refreshAuthBtn.addEventListener("click", async () => {
@@ -125,6 +98,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 
 
 initPage();
+
 
 
 
