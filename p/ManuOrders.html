@@ -62,7 +62,7 @@
     searchBtn.addEventListener("click", async () => {
       const query = document.getElementById("searchInput").value;
       if (!query) return;
-    
+      document.getElementById("you-are-logged-in").classList.add("hidden");
       resultsDiv.innerHTML = "Searching...";
       try {
         const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
