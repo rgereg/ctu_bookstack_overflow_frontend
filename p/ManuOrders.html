@@ -128,21 +128,26 @@
                 return;
               }
             
+              const payload = {
+                book: {
+                  title: book.title,
+                  author: book.author,
+                  isbn: book.isbn,
+                  description: book.description || "",
+                  price: price,
+                  quantity: quantity,
+                  image_path: book.image_path || "",
+                  is_featured: book.is_featured ?? false,
+                  category: book.category || ""
+                },
+                quantity: quantity
+              };
+              console.log("Checkout payload:", payload); // TODO remove this debug
+
               try {
                 const res = await apiFetch("/checkout-instant", {
                   method: "POST",
-                  body: JSON.stringify({
-                    book: {
-                      title: book.title,
-                      author: book.author,
-                      isbn: book.isbn,
-                      description: book.description || "",
-                      price: Number(price),
-                      quantity: Number(quantity),
-                      image_path: book.image_path || ""
-                    },
-                    quantity: Number(quantity)
-                  })
+                  body: JSON.stringify(payload)
                 });
             
                 const data = await res.json();
@@ -150,9 +155,11 @@
             
                 alert(`Order placed! Order ID: ${data.order_id}`);
               } catch (err) {
+                console.error("Order error:", err);
                 alert(err.message);
               }
             });
+
 
           } else {
             const loginMsg = document.createElement("p");
