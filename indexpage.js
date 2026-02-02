@@ -51,7 +51,7 @@ function renderInventory(data) {
 
         ${
           session && userRole === "customer"
-            ? `<button class="order-btn" data-isbn="${item.isbn} data-curQty="${item.quantity}">Add to Cart</button>`
+            ? `<button class="order-btn" data-isbn="${item.isbn}" data-curQty="${item.quantity}">Add to Cart</button>`
             : ""
         }
       </div>
