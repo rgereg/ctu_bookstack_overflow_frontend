@@ -93,7 +93,7 @@ async function placeOrder(isbn, curQty) {
     // Swapping out the order call with cart to try it out, if still broken by morning feel free to change -Tommy
     const res = await apiFetch("/cart", {
       method: "POST",
-      body: JSON.stringify({ isbn, quantity: qty })
+      body: JSON.stringify({ isbn: isbn, quantity: qty })
     });
 
     if (!res.ok) throw new Error("Add to cart failed");
