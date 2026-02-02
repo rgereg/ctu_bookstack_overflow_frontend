@@ -55,7 +55,7 @@ function renderCart(data) {
 
     div.innerHTML = `
       <div class="itemnonimage">
-        <h1>Book ID: ${item.book_id}</h1>
+        <h1>Book Title: ${item.books.title}</h1>
         <h3>Unit Price: $${price.toFixed(2)}</h3>
         <h3>Quantity in cart: ${quantity}</h3>
       </div>
