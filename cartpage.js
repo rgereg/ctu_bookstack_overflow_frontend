@@ -54,6 +54,41 @@ function renderCart(data) {
     div.className = "item";
 
     div.innerHTML = `
+      <div class="itemnonimage">
+        <h1>Book ID: ${item.book_id}</h1>
+        <h3>Unit Price: $${price.toFixed(2)}</h3>
+        <h3>Quantity in cart: ${quantity}</h3>
+      </div>
+    `;
+
+    main.appendChild(div);
+  });
+
+  document.getElementById("totalCost").textContent =
+    `Total: $${totalCost.toFixed(2)}`;
+}
+
+/* top of upgrade set 
+function renderCart(data) {
+  main.innerHTML = "";
+
+  if (!data.length) {
+    main.innerHTML = "<div id='message'><p>Your cart is empty</p></div>";
+    document.getElementById("totalCost").textContent = "";
+    return;
+  }
+
+  let totalCost = 0;
+
+  data.forEach(item => {
+    const price = Number(item.unit_price || 0);
+    const quantity = Number(item.quantity || 0);
+    totalCost += price * quantity;
+
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
       <img
           src="https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.image_path || 'image/book/cover.jpg'}"
           alt="${item.title || 'Book'}"
@@ -103,8 +138,11 @@ checkoutBtn.addEventListener("click", async () => {
         alert(err.message);
     }
 });
+below works but is most basic, upgrade test above
+*/
 
-/* below works but is most basic, upgrade test above
+
+
 checkoutBtn.addEventListener("click", async () => {
   try {
     const res = await apiFetch("/checkout", { method: "POST" });
@@ -115,7 +153,7 @@ checkoutBtn.addEventListener("click", async () => {
     alert(err.message);
   }
 });
-*/
+
 
 // Button to call refreshAuth function
 refreshAuthBtn.addEventListener("click", async () => {
@@ -125,3 +163,4 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
