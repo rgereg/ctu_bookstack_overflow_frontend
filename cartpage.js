@@ -55,7 +55,7 @@ function renderCart(data) {
 
     div.innerHTML = `
       <img
-        src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.books.image_path || 'https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg'}"
+        src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.books.image_path || 'image/book/cover.jpg'}"
         alt="${item.books.title || 'Book'}"
         onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
       />
