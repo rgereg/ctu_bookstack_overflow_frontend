@@ -123,7 +123,7 @@ checkoutBtn.addEventListener("click", async () => {
     alert(`Order placed! Order ID: ${data.order_id}`);
     await loadCart();
   } catch (err) {
-    alert(err.message);
+    alert(`Checkout error: ${err.message}`);
   }
 });
 
@@ -135,6 +135,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
