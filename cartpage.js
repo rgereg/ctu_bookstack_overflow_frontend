@@ -115,7 +115,7 @@ function renderCart(data) {
 
 checkoutBtn.addEventListener("click", async () => {
   try {
-    const createRes = await apiFetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/create-order", {
+    const createRes = await apiFetch("/checkout/create-order", {
       method: "POST",
       body: JSON.stringify({})
     });
@@ -129,7 +129,7 @@ checkoutBtn.addEventListener("click", async () => {
 
     const createData = JSON.parse(createText);
  
-    const addRes = await apiFetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/add-items", {
+    const addRes = await apiFetch("/checkout/add-items", {
       method: "POST",
       body: JSON.stringify({
         order_id: createData.order_id,
@@ -144,7 +144,7 @@ checkoutBtn.addEventListener("click", async () => {
       throw new Error(addData.detail || "Failed to add items to order");
     }
 
-    const clearRes = await apiFetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/clear-cart", {
+    const clearRes = await apiFetch("/checkout/clear-cart", {
       method: "POST",
       body: JSON.stringify({
         cart_id: createData.cart_id
@@ -167,3 +167,4 @@ checkoutBtn.addEventListener("click", async () => {
 
 
 initPage();
+
