@@ -5,9 +5,11 @@
   <title>Bookstack Overflow - Sales</title>
   <link rel="icon" type="image/png" href="../image/icon.png">
   <link rel="stylesheet" href="../style.css">
+  <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
   <script type="module">
 import { initAuth, userRole, supabaseClient, apiFetch } from "../loginpage.js";
+import { Grid } from "https://unpkg.com/gridjs?module";
 
 const main = document.getElementById("main");
 
@@ -56,7 +58,7 @@ async function loadSales() {
       main.innerHTML = "<h1>Last 30 Days Sales</h1><p>No sales in the last 30 days.</p>";
       return;
     }
-
+/*
     let html = `
       <h1>Last 30 Days Sales</h1>
       <table>
@@ -87,7 +89,26 @@ async function loadSales() {
     });
 
     html += "</tbody></table>";
-    main.innerHTML = html;
+    main.innerHTML = html; */
+
+  const rows = sales.map(item => [
+    new Date(item.created_at).toLocaleString(),
+    item.book_title,
+    item.quantity,
+    `$${Number(item.unit_price).toFixed(2)}`,
+    item.status,
+    item.customer_id
+  ]);
+  
+  new Grid({
+    columns: ["Date", "Book", "Quantity", "Unit Price", "Status", "Customer"],
+    data: rows,
+    sort: true,
+    search: true,
+    pagination: {
+      limit: 10
+    }
+  }).render(main);
 
   } catch (err) {
     console.error("Error loading sales:", err);
