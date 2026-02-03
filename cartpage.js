@@ -1,5 +1,6 @@
 import { initAuth, userRole, apiFetch, refreshAuth, supabaseClient } from "./loginpage.js";
 
+const SUPABASE_URL = "https://ajvplpbxsrxgdldcosdf.supabase.co";
 const API_BASE = "https://ctu-bookstack-overflow-backend.onrender.com";
 
 const main = document.getElementById("main");
@@ -55,9 +56,9 @@ function renderCart(data) {
 
     div.innerHTML = `
       <img
-        src="http://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/${item.books.image_path || 'image/book/cover.jpg'}"
+        src="${SUPABASE_URL}/storage/v1/object/public/${item.books.image_path || 'image/book/cover.jpg'}"
         alt="${item.books.title || 'Book'}"
-        onerror="this.src='https://ajvplpbxsrxgdldcosdf.supabase.co/storage/v1/object/public/image/book/cover.jpg';"
+        onerror="this.src='${SUPABASE_URL}/storage/v1/object/public/image/book/cover.jpg';"
       />
       <div class="itemnonimage">
         <h1>Title: ${item.books.title}</h1>
@@ -166,5 +167,6 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
