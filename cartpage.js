@@ -115,7 +115,7 @@ function renderCart(data) {
 
 checkoutBtn.addEventListener("click", async () => {
   try {
-    const createRes = await fetch("/checkout/create-order", {
+    const createRes = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/create-order", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -123,7 +123,7 @@ checkoutBtn.addEventListener("click", async () => {
     });
     
     const text = await createRes.text();
-    console.log("RAW RESPONSE:", text);
+    console.log("RAW RESPONSE:", text); // TODO REMOVE this debug is nice im keeping it for now
     
     if (!createRes.ok) {
       throw new Error(`Checkout failed (${createRes.status}): ${text}`);
@@ -168,6 +168,7 @@ checkoutBtn.addEventListener("click", async () => {
 });
 
 initPage();
+
 
 
 
