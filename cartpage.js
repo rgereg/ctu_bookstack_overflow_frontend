@@ -113,19 +113,35 @@ function renderCart(data) {
 
 checkoutBtn.addEventListener("click", async () => {
   try {
-    const res = await apiFetch("/checkout", { method: "POST" });
-    const data = await res.json();
+    const createRes = await fetch("/checkout/create-order", { method: "POST", credentials: "include" });
+    const createData = await createRes.json();
+    console.log("Create order response:", createData);
 
-    if (!res.ok) {
-      throw new Error(data.detail || "Checkout failed");
-    }
+    const addRes = await fetch("/checkout/add-items", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order_id: createData.order_id, cart_id: createData.cart_id })
+    });
+    const addData = await addRes.json();
+    console.log("Add items response:", addData);
 
-    alert(`Order placed! Order ID: ${data.order_id}`);
-    await loadCart();
+    const clearRes = await fetch("/checkout/clear-cart", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cart_id: createData.cart_id })
+    });
+    const clearData = await clearRes.json();
+    console.log("Clear cart response:", clearData);
+
+    alert("Checkout successful! Order ID: " + createData.order_id);
   } catch (err) {
-    alert(`Checkout error: ${err.message}`);
+    console.error("Checkout failed:", err);
+    alert("Checkout failed: " + err.message);
   }
 });
+
 
 // Button to call refreshAuth function
 refreshAuthBtn.addEventListener("click", async () => {
@@ -135,6 +151,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
