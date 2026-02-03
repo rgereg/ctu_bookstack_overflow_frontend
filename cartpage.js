@@ -45,6 +45,7 @@ function renderCart(data) {
   }
 
   let totalCost = 0;
+  const coBtn = document.getElementById("checkoutBtn");
 
   data.forEach(item => {
     const price = Number(item.unit_price || 0);
@@ -109,6 +110,7 @@ function renderCart(data) {
   });
 
   document.getElementById("totalCost").textContent = `Total: $${totalCost.toFixed(2)}`;
+  coBtn?.classList.remove("hidden");
 }
 
 checkoutBtn.addEventListener("click", async () => {
@@ -172,6 +174,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
