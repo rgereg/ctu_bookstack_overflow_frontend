@@ -31,7 +31,7 @@ async function loadCart() {
       renderCart(currentOrder);
     } catch (err) {
       console.error(err);
-      main.innerHTML = "<div id='message'><p>Error loading cart.</p></div>";
+      cartcontainer.innerHTML = "<div id='main'><div id='message'><p>Error loading cart.</p></div></div>";
     }
 }
 
@@ -39,8 +39,8 @@ function renderCart(data) {
   main.innerHTML = "";
 
   if (!data.length) {
-    main.innerHTML = "<div id='message'><p>Your cart is empty</p></div>";
-    document.getElementById("totalCost").textContent = "";
+    cartcontainer.innerHTML = "<div id='main'><div id='message'><p>Your cart is empty</p></div></div>";
+    //document.getElementById("totalCost").textContent = "";
     return;
   }
 
@@ -172,6 +172,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
