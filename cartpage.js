@@ -113,9 +113,19 @@ function renderCart(data) {
 
 checkoutBtn.addEventListener("click", async () => {
   try {
-    const createRes = await fetch("/checkout/create-order", { method: "POST", credentials: "include" });
+    const createRes = await fetch("/checkout/create-order", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+    });
+
     const createData = await createRes.json();
-    console.log("Create order response:", createData);
+    console.log("[DEBUG] Create order response:", createData);
+
+    if (!createRes.ok) {
+      throw new Error(createData.detail || "Failed to create order");
+    }
 
     const addRes = await fetch("/checkout/add-items", {
       method: "POST",
@@ -123,8 +133,13 @@ checkoutBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ order_id: createData.order_id, cart_id: createData.cart_id })
     });
+
     const addData = await addRes.json();
-    console.log("Add items response:", addData);
+    console.log("[DEBUG] Add items response:", addData);
+
+    if (!addRes.ok) {
+      throw new Error(addData.detail || "Failed to add items to order");
+    }
 
     const clearRes = await fetch("/checkout/clear-cart", {
       method: "POST",
@@ -132,15 +147,21 @@ checkoutBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cart_id: createData.cart_id })
     });
+
     const clearData = await clearRes.json();
-    console.log("Clear cart response:", clearData);
+    console.log("[DEBUG] Clear cart response:", clearData);
+
+    if (!clearRes.ok) {
+      throw new Error(clearData.detail || "Failed to clear cart");
+    }
 
     alert("Checkout successful! Order ID: " + createData.order_id);
   } catch (err) {
-    console.error("Checkout failed:", err);
+    console.error("[DEBUG] Checkout failed:", err);
     alert("Checkout failed: " + err.message);
   }
 });
+
 
 
 // Button to call refreshAuth function
@@ -151,6 +172,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
