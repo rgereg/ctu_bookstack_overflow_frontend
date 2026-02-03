@@ -17,7 +17,7 @@ async function initPage() {
   session = data.session;
 
   if (!session || userRole !== "customer") {
-    cartcontainer.innerHTML = "<div id='message'><p>Please log in as a customer to view your cart.</p></div>";
+    cartcontainer.innerHTML = "<div id='main'><div id='message'><p>Please log in as a customer to view your cart.</p></div></div>";
     return;
   }
   await loadCart();
@@ -172,6 +172,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
