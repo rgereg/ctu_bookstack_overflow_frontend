@@ -333,6 +333,14 @@ button:hover {
   margin: 0;
 }
 
+#searchBtn {
+  background:white;
+}
+
+#searchBtn img {
+  height: 20px;
+}
+
 .hidden {
   display: none !important;
 }
