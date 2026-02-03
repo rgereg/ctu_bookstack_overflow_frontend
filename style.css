@@ -335,10 +335,12 @@ button:hover {
 
 #searchBtn {
   background:white;
+  padding:20px;
+  border-radius: 0px 10px 10px 0px;
 }
 
 #searchBtn img {
-  height: 20px;
+  height: 30px;
 }
 
 .hidden {
