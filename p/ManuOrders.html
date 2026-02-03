@@ -57,10 +57,6 @@
 
     const searchBtn = document.getElementById("searchBtn");
     const resultsDiv = document.getElementById("results");
-    const loggedInDiv = document.getElementById("you-are-logged-in");
-    loggedInDiv.addEventListener("click", () => {
-      loggedInDiv.classList.add("hidden");
-    });
     
     searchBtn.addEventListener("click", async () => {
       const query = document.getElementById("searchInput").value;
