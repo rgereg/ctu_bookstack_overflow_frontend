@@ -55,6 +55,9 @@ export async function initAuth() {
   const authEmailDisplay = document.getElementById("authEmailDisplay"); // CHANGED:
 
   if (session) {
+  console.log("EMAIL EL =", document.getElementById("authEmailDisplay")); // CHANGED:
+  console.log("ROLE =", userRole, "META ROLE =", session.user?.user_metadata?.role); // CHANGED:
+  
   loginBtn?.classList.add("hidden");
   logoutBtn?.classList.remove("hidden");
   loginFormContainer?.classList.add("hidden");
