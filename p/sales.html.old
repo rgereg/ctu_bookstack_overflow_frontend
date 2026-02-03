@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bookstack Overflow - Sales</title>
+  <link rel="icon" type="image/png" href="../image/icon.png">
+  <link rel="stylesheet" href="../style.css">
+
+  <script type="module">
+import { initAuth, userRole, supabaseClient, apiFetch } from "../loginpage.js";
+
+const main = document.getElementById("main");
+
+async function initPage() {
+  let session = await initAuth();
+
+  if (!session) {
+    main.innerHTML = "<p>Please log in to view sales.</p>";
+    return;
+  }
+
+  try {
+    const { data } = await supabaseClient.auth.refreshSession();
+    session = data.session || session;
+  } catch (err) {
+    console.error("Failed to refresh session:", err);
+    main.innerHTML = "<p>Authentication failed. Please log in again.</p>";
+    return;
+  }
+
+  if (userRole !== "employee") {
+    main.innerHTML = "<p>You do not have permission to view sales.</p>";
+    return;
+  }
+
+  await loadSales();
+}
+
+async function loadSales() {
+  try {
+    const res = await apiFetch("/sales/last30days");
+
+    if (res.status === 403) {
+      main.innerHTML = "<p>You do not have permission to view sales.</p>";
+      return;
+    }
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Server error: ${text}`);
+    }
+
+    const sales = await res.json();
+
+    if (!sales.length) {
+      main.innerHTML = "<h1>Last 30 Days Sales</h1><p>No sales in the last 30 days.</p>";
+      return;
+    }
+
+    let html = `
+      <h1>Last 30 Days Sales</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Book</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Status</th>
+            <th>Customer</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    sales.forEach(item => {
+      html += `
+        <tr>
+          <td>${new Date(item.created_at).toLocaleString()}</td>
+          <td>${item.book_title}</td>
+          <td>${item.quantity}</td>
+          <td>$${Number(item.unit_price).toFixed(2)}</td>
+          <td>${item.status}</td>
+          <td>${item.customer_id}</td>
+        </tr>
+      `;
+    });
+
+    html += "</tbody></table>";
+    main.innerHTML = html;
+
+  } catch (err) {
+    console.error("Error loading sales:", err);
+    main.innerHTML = `<p>Error loading sales report: ${err.message}</p>`;
+  }
+}
+
+initPage();
+</script>
+
+
+</head>
+<body>
+  <div id="container">
+
+    <div id="top">
+      <a href="../index.html">
+        <img src="../image/bow.png" alt="Logo" />
+      </a>
+
+      <div id="notlogo">
+        <div id="notlogoupper">
+          <input type="text" id="search" placeholder="Search..." autocomplete="off" />
+          <a href="cart.html"><img src="../image/cart.png" /></a>
+          <button id="loginBtn">Login</button>
+          <button id="logoutBtn" class="hidden">Logout</button>
+        </div>
+
+        <div id="notlogolower">
+          <a href="../index.html"><p>Home</p></a>
+          <p class="linkspacers">|</p>
+          <a href="orders.html"><p>Orders</p></a>
+          <p class="linkspacers eonly">|</p>
+          <a href="inventory.html" class="eonly"><p>Inventory</p></a>
+          <p class="linkspacers eonly">|</p>
+          <a href="sales.html" class="eonly"><p>Sales</p></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="main">
+      <p>Loading sales report…</p>
+    </div>
+
+  </div>
+</body>
+</html>
