@@ -151,13 +151,17 @@ checkoutBtn.addEventListener("click", async () => {
   try {
     const res = await apiFetch("/checkout", { method: "POST" });
     const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.detail || "Checkout failed");
+    }
+
     alert(`Order placed! Order ID: ${data.order_id}`);
     await loadCart();
   } catch (err) {
     alert(err.message);
   }
 });
-
 
 // Button to call refreshAuth function
 refreshAuthBtn.addEventListener("click", async () => {
@@ -167,6 +171,7 @@ refreshAuthBtn.addEventListener("click", async () => {
 // Can be removed once cart is working again
 
 initPage();
+
 
 
 
