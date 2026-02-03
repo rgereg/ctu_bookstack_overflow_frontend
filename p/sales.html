@@ -107,7 +107,9 @@ async function loadSales() {
     columns: ["Date", "Book", "Quantity", "Unit Price", "Status", "Customer"],
     data: rows,
     sort: true,
-    search: true,
+    search: {
+      placeholder: 'Search...'
+    },
     pagination: {
       limit: 10
     }
