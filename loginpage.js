@@ -55,9 +55,6 @@ export async function initAuth() {
   const authEmailDisplay = document.getElementById("authEmailDisplay"); // CHANGED:
 
   if (session) {
-  console.log("EMAIL EL =", document.getElementById("authEmailDisplay")); // CHANGED:
-  console.log("ROLE =", userRole, "META ROLE =", session.user?.user_metadata?.role); // CHANGED:
-  
   loginBtn?.classList.add("hidden");
   logoutBtn?.classList.remove("hidden");
   loginFormContainer?.classList.add("hidden");
@@ -79,23 +76,25 @@ export async function initAuth() {
     document.querySelectorAll(".eonly").forEach(el => {
       el.style.display = "none";
     });
+  }
+}
+
   } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
 
     if (authEmailDisplay) {
-      authEmailDisplay.textContent = "Guest, please log in"; // CHANGED:
-      authEmailDisplay.classList.remove("auth-admin", "auth-customer"); // CHANGED:
-    }
+  authEmailDisplay.textContent = "Guest, please log in"; // CHANGED:
+  authEmailDisplay.classList.remove("auth-admin", "auth-customer"); // CHANGED:
+}
 
     document.querySelectorAll(".eonly").forEach(el => {
-      el.style.display = "none";
-    });
+        el.style.display = "none";
+      });
   }
   return session;
   //return userRole;  testing this change to see what breaks TODO 
-  }
 }
 
 // Temp function to refresh session token
