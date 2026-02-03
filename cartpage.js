@@ -115,28 +115,26 @@ function renderCart(data) {
 
 checkoutBtn.addEventListener("click", async () => {
   try {
-    const createRes = await fetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/create-order", {
+    const createRes = await apiFetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/create-order", {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({})
     });
-    
-    const text = await createRes.text();
-    console.log("RAW RESPONSE:", text); // TODO REMOVE this debug is nice im keeping it for now
-    
+
+    const createText = await createRes.text();
+    console.log("RAW RESPONSE:", createText);
+
     if (!createRes.ok) {
-      throw new Error(`Checkout failed (${createRes.status}): ${text}`);
+      throw new Error(`Checkout failed (${createRes.status}): ${createText}`);
     }
-    
-    const createData = JSON.parse(text);
 
-
-    const addRes = await fetch("/checkout/add-items", {
+    const createData = JSON.parse(createText);
+ 
+    const addRes = await apiFetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/add-items", {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: createData.order_id, cart_id: createData.cart_id })
+      body: JSON.stringify({
+        order_id: createData.order_id,
+        cart_id: createData.cart_id
+      })
     });
 
     const addData = await addRes.json();
@@ -146,11 +144,11 @@ checkoutBtn.addEventListener("click", async () => {
       throw new Error(addData.detail || "Failed to add items to order");
     }
 
-    const clearRes = await fetch("/checkout/clear-cart", {
+    const clearRes = await apiFetch("https://ctu-bookstack-overflow-backend.onrender.com/checkout/clear-cart", {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cart_id: createData.cart_id })
+      body: JSON.stringify({
+        cart_id: createData.cart_id
+      })
     });
 
     const clearData = await clearRes.json();
@@ -167,21 +165,5 @@ checkoutBtn.addEventListener("click", async () => {
   }
 });
 
+
 initPage();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
