@@ -164,16 +164,8 @@ checkoutBtn.addEventListener("click", async () => {
   }
 });
 
-
-
-// Button to call refreshAuth function
-refreshAuthBtn.addEventListener("click", async () => {
-  await refreshAuth();
-  await loadCart();
-});
-// Can be removed once cart is working again
-
 initPage();
+
 
 
 
