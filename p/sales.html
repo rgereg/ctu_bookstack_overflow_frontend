@@ -107,11 +107,14 @@ async function loadSales() {
     columns: ["Date", "Book", "Quantity", "Unit Price", "Status", "Customer"],
     data: rows,
     sort: true,
-    search: {
-      'placeholder': 'Search...'
+    search: true,
+    language: {
+      search: {
+        placeholder: 'Search...'
+      }
     },
     pagination: {
-      limit: 10
+      limit: 100
     }
   }).render(salestable);
 
