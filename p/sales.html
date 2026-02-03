@@ -11,7 +11,8 @@
 import { initAuth, userRole, supabaseClient, apiFetch } from "../loginpage.js";
 import { Grid } from "https://unpkg.com/gridjs?module";
 
-const main = document.getElementById("main");
+const main = document.getElementById("main2");
+const salestable = document.getElementById("salestable");
 
 async function initPage() {
   let session = await initAuth();
@@ -91,6 +92,8 @@ async function loadSales() {
     html += "</tbody></table>";
     main.innerHTML = html; */
 
+  main.innerHTML = "<h1>Last 30 Days Sales</h1>";
+
   const rows = sales.map(item => [
     new Date(item.created_at).toLocaleString(),
     item.book_title,
@@ -108,7 +111,7 @@ async function loadSales() {
     pagination: {
       limit: 10
     }
-  }).render(main);
+  }).render(salestable);
 
   } catch (err) {
     console.error("Error loading sales:", err);
@@ -150,7 +153,8 @@ initPage();
     </div>
 
     <div id="main">
-      <p>Loading sales report…</p>
+      <div id="main2"><p>Loading sales report…</p></div>
+      <div id="salestable"></div>
     </div>
 
   </div>
