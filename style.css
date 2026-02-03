@@ -91,7 +91,7 @@ p {
   padding-right: 12px;
 }
 
-#search, #searchInput {
+#search {
   flex-grow: 1;
   height: 36px;
   font-size: 16px;
@@ -101,6 +101,18 @@ p {
   outline: none;
   font-family: FSIndustrie, Arial, sans-serif;
   margin-right: 2vw;
+}
+
+#searchInput {
+  flex-grow: 1;
+  height: 36px;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 8px 0px 0px 8px;
+  border: none;
+  outline: none;
+  font-family: FSIndustrie, Arial, sans-serif;
+  margin-right: 0px;
 }
 
 button {
@@ -335,8 +347,8 @@ button:hover {
 
 #searchBtn {
   background:white;
-  padding:20px;
-  border-radius: 0px 10px 10px 0px;
+  padding:10px;
+  border-radius: 0px 8px 8px 0px;
 }
 
 #searchBtn img {
