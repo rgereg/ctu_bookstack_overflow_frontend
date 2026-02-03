@@ -351,3 +351,27 @@ button:hover {
     max-width: 100%;
   }
 }
+/* the below styles are for the authed user display in the page headers */
+#authEmailDisplay {
+  font-size: 0.85rem;          /* small but readable */
+  text-align: right;           /* align under cart / login */
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* Customer: orange text only */
+#authEmailDisplay.auth-customer {
+  color: #f28c28;              /* match site orange */
+  background: transparent;
+  font-weight: 600;
+}
+
+/* Employee/Admin: orange background, black text */
+#authEmailDisplay.auth-admin {
+  color: #000;
+  background-color: #f28c28;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
