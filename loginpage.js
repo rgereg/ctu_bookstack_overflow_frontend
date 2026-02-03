@@ -79,25 +79,23 @@ export async function initAuth() {
     document.querySelectorAll(".eonly").forEach(el => {
       el.style.display = "none";
     });
-  }
-}
-
   } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
 
     if (authEmailDisplay) {
-  authEmailDisplay.textContent = "Guest, please log in"; // CHANGED:
-  authEmailDisplay.classList.remove("auth-admin", "auth-customer"); // CHANGED:
-}
+      authEmailDisplay.textContent = "Guest, please log in"; // CHANGED:
+      authEmailDisplay.classList.remove("auth-admin", "auth-customer"); // CHANGED:
+    }
 
     document.querySelectorAll(".eonly").forEach(el => {
-        el.style.display = "none";
-      });
+      el.style.display = "none";
+    });
   }
   return session;
   //return userRole;  testing this change to see what breaks TODO 
+  }
 }
 
 // Temp function to refresh session token
