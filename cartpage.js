@@ -45,7 +45,7 @@ function renderCart(data) {
   }
 
   let totalCost = 0;
-  const coBtn = document.getElementById("checkoutBtn");
+  const cobox = document.getElementById("checkoutbox");
 
   data.forEach(item => {
     const price = Number(item.unit_price || 0);
@@ -110,7 +110,7 @@ function renderCart(data) {
   });
 
   document.getElementById("totalCost").textContent = `Total: $${totalCost.toFixed(2)}`;
-  coBtn?.classList.remove("hidden");
+  cobox?.classList.remove("hidden");
 }
 
 checkoutBtn.addEventListener("click", async () => {
@@ -165,6 +165,7 @@ checkoutBtn.addEventListener("click", async () => {
 });
 
 initPage();
+
 
 
 
