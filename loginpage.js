@@ -56,42 +56,23 @@ export async function initAuth() {
 
   if (session) {
   loginBtn?.classList.add("hidden");
-  logoutBtn?.classList.remove("hidden");
-  loginFormContainer?.classList.add("hidden");
-  loggedInMsg?.classList.remove("hidden");
-
-  if (authEmailDisplay) {
-    if (userRole === "employee") {
-      authEmailDisplay.textContent = `ADMIN: ${session.user.email}`; // CHANGED:
-      authEmailDisplay.classList.add("auth-admin"); // CHANGED:
-      authEmailDisplay.classList.remove("auth-customer"); // CHANGED:
-    } else {
-      authEmailDisplay.textContent = session.user?.email || "Guest, please log in"; // CHANGED:
-      authEmailDisplay.classList.add("auth-customer"); // CHANGED:
-      authEmailDisplay.classList.remove("auth-admin"); // CHANGED:
+    logoutBtn?.classList.remove("hidden");
+    loginFormContainer?.classList.add("hidden");
+    loggedInMsg?.classList.remove("hidden");
+    authEmailDisplay && (authEmailDisplay.textContent = session.user?.email || "Guest, please log in"); // CHANGED:
+    if (userRole !== "employee") {
+      document.querySelectorAll(".eonly").forEach(el => {
+        el.style.display = "none";
+      });
     }
-  }
-
-  if (userRole !== "employee") {
-    document.querySelectorAll(".eonly").forEach(el => {
-      el.style.display = "none";
-    });
-  }
-}
-
   } else {
     loginBtn?.classList.remove("hidden");
     logoutBtn?.classList.add("hidden");
     loggedInMsg?.classList.add("hidden");
-
-    if (authEmailDisplay) {
-  authEmailDisplay.textContent = "Guest, please log in"; // CHANGED:
-  authEmailDisplay.classList.remove("auth-admin", "auth-customer"); // CHANGED:
-}
-
+    authEmailDisplay && (authEmailDisplay.textContent = "Guest, please log in"); // CHANGED:
     document.querySelectorAll(".eonly").forEach(el => {
-        el.style.display = "none";
-      });
+      el.style.display = "none";
+    });
   }
   return session;
   //return userRole;  testing this change to see what breaks TODO 
