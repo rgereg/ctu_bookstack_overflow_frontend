@@ -121,13 +121,16 @@ checkoutBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({})
     });
-
-    const createData = await createRes.json();
-    console.log("[DEBUG] Create order response:", createData);
-
+    
+    const text = await createRes.text();
+    console.log("RAW RESPONSE:", text);
+    
     if (!createRes.ok) {
-      throw new Error(createData.detail || "Failed to create order");
+      throw new Error(`Checkout failed (${createRes.status}): ${text}`);
     }
+    
+    const createData = JSON.parse(text);
+
 
     const addRes = await fetch("/checkout/add-items", {
       method: "POST",
@@ -165,6 +168,7 @@ checkoutBtn.addEventListener("click", async () => {
 });
 
 initPage();
+
 
 
 
