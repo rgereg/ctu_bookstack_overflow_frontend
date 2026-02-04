@@ -346,14 +346,14 @@ button:hover {
 }
 
 #searchBtn {
-  background: #01274A; /*#171717; /*#BEBEBE;*/
+  background: #FFFFFF; /*#01274A; /*#171717; /*#BEBEBE;*/
   padding:8px;
   border-radius: 0px 8px 8px 0px;
   margin-right:40px;
 }
 
 #searchBtn:hover {
-  background: #013D75; /*#242424; /*#D3D3D3;*/
+  background: #F5C99D; /*#013D75; /*#242424; /*#D3D3D3;*/
   cursor: pointer;
 }
 
