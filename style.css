@@ -364,7 +364,7 @@ button:hover {
 }
 
 #searchBtn img {
-  filter: brightness(1.1);
+  filter: brightness(140%);
   height: 22px;
 }
 
