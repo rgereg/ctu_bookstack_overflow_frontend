@@ -347,22 +347,25 @@ button:hover {
 
 #searchBtn {
   background: #FFFFFF; /*#01274A; /*#171717; /*#BEBEBE;*/
-  padding:8px;
+  padding:10px;
   border-radius: 0px 8px 8px 0px;
   margin-right:40px;
 }
 
 #searchBtn:hover {
-  background: #F5C99D; /*#013D75; /*#242424; /*#D3D3D3;*/
+  /*background: #F5C99D; /*#013D75; /*#242424; /*#D3D3D3;*/
   cursor: pointer;
+  padding:6px;
 }
 
 #searchBtn:hover img{
+  height: 28px;
   filter: invert(54%) sepia(86%) saturate(463%) hue-rotate(347deg) brightness(99%) contrast(96%) brightness(1.1);
 }
 
 #searchBtn img {
-  height: 26px;
+  filter: none;
+  height: 22px;
 }
 
 .hidden {
