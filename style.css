@@ -391,10 +391,9 @@ button:hover {
   position:absolute;
   font-size: 0.85rem;          /* small but readable */
   text-align: right;           /* align under cart / login */
-  top: 60px;
+  top: 65px;
   right: 5px;
   white-space: nowrap;
-  background-color:purple;
 }
 
 /* Customer: orange text only */
