@@ -31,11 +31,12 @@
             <img src="../image/cart.png" alt="Shopping Cart" />
           </a>
 
-          <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-          <button id="logoutBtn" class="hidden">Logout</button>
+          <div id="authcontainer">
+            <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
+            <button id="logoutBtn" class="hidden">Logout</button>
+            <div id="authEmailDisplay">Guest, please log in</div>
+          </div>
         </div>
-
-        <div id="authEmailDisplay">Guest, please log in</div> <!-- # CHANGED: -->
 
         <div id="notlogolower">
           <a href="../index.html"><p>Home</p></a>
