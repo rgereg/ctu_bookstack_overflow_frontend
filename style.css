@@ -397,17 +397,18 @@ button:hover {
   pointer-events: none;
   -webkit-user-select: none;
   user-select: none;
-  color: #0B2375;
+  color: #7C9FC2;
 }
 
-/* Customer: orange text only */
+/*
+/* Customer: orange text only 
 #authEmailDisplay.auth-customer {
-  color: #f28c28;              /* match site orange */
+  color: #f28c28;               /* match site orange 
   background: transparent;
   font-weight: 600;
 }
 
-/* Employee/Admin: orange background, black text */
+/* Employee/Admin: orange background, black text
 #authEmailDisplay.auth-admin {
   color: #000;
   background-color: #f28c28;
@@ -416,3 +417,4 @@ button:hover {
   border-radius: 6px;
   display: inline-block;
 }
+*/
