@@ -41,8 +41,15 @@ td.gridjs-td {
 .gridjs-pagination .gridjs-pages button:hover {
   background-color: #7C9FC2;
 }
+
+.gridjs-pagination .gridjs-pages button:disabled,
+.gridjs-pagination .gridjs-pages button:hover:disabled,
+.gridjs-pagination .gridjs-pages button[disabled],
+.gridjs-pagination .gridjs-pages button.gridjs-currentPage {
+  background-color: #8494A3;
+}
   
-.gridjs-pagination {
+.gridjs-footer, .gridjs-pagination {
   background-color: #5C84AB;
 }
   
