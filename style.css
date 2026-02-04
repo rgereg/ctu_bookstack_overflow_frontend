@@ -391,10 +391,10 @@ button:hover {
   position:absolute;
   font-size: 0.85rem;          /* small but readable */
   text-align: right;           /* align under cart / login */
-  margin-top: 40px;
+  top: 100%;
+  margin-top: 4px;
   white-space: nowrap;
-  float:right;
-  margin-left: auto;
+  background-color:purple;
 }
 
 /* Customer: orange text only */
