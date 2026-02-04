@@ -393,6 +393,7 @@ button:hover {
   text-align: right;           /* align under cart / login */
   margin-top: 40px;
   white-space: nowrap;
+  float:right;
   margin-left: auto;
 }
 
