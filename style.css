@@ -386,17 +386,18 @@ button:hover {
     max-width: 100%;
   }
 }
-/* the below styles are for the authed user display in the page headers */
+
 #authEmailDisplay {
   position:absolute;
   font-size: 0.85rem;          /* small but readable */
-  text-align: right;           /* align under cart / login */
+  text-align: right;
   top: 75px;
   right: 15px;
   white-space: nowrap;
   pointer-events: none;
   -webkit-user-select: none;
   user-select: none;
+  color: #0B2375;
 }
 
 /* Customer: orange text only */
