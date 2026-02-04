@@ -22,6 +22,7 @@
 th.gridjs-th {
   padding: 2px;
   padding-left: 10px;
+  padding-top: 8px;
   background-color: #092069;
   color: #CDCED1;
   vertical-align: middle;
@@ -104,7 +105,14 @@ async function loadSales() {
   ]);
   
   new Grid({
-    columns: ["Date", "Book", "Quantity", "Unit Price", "Status", "Customer"],
+    columns: [
+    { name: "Date", width: "10%" },
+    { name: "Book", width: "35%" },
+    { name: "Quantity", width: "10%" },
+    { name: "Unit Price", width: "10%" },
+    { name: "Status", width: "10%" },
+    { name: "Customer", width: "25%" }
+    ],
     data: rows,
     sort: true,
     search: true,
