@@ -355,7 +355,7 @@ button:hover {
 #searchBtn:hover {
   /*background: #F5C99D; /*#013D75; /*#242424; /*#D3D3D3;*/
   cursor: pointer;
-  padding:6px;
+  padding:7px;
 }
 
 #searchBtn:hover img{
@@ -364,7 +364,7 @@ button:hover {
 }
 
 #searchBtn img {
-  filter: none;
+  filter: brightness(1.1);
   height: 22px;
 }
 
