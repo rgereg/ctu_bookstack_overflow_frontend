@@ -354,6 +354,7 @@ button:hover {
 
 #searchBtn:hover {
   background: #D3D3D3;
+  cursor: pointer;
 }
 
 #searchBtn:hover img{
