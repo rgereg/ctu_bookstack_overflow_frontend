@@ -349,11 +349,15 @@ button:hover {
   background: #BEBEBE;
   padding:6px;
   border-radius: 0px 8px 8px 0px;
-  margin-right:10px;
+  margin-right:50px;
 }
 
 #searchBtn:hover {
   background: #D3D3D3;
+}
+
+#searchBtn:hover img{
+  filter: invert(54%) sepia(86%) saturate(463%) hue-rotate(347deg) brightness(99%) contrast(96%) brightness(1.1);
 }
 
 #searchBtn img {
