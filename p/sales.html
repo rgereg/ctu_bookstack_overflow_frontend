@@ -163,8 +163,11 @@ initPage();
         <div id="notlogoupper">
           <input type="text" id="search" placeholder="Search..." autocomplete="off" />
           <a href="cart.html"><img src="../image/cart.png" /></a>
-          <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-          <button id="logoutBtn" class="hidden">Logout</button>
+          <div id="authcontainer">
+            <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
+            <button id="logoutBtn" class="hidden">Logout</button>
+            <div id="authEmailDisplay">Guest, please log in</div>
+          </div>
         </div>
 
         <div id="notlogolower">
