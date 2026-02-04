@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="../style.css">
   <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
+<style>
+
+#main2, #salestable {
+  margin-left: 1vw;
+  margin-right: 1vw;
+}
+  
+</style>
+  
   <script type="module">
 import { initAuth, userRole, supabaseClient, apiFetch } from "../loginpage.js";
 import { Grid } from "https://unpkg.com/gridjs?module";
@@ -59,38 +68,6 @@ async function loadSales() {
       main.innerHTML = "<h1>Last 30 Days Sales</h1><p>No sales in the last 30 days.</p>";
       return;
     }
-/*
-    let html = `
-      <h1>Last 30 Days Sales</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Status</th>
-            <th>Customer</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-    sales.forEach(item => {
-      html += `
-        <tr>
-          <td>${new Date(item.created_at).toLocaleString()}</td>
-          <td>${item.book_title}</td>
-          <td>${item.quantity}</td>
-          <td>$${Number(item.unit_price).toFixed(2)}</td>
-          <td>${item.status}</td>
-          <td>${item.customer_id}</td>
-        </tr>
-      `;
-    });
-
-    html += "</tbody></table>";
-    main.innerHTML = html; */
 
   main.innerHTML = "<h1>Last 30 Days Sales</h1>";
 
@@ -126,7 +103,6 @@ async function loadSales() {
 
 initPage();
 </script>
-
 
 </head>
 <body>
