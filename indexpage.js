@@ -81,7 +81,7 @@ async function placeOrder(isbn, curQty) {
   }
 
   const qty = Number(prompt("Enter quantity:"));
-  console.log("Quantity in stock: ", curQty, "Quantity for order: ", qty)
+  console.log("Quantity in stock: ", curQty, "Quantity for order: ", qty);
   if (!Number.isInteger(qty) || qty <= 0) {
     alert("Invalid quantity");
     return;
