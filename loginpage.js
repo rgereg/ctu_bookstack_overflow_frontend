@@ -23,7 +23,21 @@ export async function apiFetch(path, options = {}) {
   console.log("apiFetch called with path:", path);
   console.log("Current session:", session);
   // remove above later just for debugging session problems
+  // headers / options.body part of test
+  const headers = {
+    "Authorization": `Bearer ${session.access_token}`,
+    ...(options.headers || {})
+  };
 
+  if (options.body) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  return fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers
+
+  /*  this works but forces auth header on options requests making them fail randomly
   return fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -31,6 +45,7 @@ export async function apiFetch(path, options = {}) {
       "Authorization": `Bearer ${session.access_token}`,
       ...(options.headers || {})
     }
+    */
   });
 }
 
