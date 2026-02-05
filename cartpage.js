@@ -113,6 +113,23 @@ function renderCart(data) {
   cobox?.classList.remove("hidden");
 }
 
+// alternative method test
+checkoutBtn.addEventListener("click", async () => {
+  try {
+    const res = await apiFetch("/checkout/convert-cart", { method: "POST" });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.detail || "Checkout failed");
+
+    alert(`Checkout successful! Order ID: ${data.order_id}, Items: ${data.item_count}`);
+  } catch (err) {
+    console.error("[DEBUG] Checkout failed:", err);
+    alert("Checkout failed: " + err.message);
+  }
+});
+
+
+/* BELOW CODE HELD DURING TESTING ALTERNATIVE METHOD
 checkoutBtn.addEventListener("click", async () => {
   try {
     const createRes = await apiFetch("/checkout/create-order", {
@@ -150,7 +167,7 @@ checkoutBtn.addEventListener("click", async () => {
         cart_id: createData.cart_id
       })
     });
-
+    
     const clearData = await clearRes.json();
     console.log("[DEBUG] Clear cart response:", clearData);
 
@@ -164,7 +181,8 @@ checkoutBtn.addEventListener("click", async () => {
     alert("Checkout failed: " + err.message);
   }
 });
-
+*/
 
 initPage();
+
 
