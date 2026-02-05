@@ -58,7 +58,7 @@
 
   <script type="module">
     import { userRole, apiFetch, session } from "../loginpage.js";
-
+    await initAuth(); // noticed a lack of session creation when refreshing page to a new update test
     const searchBtn = document.getElementById("searchBtn");
     const resultsDiv = document.getElementById("results");
     
