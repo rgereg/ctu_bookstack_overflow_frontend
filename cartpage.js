@@ -132,6 +132,7 @@ checkoutBtn.addEventListener("click", async () => {
 // Added a new function to refresh 
 function refreshCartPage() {
   currentOrder = [];
+  main.innerHTML = "";
   initPage();
 }
 
