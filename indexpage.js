@@ -68,7 +68,6 @@ function wireOrderButtons() {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
       const curQty = btn.dataset.curqty;
-      console.log(curQty);
       await placeOrder(isbn, curQty);
     });
   });
