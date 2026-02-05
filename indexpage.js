@@ -67,7 +67,8 @@ function wireOrderButtons() {
   document.querySelectorAll(".order-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
-      const curQty = Number(btn.dataset.curQty);
+      const curQty = btn.dataset.curQty;
+      console.log(curQty);
       await placeOrder(isbn, curQty);
     });
   });
@@ -81,8 +82,6 @@ async function placeOrder(isbn, curQty) {
   }
 
   const qty = Number(prompt("Enter quantity:"));
-  console.log(curQty);
-  console.log(qty);
   if (!Number.isInteger(qty) || qty <= 0) {
     alert("Invalid quantity");
     return;
