@@ -129,15 +129,14 @@
             
               const payload = {
                 book: {
-                  title: book.title || "",
-                  author: book.author || "",
-                  isbn: book.isbn || "",
-                  description: book.description || "",
+                  title: book.title,
+                  author: book.author,
+                  isbn: book.isbn,
+                  description: book.description,
                   price: Number(price),
                   quantity: Number(quantity),
-                  image_path: book.image_path || "",
-                  category: book.category || "",
-                  is_featured: book.is_featured || false
+                  image_path: book.image_path || null,
+                  category: book.category || null
                 },
                 quantity: Number(quantity)
               };
@@ -150,8 +149,12 @@
                   body: JSON.stringify(payload)
                 });
             
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || "Order failed");
+                const text = await res.text();
+                if (!res.ok) {
+                  console.error("Instant checkout error:", text);
+                  throw new Error(text);
+                }
+                const data = JSON.parse(text);
             
                 alert(`Order placed! Order ID: ${data.order_id}`);
               } catch (err) {
