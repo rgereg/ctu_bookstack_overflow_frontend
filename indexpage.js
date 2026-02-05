@@ -103,7 +103,7 @@ async function placeOrder(isbn, curQty) {
     alert("Add to cart success!");
   } catch (err) {
     console.error(err);
-    alert("Failed to place order.");
+    alert("Failed to add to cart.");
   }
 }
 
