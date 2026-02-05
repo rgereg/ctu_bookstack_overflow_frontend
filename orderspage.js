@@ -50,7 +50,7 @@ function renderOrders(data) {
             <h1>Customer ID: ${item.customer_id}</h1>
             <h2>Ordered on: ${item.updated_at}</h2>
             <h2>Status: ${item.status}</h2>
-            <h3>Books in order:</h3>`
+            <h3>Books in order:</h3>\n`
         
             item.order_items.forEach(book => {
               div.innerHTML += `<p>Book ID: ${book.book_id} - Quantity: ${book.quantity}</p>\n`
