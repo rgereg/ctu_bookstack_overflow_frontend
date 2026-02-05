@@ -51,7 +51,7 @@ function renderInventory(data) {
 
         ${
           session && userRole === "customer"
-            ? `<button class="order-btn" data-isbn="${item.isbn}" data-curQty="${item.quantity}">Add to Cart</button>`
+            ? `<button class="order-btn" data-isbn="${item.isbn}" data-curqty="${item.quantity}">Add to Cart</button>`
             : ""
         }
       </div>
@@ -67,7 +67,7 @@ function wireOrderButtons() {
   document.querySelectorAll(".order-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
-      const curQty = btn.dataset.curQty;
+      const curQty = btn.dataset.curqty;
       console.log(curQty);
       await placeOrder(isbn, curQty);
     });
