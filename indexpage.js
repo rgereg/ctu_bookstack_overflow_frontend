@@ -67,7 +67,7 @@ function wireOrderButtons() {
   document.querySelectorAll(".order-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const isbn = btn.dataset.isbn;
-      const curQty = Number(btn.dataset.curQty);
+      const curQty = btn.dataset.curQty;
       await placeOrder(isbn, curQty);
     });
   });
@@ -84,7 +84,8 @@ async function placeOrder(isbn, curQty) {
   if (!Number.isInteger(qty) || qty <= 0) {
     alert("Invalid quantity");
     return;
-  } else if (qty > curQty) {
+  } 
+  if (qty > curQty) {
     alert("Not enough books in stock");
     return;
   }
