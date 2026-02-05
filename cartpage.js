@@ -122,11 +122,18 @@ checkoutBtn.addEventListener("click", async () => {
     if (!res.ok) throw new Error(data.detail || "Checkout failed");
 
     alert(`Checkout successful! Order ID: ${data.order_id}, Items: ${data.item_count}`);
+    refreshCartPage();
   } catch (err) {
     console.error("[DEBUG] Checkout failed:", err);
     alert("Checkout failed: " + err.message);
   }
 });
+
+// Added a new function to refresh 
+function refreshCartPage() {
+  currentOrder = [];
+  initPage();
+}
 
 
 /* BELOW CODE HELD DURING TESTING ALTERNATIVE METHOD
