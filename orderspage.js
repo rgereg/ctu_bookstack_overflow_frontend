@@ -45,7 +45,7 @@ function renderOrders(data) {
         div.className = "item";
 
         div.innerHTML = `
-        <div id="${item.id}" class="itemnonimage">
+        <div class="itemnonimage">
             <h1>Order ID: ${item.id}</h1>
             <h1>Customer ID: ${item.customer_id}</h1>
             <h2>Ordered on: ${item.updated_at}</h2>
