@@ -53,7 +53,7 @@ function renderOrders(data) {
             <h3>Books in order:</h3>`;
         
         data.order_items.forEach(book => {
-          div.innerHTML += `<p>Title: ${book.title} - Quantity: ${book.quantity}</p>`;
+          div.innerHTML += `<p>Title: ${book.title} - Quantity: ${book.quantity}</p>`
         });
 
         div.innerHTML += `</div>`;
