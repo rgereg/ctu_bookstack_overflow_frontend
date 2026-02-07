@@ -52,9 +52,9 @@ function renderOrders(data) {
             <h2>Status: ${item.status}</h2>
             <h3>Books in order:</h3>`;
         
-        item.order_items.forEach(book => {
-          div.innerHTML += `<p>Title: ${book.title} - Quantity: ${book.quantity}</p>`
-        });
+            item.order_items.forEach(book => {
+              div.innerHTML += `<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`
+            });
 
         div.innerHTML += `</div>`;
 
