@@ -56,7 +56,9 @@ function renderOrders(data) {
               div.innerHTML += `<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`
             });
 
-        div.innerHTML += `</div>`;
+        div.innerHTML += `
+        </div>
+        </div>`;
 
         main.appendChild(div);
     });
