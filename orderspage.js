@@ -54,7 +54,7 @@ function renderOrders(data) {
         </div>`;
         
         item.order_items.forEach(book => {
-          div.appendChild(`<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`);
+          div.insertAdjacentHTML('beforeend', `<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`);
         });
 
         main.appendChild(div);
