@@ -44,21 +44,18 @@ function renderOrders(data) {
         const div = document.createElement("div");
         div.className = "item";
 
-        let tempHTML = `
+        div.innerHTML = `
         <div class="itemnonimage">
             <h1>Order ID: ${item.id}</h1>
             <h1>Customer ID: ${item.customer_id}</h1>
             <h2>Ordered on: ${item.updated_at}</h2>
             <h2>Status: ${item.status}</h2>
-            <h3>Books in order:</h3>`;
+            <h3>Books in order:</h3>
+        </div>`;
         
         item.order_items.forEach(book => {
-          tempHTML += `<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`
+          div.appendChild(`<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`);
         });
-
-        tempHTML += `</div>`;
-
-        div.innerHTML = tempHTML;
 
         main.appendChild(div);
     });
