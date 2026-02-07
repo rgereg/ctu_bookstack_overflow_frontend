@@ -50,13 +50,13 @@ function renderOrders(data) {
             <h1>Customer ID: ${item.customer_id}</h1>
             <h2>Ordered on: ${item.updated_at}</h2>
             <h2>Status: ${item.status}</h2>
-            <h3>Books in order:</h3>
-        </div>`;
+            <h3>Books in order:</h3>`;
         
-        const targetElement = document.getElementById(item.id)
         item.order_items.forEach(book => {
-          targetElement.insertAdjacentHTML('beforeend', `<p>Book Title: ${book.title} - Quantity: ${book.quantity}</p>`);
+          div.innerHTML += `<p>Title: ${book.title} - Quantity: ${book.quantity}`;
         });
+
+        div.innerHTML += `</div>`;
 
         main.appendChild(div);
     });
